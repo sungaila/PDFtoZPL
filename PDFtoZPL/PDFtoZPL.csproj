@@ -41,18 +41,26 @@
     <OutputPath>bin\Release</OutputPath>
     <DocumentationFile>bin\Release\PDFtoZPL.xml</DocumentationFile>
   </PropertyGroup>
+  
+  <ItemGroup>
+    <None Remove="PDFtoZPL.targets" />
+  </ItemGroup>
 
   <ItemGroup>
     <Content Update="C:\Users\David\.nuget\packages\pdfiumviewer.native.x86.no_v8-no_xfa\2018.4.8.256\Build\x86\pdfium.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Pack>true</Pack>
-      <PackagePath>lib\$(TargetFramework)\x86</PackagePath>
+      <PackagePath>build\x86</PackagePath>
     </Content>
     <Content Update="C:\Users\David\.nuget\packages\pdfiumviewer.native.x86_64.no_v8-no_xfa\2018.4.8.256\Build\x64\pdfium.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Pack>true</Pack>
-      <PackagePath>lib\$(TargetFramework)\x64</PackagePath>
+      <PackagePath>build\x64</PackagePath>
     </Content>
+    <None Include="PDFtoZPL.targets">
+      <Pack>true</Pack>
+      <PackagePath>build</PackagePath>
+    </None>
   </ItemGroup>
 
   <!-- SourceLink build steps and NuGet packages -->
