@@ -42,16 +42,28 @@
     <DocumentationFile>bin\Release\PDFtoZPL.xml</DocumentationFile>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Content Update="C:\Users\David\.nuget\packages\pdfiumviewer.native.x86.no_v8-no_xfa\2018.4.8.256\Build\x86\pdfium.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Pack>true</Pack>
+      <PackagePath>lib\$(TargetFramework)\x86</PackagePath>
+    </Content>
+    <Content Update="C:\Users\David\.nuget\packages\pdfiumviewer.native.x86_64.no_v8-no_xfa\2018.4.8.256\Build\x64\pdfium.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <Pack>true</Pack>
+      <PackagePath>lib\$(TargetFramework)\x64</PackagePath>
+    </Content>
+  </ItemGroup>
+
   <!-- SourceLink build steps and NuGet packages -->
   <ItemGroup>
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    
-    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
     <PackageReference Include="PdfiumViewer.Native.x86.no_v8-no_xfa" Version="2018.4.8.256" />
     <PackageReference Include="PdfiumViewer.Native.x86_64.no_v8-no_xfa" Version="2018.4.8.256" />
+    <PackageReference Include="System.Drawing.Common" Version="4.7.0" />
   </ItemGroup>
 
 </Project>
