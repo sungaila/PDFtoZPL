@@ -31,12 +31,11 @@ namespace PDFtoZPL.PdfiumViewer
             }
         }
 
-        public static Stream Get(int id)
+        public static Stream? Get(int id)
         {
             lock (_syncRoot)
             {
-                Stream stream;
-                _files.TryGetValue(id, out stream);
+                _files.TryGetValue(id, out Stream? stream);
                 return stream;
             }
         }

@@ -9,8 +9,6 @@ namespace PDFtoZPL.PdfiumViewer
 {
     internal class PdfFile : IDisposable
     {
-        private static readonly Encoding FPDFEncoding = new UnicodeEncoding(false, false, false);
-
         private IntPtr _document;
         private IntPtr _form;
         private bool _disposed;
@@ -21,12 +19,9 @@ namespace PDFtoZPL.PdfiumViewer
 
         public PdfFile(Stream stream, string? password)
         {
-            if (stream == null)
-                throw new ArgumentNullException(nameof(stream));
-
             PdfLibrary.EnsureLoaded();
 
-            _stream = stream;
+            _stream = stream ?? throw new ArgumentNullException(nameof(stream));
             _id = StreamManager.Register(stream);
 
             var document = NativeMethods.FPDF_LoadCustomDocument(stream, password, _id);
@@ -88,9 +83,7 @@ namespace PDFtoZPL.PdfiumViewer
 
         public SizeF GetPDFDocInfo(int pageNumber)
         {
-            double height;
-            double width;
-            NativeMethods.FPDF_GetPageSizeByIndex(_document, pageNumber, out width, out height);
+            NativeMethods.FPDF_GetPageSizeByIndex(_document, pageNumber, out double width, out double height);
 
             return new SizeF((float)width, (float)height);
         }
@@ -156,7 +149,7 @@ namespace PDFtoZPL.PdfiumViewer
             return result;
         }
 
-        private string GetBookmarkTitle(IntPtr bookmark)
+        private static string GetBookmarkTitle(IntPtr bookmark)
         {
             uint length = NativeMethods.FPDF_BookmarkGetTitle(bookmark, null, 0);
             byte[] buffer = new byte[length];

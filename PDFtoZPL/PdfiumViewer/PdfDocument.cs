@@ -89,7 +89,7 @@ namespace PDFtoZPL.PdfiumViewer
         public void Render(int page, Graphics graphics, float dpiX, float dpiY, Rectangle bounds, PdfRenderFlags flags)
         {
             if (graphics == null)
-                throw new ArgumentNullException("graphics");
+                throw new ArgumentNullException(nameof(graphics));
             if (_disposed)
                 throw new ObjectDisposedException(GetType().Name);
 
@@ -108,7 +108,7 @@ namespace PDFtoZPL.PdfiumViewer
                         eM22 = graphicsDpiY / dpiY
                     };
 
-                    NativeMethods.SetGraphicsMode(dc, NativeMethods.GM_ADVANCED);
+                    _ = NativeMethods.SetGraphicsMode(dc, NativeMethods.GM_ADVANCED);
                     NativeMethods.ModifyWorldTransform(dc, ref transform, NativeMethods.MWT_LEFTMULTIPLY);
                 }
 
@@ -257,7 +257,7 @@ namespace PDFtoZPL.PdfiumViewer
             return bitmap;
         }
 
-        private NativeMethods.FPDF FlagsToFPDFFlags(PdfRenderFlags flags)
+        private static NativeMethods.FPDF FlagsToFPDFFlags(PdfRenderFlags flags)
         {
             return (NativeMethods.FPDF)(flags & ~(PdfRenderFlags.Transparent | PdfRenderFlags.CorrectFromDpi));
         }

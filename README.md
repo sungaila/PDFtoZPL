@@ -1,4 +1,4 @@
-<img src="https://www.nuget.org/Content/gallery/img/default-package-icon.svg" align="left" width="64" height="64" alt="PDFtoZPL Placeholder Logo">
+<img src="https://raw.githubusercontent.com/sungaila/PDFtoZPL/master/Icon.png" align="left" width="64" height="64" alt="PDFtoZPL Logo">
 
 # PDFtoZPL
 [![NuGet version](https://img.shields.io/nuget/v/PDFtoZPL.svg?style=flat-square)](https://www.nuget.org/packages/PDFtoZPL/)

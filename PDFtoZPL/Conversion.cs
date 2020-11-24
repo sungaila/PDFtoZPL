@@ -29,11 +29,28 @@ namespace PDFtoZPL
 			if (pdfAsBase64String == null)
 				throw new ArgumentNullException(nameof(pdfAsBase64String));
 
+            return ConvertPdfPage(Convert.FromBase64String(pdfAsBase64String), password, page, dpi, width, height);
+        }
+
+		/// <summary>
+		/// Converts a single page of a given PDF into ZPL code.
+		/// </summary>
+		/// <param name="pdfAsByteArray">The PDF as a byte array.</param>
+		/// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+		/// <param name="page">The specific page to be converted.</param>
+		/// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+		/// <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
+		/// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
+		/// <returns>The converted PDF page as ZPL code.</returns>
+		public static string ConvertPdfPage(byte[] pdfAsByteArray, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null)
+		{
+			if (pdfAsByteArray == null)
+				throw new ArgumentNullException(nameof(pdfAsByteArray));
+
 			// Base64 string -> byte[] -> MemoryStream
-			using (var pdfStream = new MemoryStream(Convert.FromBase64String(pdfAsBase64String)))
-			{
-				return ConvertPdfPage(pdfStream, password, page, dpi, width, height);
-			}
+			using var pdfStream = new MemoryStream(pdfAsByteArray, false);
+
+			return ConvertPdfPage(pdfStream, password, page, dpi, width, height);
 		}
 
 		/// <summary>
@@ -52,7 +69,7 @@ namespace PDFtoZPL
 				throw new ArgumentNullException(nameof(pdfStream));
 
 			if (page < 0)
-				throw new ArgumentOutOfRangeException("The page number must 0 or greater.", nameof(page));
+				throw new ArgumentOutOfRangeException(nameof(page), "The page number must 0 or greater.");
 
 			// correct the width and height for the given dpi
 			// but only if both width and height are not specified (so the original sizes are corrected)
@@ -60,40 +77,48 @@ namespace PDFtoZPL
 			if (width == null && height == null)
 				renderFlags |= PdfRenderFlags.CorrectFromDpi;
 
-			// Stream -> PdfiumViewer.PdfDocument
-			using (var pdfDocument = PdfDocument.Load(pdfStream, password))
-			{
-				// PdfiumViewer.PdfDocument -> Image -> Bitmap
-				using (var pdfBitmap = new Bitmap(pdfDocument.Render(page, width ?? (int)pdfDocument.PageSizes[page].Width, height ?? (int)pdfDocument.PageSizes[page].Height, dpi, dpi, renderFlags)))
-				{
-					// Bitmap (Format32bppArgb) -> Bitmap (Format1bppIndexed)
-					using (var downSampledBitmap = pdfBitmap.Clone(new Rectangle(Point.Empty, pdfBitmap.Size), PixelFormat.Format1bppIndexed))
-					{
-						// Bitmap -> ZPL code
-						return ConvertBitmap(downSampledBitmap);
-					}
-				}
-			}
+            // Stream -> PdfiumViewer.PdfDocument
+            using var pdfDocument = PdfDocument.Load(pdfStream, password);
+
+            // PdfiumViewer.PdfDocument -> Image -> Bitmap
+            using var pdfBitmap = new Bitmap(pdfDocument.Render(page, width ?? (int)pdfDocument.PageSizes[page].Width, height ?? (int)pdfDocument.PageSizes[page].Height, dpi, dpi, renderFlags));
+
+            // Bitmap (Format32bppArgb) -> Bitmap (Format1bppIndexed)
+            using var downSampledBitmap = pdfBitmap.Clone(new Rectangle(Point.Empty, pdfBitmap.Size), PixelFormat.Format1bppIndexed);
+
+            // Bitmap -> ZPL code
+            return ConvertBitmap(downSampledBitmap);
+        }
+
+		/// <summary>
+		/// Converts a given <see cref="Bitmap"/> into ZPL code.
+		/// </summary>
+		/// <param name="bitmapAsStream">The <see cref="Bitmap"/> to convert.</param>
+		/// <returns>The converted <see cref="Bitmap"/> as ZPL code.</returns>
+		public static string ConvertBitmap(Stream bitmapAsStream)
+		{
+			return ConvertBitmap(new Bitmap(bitmapAsStream));
 		}
 
 		/// <summary>
 		/// Converts a given <see cref="Bitmap"/> into ZPL code.
 		/// </summary>
-		/// <param name="pdfBitmap">The <see cref="Bitmap"/> to convert.</param>
+		/// <param name="bitmap">The <see cref="Bitmap"/> to convert.</param>
 		/// <returns>The converted <see cref="Bitmap"/> as ZPL code.</returns>
-		public static string ConvertBitmap(Bitmap pdfBitmap)
+		public static string ConvertBitmap(Bitmap bitmap)
 		{
-			if (pdfBitmap == null)
-				throw new ArgumentNullException(nameof(pdfBitmap));
+			if (bitmap == null)
+				throw new ArgumentNullException(nameof(bitmap));
 
 			// no downsampling needed if the given color depth is 1 bit already
-			if (pdfBitmap.PixelFormat == PixelFormat.Format1bppIndexed)
-				return ConvertBitmapImpl(pdfBitmap);
+			if (bitmap.PixelFormat == PixelFormat.Format1bppIndexed)
+				return ConvertBitmapImpl(bitmap);
 
-			// otherwise create a downsampled clone and use that instead
-			using (var downSampledBitmap = pdfBitmap.Clone(new Rectangle(Point.Empty, pdfBitmap.Size), PixelFormat.Format1bppIndexed))
-				return ConvertBitmapImpl(downSampledBitmap);
-		}
+            // otherwise create a downsampled clone and use that instead
+            using var downSampledBitmap = bitmap.Clone(new Rectangle(Point.Empty, bitmap.Size), PixelFormat.Format1bppIndexed);
+
+            return ConvertBitmapImpl(downSampledBitmap);
+        }
 
 		private static string ConvertBitmapImpl(Bitmap pdfBitmap)
 		{
@@ -154,7 +179,7 @@ namespace PDFtoZPL
 						j = 0;
 					}
 				}
-				zplBuilder.Append("\n");
+				zplBuilder.Append('\n');
 			}
 
 			return zplBuilder.ToString();
@@ -182,11 +207,11 @@ namespace PDFtoZPL
 				{
 					if (counter >= maxlinea && aux == '0')
 					{
-						sbLinea.Append(",");
+						sbLinea.Append(',');
 					}
 					else if (counter >= maxlinea && aux == 'F')
 					{
-						sbLinea.Append("!");
+						sbLinea.Append('!');
 					}
 					else if (counter > 20)
 					{
@@ -220,9 +245,9 @@ namespace PDFtoZPL
 					firstChar = true;
 
 					if (sbLinea.ToString().Equals(previousLine))
-						sbCode.Append(":");
+						sbCode.Append(':');
 					else
-						sbCode.Append(sbLinea.ToString());
+						sbCode.Append(sbLinea);
 
 					previousLine = sbLinea.ToString();
 					sbLinea.Length = 0;

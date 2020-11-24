@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-#pragma warning disable 1591
-
 namespace PDFtoZPL.PdfiumViewer
 {
     internal class PdfException : Exception
@@ -21,23 +19,16 @@ namespace PDFtoZPL.PdfiumViewer
 
         private static string GetMessage(PdfError error)
         {
-            switch (error)
+            return error switch
             {
-                case PdfError.Success:
-                    return "No error";
-                case PdfError.CannotOpenFile:
-                    return "File not found or could not be opened";
-                case PdfError.InvalidFormat:
-                    return "File not in PDF format or corrupted";
-                case PdfError.PasswordProtected:
-                    return "Password required or incorrect password";
-                case PdfError.UnsupportedSecurityScheme:
-                    return "Unsupported security scheme";
-                case PdfError.PageNotFound:
-                    return "Page not found or content error";
-                default:
-                    return "Unknown error";
-            }
+                PdfError.Success => "No error",
+                PdfError.CannotOpenFile => "File not found or could not be opened",
+                PdfError.InvalidFormat => "File not in PDF format or corrupted",
+                PdfError.PasswordProtected => "Password required or incorrect password",
+                PdfError.UnsupportedSecurityScheme => "Unsupported security scheme",
+                PdfError.PageNotFound => "Page not found or content error",
+                _ => "Unknown error",
+            };
         }
 
         public PdfException(string message)

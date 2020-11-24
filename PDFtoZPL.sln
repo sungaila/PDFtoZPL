@@ -7,8 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PDFtoZPL", "PDFtoZPL\PDFtoZ
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{573E786B-4B2F-4B68-B156-801E62C21659}"
 	ProjectSection(SolutionItems) = preProject
+		Icon.png = Icon.png
+		Icon_128.png = Icon_128.png
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Console", "Console\Console.csproj", "{7870E7D5-D32A-421D-9FDF-BBB18D765389}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -20,6 +24,10 @@ Global
 		{AEA24120-110F-4988-B5F7-7953FD2BA97B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AEA24120-110F-4988-B5F7-7953FD2BA97B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AEA24120-110F-4988-B5F7-7953FD2BA97B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7870E7D5-D32A-421D-9FDF-BBB18D765389}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7870E7D5-D32A-421D-9FDF-BBB18D765389}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7870E7D5-D32A-421D-9FDF-BBB18D765389}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7870E7D5-D32A-421D-9FDF-BBB18D765389}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

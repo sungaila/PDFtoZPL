@@ -1,5 +1,4 @@
-﻿#pragma warning disable 1591
-
+﻿
 namespace PDFtoZPL.PdfiumViewer
 {
     internal enum PdfError

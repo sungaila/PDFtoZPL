@@ -2,8 +2,6 @@
 using System.IO;
 using System.Runtime.InteropServices;
 
-#pragma warning disable 1591
-
 namespace PDFtoZPL.PdfiumViewer
 {
     internal partial class NativeMethods
@@ -315,8 +313,6 @@ namespace PDFtoZPL.PdfiumViewer
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         private delegate int FPDF_SaveBlockDelegate(IntPtr fileWrite, IntPtr data, uint size);
 
-        private static readonly FPDF_SaveBlockDelegate _saveBlockDelegate = FPDF_SaveBlock;
-
         private static int FPDF_GetBlock(IntPtr param, uint position, IntPtr buffer, uint size)
         {
             var stream = StreamManager.Get((int)param);
@@ -332,29 +328,6 @@ namespace PDFtoZPL.PdfiumViewer
             Marshal.Copy(managedBuffer, 0, buffer, (int)size);
             return 1;
         }
-
-        private static int FPDF_SaveBlock(IntPtr fileWrite, IntPtr data, uint size)
-        {
-            var write = new FPDF_FILEWRITE();
-            Marshal.PtrToStructure(fileWrite, write);
-
-            var stream = StreamManager.Get((int)write.stream);
-            if (stream == null)
-                return 0;
-
-            byte[] buffer = new byte[size];
-            Marshal.Copy(data, buffer, 0, (int)size);
-
-            try
-            {
-                stream.Write(buffer, 0, (int)size);
-                return (int)size;
-            }
-            catch
-            {
-                return 0;
-            }
-        }
         #endregion
 
         private static class Imports
@@ -366,7 +339,7 @@ namespace PDFtoZPL.PdfiumViewer
             public static extern void FPDF_Release();
 
             [DllImport("pdfium.dll", CharSet = CharSet.Unicode)]
-            public static extern IntPtr FPDF_LoadCustomDocument([MarshalAs(UnmanagedType.LPStruct)]FPDF_FILEACCESS access, string? password);
+            public static extern IntPtr FPDF_LoadCustomDocument([MarshalAs(UnmanagedType.LPStruct)] FPDF_FILEACCESS access, string? password);
 
             [DllImport("pdfium.dll")]
             public static extern void FPDF_CloseDocument(IntPtr document);
@@ -472,69 +445,69 @@ namespace PDFtoZPL.PdfiumViewer
         {
             public int version;
 
-            private IntPtr Release;
+            private readonly IntPtr Release;
 
-            private IntPtr FFI_Invalidate;
+            private readonly IntPtr FFI_Invalidate;
 
-            private IntPtr FFI_OutputSelectedRect;
+            private readonly IntPtr FFI_OutputSelectedRect;
 
-            private IntPtr FFI_SetCursor;
+            private readonly IntPtr FFI_SetCursor;
 
-            private IntPtr FFI_SetTimer;
+            private readonly IntPtr FFI_SetTimer;
 
-            private IntPtr FFI_KillTimer;
+            private readonly IntPtr FFI_KillTimer;
 
-            private IntPtr FFI_GetLocalTime;
+            private readonly IntPtr FFI_GetLocalTime;
 
-            private IntPtr FFI_OnChange;
+            private readonly IntPtr FFI_OnChange;
 
-            private IntPtr FFI_GetPage;
+            private readonly IntPtr FFI_GetPage;
 
-            private IntPtr FFI_GetCurrentPage;
+            private readonly IntPtr FFI_GetCurrentPage;
 
-            private IntPtr FFI_GetRotation;
+            private readonly IntPtr FFI_GetRotation;
 
-            private IntPtr FFI_ExecuteNamedAction;
+            private readonly IntPtr FFI_ExecuteNamedAction;
 
-            private IntPtr FFI_SetTextFieldFocus;
+            private readonly IntPtr FFI_SetTextFieldFocus;
 
-            private IntPtr FFI_DoURIAction;
+            private readonly IntPtr FFI_DoURIAction;
 
-            private IntPtr FFI_DoGoToAction;
+            private readonly IntPtr FFI_DoGoToAction;
 
-            private IntPtr m_pJsPlatform;
+            private readonly IntPtr m_pJsPlatform;
 
             // XFA support i.e. version 2
 
-            private IntPtr FFI_DisplayCaret;
+            private readonly IntPtr FFI_DisplayCaret;
 
-            private IntPtr FFI_GetCurrentPageIndex;
+            private readonly IntPtr FFI_GetCurrentPageIndex;
 
-            private IntPtr FFI_SetCurrentPage;
+            private readonly IntPtr FFI_SetCurrentPage;
 
-            private IntPtr FFI_GotoURL;
+            private readonly IntPtr FFI_GotoURL;
 
-            private IntPtr FFI_GetPageViewRect;
+            private readonly IntPtr FFI_GetPageViewRect;
 
-            private IntPtr FFI_PageEvent;
+            private readonly IntPtr FFI_PageEvent;
 
-            private IntPtr FFI_PopupMenu;
+            private readonly IntPtr FFI_PopupMenu;
 
-            private IntPtr FFI_OpenFile;
+            private readonly IntPtr FFI_OpenFile;
 
-            private IntPtr FFI_EmailTo;
+            private readonly IntPtr FFI_EmailTo;
 
-            private IntPtr FFI_UploadTo;
+            private readonly IntPtr FFI_UploadTo;
 
-            private IntPtr FFI_GetPlatform;
+            private readonly IntPtr FFI_GetPlatform;
 
-            private IntPtr FFI_GetLanguage;
+            private readonly IntPtr FFI_GetLanguage;
 
-            private IntPtr FFI_DownloadFromURL;
+            private readonly IntPtr FFI_DownloadFromURL;
 
-            private IntPtr FFI_PostRequestURL;
+            private readonly IntPtr FFI_PostRequestURL;
 
-            private IntPtr FFI_PutRequestURL;
+            private readonly IntPtr FFI_PutRequestURL;
         }
 
         public enum FPDFDOC_AACTION
