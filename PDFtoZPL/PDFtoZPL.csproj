@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <!-- Assembly -->
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net50-windows</TargetFrameworks>
-    <RuntimeIdentifiers>win-x86;win-x64</RuntimeIdentifiers>
+    <TargetFrameworks>netstandard2.0;net50</TargetFrameworks>
+    <RuntimeIdentifiers>win-x86;win-x64;linux-x64</RuntimeIdentifiers>
     <AssemblyName>PDFtoZPL</AssemblyName>
     <RootNamespace>PDFtoZPL</RootNamespace>
     <EmbedAllSources>true</EmbedAllSources>
@@ -12,7 +12,8 @@
 
   <!-- NuGet -->
   <PropertyGroup>
-    <VersionPrefix>1.1.0</VersionPrefix>
+    <VersionPrefix>1.2.0</VersionPrefix>
+    <VersionSuffix>preview</VersionSuffix>
     <Authors>David Sungaila</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -20,7 +21,7 @@
     <PackageProjectUrl>https://github.com/sungaila/PDFtoZPL</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/sungaila/PDFtoZPL/master/Icon_128.png</PackageIconUrl>
     <Description>A .NET Standard library to convert PDF files and bitmap images into Zebra Programming Language code.</Description>
-    <PackageReleaseNotes>Added .NET 5.0 as a target framework.</PackageReleaseNotes>
+    <PackageReleaseNotes>Adds support for Linux x86-64 and fixes .NET Framework targets.</PackageReleaseNotes>
     <PackageTags>PDF ZPL Zebra Bitmap Convert Conversion C#</PackageTags>
     <RepositoryUrl>https://github.com/sungaila/PDFtoZPL.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -30,7 +31,7 @@
 
   <!-- C# compiler -->
   <PropertyGroup>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <Nullable>enable</Nullable>
     <Features>strict</Features>
     <WarningsAsErrors>nullable</WarningsAsErrors>
@@ -49,38 +50,49 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="..\Icon_128.png">
+      <Pack>true</Pack>
+      <PackagePath></PackagePath>
+    </None>
+    <None Include="PDFtoZPL.targets">
+      <Pack>true</Pack>
+      <PackagePath>build</PackagePath>
+    </None>
+    <None Include="runtimes\win-x64\native\pdfium.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
+      <PackagePath>runtimes\win-x64\native\pdfium.dll</PackagePath>
+      <Visible>false</Visible>
+    </None>
+    <None Include="runtimes\win-x86\native\pdfium.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
+      <PackagePath>runtimes\win-x86\native\pdfium.dll</PackagePath>
+      <Visible>false</Visible>
+    </None>
+    <None Include="runtimes\linux-x64\native\libpdfium.so">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
+      <PackagePath>runtimes\linux-x64\native\libpdfium.so</PackagePath>
+      <Visible>false</Visible>
+    </None>
+  </ItemGroup>
+
   <!-- NuGet Icon -->
   <ItemGroup>
     <None Include="..\Icon_128.png">
-      <Pack>True</Pack>
+      <Pack>true</Pack>
       <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="PDFtoZPL.targets">
-      <Pack>True</Pack>
-      <PackagePath>build</PackagePath>
-    </None>
-    <Content Include="runtimes\win-x64\native\pdfium.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Pack>true</Pack>
-      <PackagePath>runtimes\win-x64\native\pdfium.dll</PackagePath>
-    </Content>
-    <Content Include="runtimes\win-x86\native\pdfium.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <Pack>true</Pack>
-      <PackagePath>runtimes\win-x86\native\pdfium.dll</PackagePath>
-    </Content>
-  </ItemGroup>
-
   <!-- SourceLink build steps and NuGet packages -->
   <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="5.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="5.0.1" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
-
 </Project>

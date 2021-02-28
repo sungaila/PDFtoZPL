@@ -166,7 +166,7 @@ namespace PDFtoZPL.PdfiumViewer
         {
             IntPtr dest = NativeMethods.FPDF_BookmarkGetDest(_document, bookmark);
             if (dest != IntPtr.Zero)
-                return NativeMethods.FPDFDest_GetPageIndex(_document, dest);
+                return NativeMethods.FPDFDest_GetDestPageIndex(_document, dest);
 
             return 0;
         }

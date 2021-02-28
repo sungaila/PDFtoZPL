@@ -26,9 +26,42 @@ namespace PDFtoZPL.PdfiumViewer
                 return false;
 
             path = Path.Combine(path, "runtimes");
-            path = Path.Combine(path, IntPtr.Size == 4 ? "win-x86" : "win-x64");
-            path = Path.Combine(path, "native");
-            path = Path.Combine(path, "Pdfium.dll");
+
+#if !NETSTANDARD
+            if (OperatingSystem.IsWindows())
+            {
+                path = Path.Combine(path, Environment.Is64BitProcess ? "win-x64" : "win-x86");
+                path = Path.Combine(path, "native");
+                path = Path.Combine(path, "pdfium.dll");
+            }
+            else if (OperatingSystem.IsLinux())
+            {
+                path = Path.Combine(path, Environment.Is64BitProcess ? "linux-x64" : throw new NotSupportedException("Only x86-64 is supported on Linux."));
+                path = Path.Combine(path, "native");
+                path = Path.Combine(path, "libpdfium.so");
+            }
+            else
+            {
+                throw new NotSupportedException("Only win-x86, win-x64 and linux-x64 are supported.");
+            }
+#else
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            {
+                path = Path.Combine(path, Environment.Is64BitProcess ? "win-x64" : "win-x86");
+                path = Path.Combine(path, "native");
+                path = Path.Combine(path, "pdfium.dll");
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            {
+                path = Path.Combine(path, Environment.Is64BitProcess ? "linux-x64" : throw new NotSupportedException("Only x86-64 is supported on Linux."));
+                path = Path.Combine(path, "native");
+                path = Path.Combine(path, "libpdfium.so");
+            }
+            else
+            {
+                throw new NotSupportedException("Only win-x86, win-x64 and linux-x64 are supported.");
+            }
+#endif
 
             return File.Exists(path) && LoadLibrary(path) != IntPtr.Zero;
         }

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace PDFtoZPL.PdfiumViewer
 {
@@ -6,6 +6,7 @@ namespace PDFtoZPL.PdfiumViewer
     {
         private static readonly object _syncRoot = new object();
         private static PdfLibrary? _library;
+        private bool disposedValue;
 
         public static void EnsureLoaded()
         {
@@ -16,33 +17,29 @@ namespace PDFtoZPL.PdfiumViewer
             }
         }
 
-        private bool _disposed;
-
         private PdfLibrary()
         {
-            NativeMethods.FPDF_AddRef();
+            NativeMethods.FPDF_InitLibrary();
         }
 
         ~PdfLibrary()
         {
-            Dispose(false);
+            Dispose(disposing: false);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                NativeMethods.FPDF_DestroyLibrary();
+                disposedValue = true;
+            }
         }
 
         public void Dispose()
         {
-            Dispose(true);
-
+            Dispose(disposing: true);
             GC.SuppressFinalize(this);
-        }
-
-        private void Dispose(bool disposing)
-        {
-            if (!_disposed)
-            {
-                NativeMethods.FPDF_Release();
-
-                _disposed = true;
-            }
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
 using System.Text;
 
 namespace PDFtoZPL
@@ -24,6 +25,10 @@ namespace PDFtoZPL
 		/// <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
 		/// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
 		/// <returns>The converted PDF page as ZPL code.</returns>
+#if !NETSTANDARD
+		[SupportedOSPlatform("Windows")]
+		[SupportedOSPlatform("Linux")]
+#endif
 		public static string ConvertPdfPage(string pdfAsBase64String, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null)
 		{
 			if (pdfAsBase64String == null)
@@ -42,6 +47,10 @@ namespace PDFtoZPL
 		/// <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
 		/// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
 		/// <returns>The converted PDF page as ZPL code.</returns>
+#if !NETSTANDARD
+		[SupportedOSPlatform("Windows")]
+		[SupportedOSPlatform("Linux")]
+#endif
 		public static string ConvertPdfPage(byte[] pdfAsByteArray, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null)
 		{
 			if (pdfAsByteArray == null)
@@ -63,6 +72,10 @@ namespace PDFtoZPL
 		/// <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
 		/// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
 		/// <returns>The converted PDF page as ZPL code.</returns>
+#if !NETSTANDARD
+		[SupportedOSPlatform("Windows")]
+		[SupportedOSPlatform("Linux")]
+#endif
 		public static string ConvertPdfPage(Stream pdfStream, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null)
 		{
 			if (pdfStream == null)

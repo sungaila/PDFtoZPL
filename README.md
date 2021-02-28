@@ -5,8 +5,17 @@
 [![NuGet downloads](https://img.shields.io/nuget/dt/PDFtoZPL.svg?style=flat-square)](https://www.nuget.org/packages/PDFtoZPL/)
 [![GitHub license](https://img.shields.io/github/license/sungaila/PDFtoZPL?style=flat-square)](https://github.com/sungaila/PDFtoZPL/blob/master/LICENSE)
 
-A .NET Standard library to convert [PDF files](https://en.wikipedia.org/wiki/PDF) into [Zebra Programming Language commands](https://en.wikipedia.org/wiki/Zebra_(programming_language)).
+A .NET Standard library to convert [PDF files](https://en.wikipedia.org/wiki/PDF) (or bitmaps) into [Zebra Programming Language commands](https://en.wikipedia.org/wiki/Zebra_(programming_language)).
 
-First your PDF is rasterized into a monochrome bitmap image. Then the ^GF (Graphic Field) command is applied to the bitmap. The bitmap is compressed to shrink the ZPL code in size.
+This .NET library is built on top of
+* [PDFium](https://pdfium.googlesource.com/pdfium/) (native PDF renderer)
+* [PdfiumViewer](https://github.com/pvginkel/PdfiumViewer) (wrapper for pdfium)
 
-The PDF rasterizer used in this project is a stripped down version of [PdfiumViewer](https://github.com/pvginkel/PdfiumViewer) which is built on top of [PDFium](https://pdfium.googlesource.com/pdfium/). I recommend the [Labelary Online ZPL Viewer](http://labelary.com/viewer.html) to check the created ZPL code. Only Windows x86 and x86-64 are supported as platforms.
+You can use [Labelary Online ZPL Viewer](http://labelary.com/viewer.html) to render the resulting ZPL code.
+
+### How does it work?
+0. Use PDFium to render a bitmap (for PDF files)
+1. Make the bitmap monochrome
+2. Convert the bitmap into a ^GF (Graphic Field) command
+3. Compress the command hexdecimal data to shrink the ZPL code in size
+4. Return the generated ZPL code

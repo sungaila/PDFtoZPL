@@ -26,7 +26,9 @@ namespace PDFtoZPL.Console
                 
                 string zpl = (Path.GetExtension(inputPath).ToLower()) switch
                 {
-                    ".pdf" => Conversion.ConvertPdfPage(inputStream),
+                    ".pdf" => OperatingSystem.IsWindows() || OperatingSystem.IsLinux()
+                        ? Conversion.ConvertPdfPage(inputStream)
+                        : throw new NotSupportedException("Only win-x86, win-x64 and linux-x64 are supported for PDF file conversion."),
                     ".bmp" => Conversion.ConvertBitmap(inputStream),
                     _ => throw new InvalidOperationException("The given input file path must have pdf or bmp as file extension."),
                 };
