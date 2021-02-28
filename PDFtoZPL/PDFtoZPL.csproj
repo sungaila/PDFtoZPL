@@ -6,7 +6,7 @@
     <AssemblyName>PDFtoZPL</AssemblyName>
     <RootNamespace>PDFtoZPL</RootNamespace>
     <EmbedAllSources>true</EmbedAllSources>
-    <AssemblyOriginatorKeyFile>PDFtoZPL.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>PDFtoZPL.snk</AssemblyOriginatorKeyFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
