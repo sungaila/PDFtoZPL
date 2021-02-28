@@ -5,11 +5,11 @@
 [![NuGet downloads](https://img.shields.io/nuget/dt/PDFtoZPL.svg?style=flat-square)](https://www.nuget.org/packages/PDFtoZPL/)
 [![GitHub license](https://img.shields.io/github/license/sungaila/PDFtoZPL?style=flat-square)](https://github.com/sungaila/PDFtoZPL/blob/master/LICENSE)
 
-A .NET Standard library to convert [PDF files](https://en.wikipedia.org/wiki/PDF) (or bitmaps) into [Zebra Programming Language commands](https://en.wikipedia.org/wiki/Zebra_(programming_language)).
+A .NET library to convert [PDF files](https://en.wikipedia.org/wiki/PDF) (and bitmaps) into [Zebra Programming Language commands](https://en.wikipedia.org/wiki/Zebra_(programming_language)).
 
 This .NET library is built on top of
 * [PDFium](https://pdfium.googlesource.com/pdfium/) (native PDF renderer)
-* [PdfiumViewer](https://github.com/pvginkel/PdfiumViewer) (wrapper for pdfium)
+* [PdfiumViewer](https://github.com/pvginkel/PdfiumViewer) (wrapper for PDFium)
 
 You can use [Labelary Online ZPL Viewer](http://labelary.com/viewer.html) to render the resulting ZPL code.
 
