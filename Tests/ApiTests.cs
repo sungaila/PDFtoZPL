@@ -21,6 +21,7 @@ namespace Tests
             Assert.ThrowsException<ArgumentNullException>(() => ConvertBitmap((Stream)null!));
         }
 
+#pragma warning disable CA1416
         [TestMethod]
         public void PdfStreamNullException()
         {
