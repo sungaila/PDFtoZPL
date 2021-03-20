@@ -31,7 +31,7 @@ namespace PDFtoZPL.PdfiumViewer
             {
                 path = Path.Combine(path, Environment.Is64BitProcess ? "linux-x64" : throw new NotSupportedException("Only x86-64 is supported on Linux."));
                 path = Path.Combine(path, "native");
-                path = Path.Combine(path, "libpdfium.so");
+                path = Path.Combine(path, "pdfium.dll");
             }
             else
             {

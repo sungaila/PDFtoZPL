@@ -73,10 +73,10 @@
       <PackagePath>runtimes\win-x86\native\pdfium.dll</PackagePath>
       <Visible>false</Visible>
     </None>
-    <None Include="runtimes\linux-x64\native\libpdfium.so">
+    <None Include="runtimes\linux-x64\native\pdfium.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Pack>true</Pack>
-      <PackagePath>runtimes\linux-x64\native\libpdfium.so</PackagePath>
+      <PackagePath>runtimes\linux-x64\native\pdfium.dll</PackagePath>
       <Visible>false</Visible>
     </None>
   </ItemGroup>
