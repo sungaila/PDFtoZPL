@@ -11,7 +11,7 @@ namespace PDFtoZPL.PdfiumViewer
         // library is not thread safe, and this way of locking
         // guarantees that we don't access the Pdfium library from different
         // threads, even when there are multiple AppDomain's in play.
-        private static readonly string LockString = String.Intern("e362349b-001d-4cb2-bf55-a71606a3e36f");
+        private static readonly string LockString = string.Intern("e362349b-001d-4cb2-bf55-a71606a3e36f");
 
         public static void FPDF_InitLibrary()
         {
@@ -178,14 +178,6 @@ namespace PDFtoZPL.PdfiumViewer
             lock (LockString)
             {
                 Imports.FPDF_ClosePage(page);
-            }
-        }
-
-        public static void FPDF_RenderPage(IntPtr dc, IntPtr page, int start_x, int start_y, int size_x, int size_y, int rotate, FPDF flags)
-        {
-            lock (LockString)
-            {
-                Imports.FPDF_RenderPage(dc, page, start_x, start_y, size_x, size_y, rotate, flags);
             }
         }
 
@@ -558,14 +550,6 @@ namespace PDFtoZPL.PdfiumViewer
             public uint m_FileLen;
             public IntPtr m_GetBlock;
             public IntPtr m_Param;
-        }
-
-        [StructLayout(LayoutKind.Sequential)]
-        public class FPDF_FILEWRITE
-        {
-            public int version;
-            public IntPtr WriteBlock;
-            public IntPtr stream;
         }
         #endregion
     }

@@ -1,7 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using static PDFtoZPL.Conversion;
 
@@ -13,8 +11,10 @@ namespace Tests
         [TestInitialize]
         public void Initialize()
         {
+#if NET5_0_OR_GREATER
             if (!OperatingSystem.IsWindows() && !OperatingSystem.IsLinux())
                 Assert.Inconclusive("This test must run on Windows or Linux.");
+#endif
         }
 
 #pragma warning disable CA1416

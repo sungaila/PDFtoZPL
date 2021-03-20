@@ -1,5 +1,4 @@
-﻿
-namespace PDFtoZPL.PdfiumViewer
+﻿namespace PDFtoZPL.PdfiumViewer
 {
     internal enum PdfError
     {

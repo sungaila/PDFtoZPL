@@ -21,15 +21,6 @@ namespace PDFtoZPL.PdfiumViewer
         /// Initializes a new instance of the PdfDocument class with the provided stream.
         /// </summary>
         /// <param name="stream">Stream for the PDF document.</param>
-        public static PdfDocument Load(Stream stream)
-        {
-            return Load(stream, null);
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the PdfDocument class with the provided stream.
-        /// </summary>
-        /// <param name="stream">Stream for the PDF document.</param>
         /// <param name="password">Password for the PDF document.</param>
         public static PdfDocument Load(Stream stream, string? password)
         {
@@ -37,14 +28,6 @@ namespace PDFtoZPL.PdfiumViewer
                 throw new ArgumentNullException(nameof(stream));
 
             return new PdfDocument(stream, password);
-        }
-
-        /// <summary>
-        /// Number of pages in the PDF document.
-        /// </summary>
-        public int PageCount
-        {
-            get { return PageSizes.Count; }
         }
 
         /// <summary>
@@ -61,107 +44,6 @@ namespace PDFtoZPL.PdfiumViewer
                 throw new Win32Exception();
 
             PageSizes = new ReadOnlyCollection<SizeF>(_pageSizes);
-        }
-
-        /// <summary>
-        /// Renders a page of the PDF document to the provided graphics instance.
-        /// </summary>
-        /// <param name="page">Number of the page to render.</param>
-        /// <param name="graphics">Graphics instance to render the page on.</param>
-        /// <param name="dpiX">Horizontal DPI.</param>
-        /// <param name="dpiY">Vertical DPI.</param>
-        /// <param name="bounds">Bounds to render the page in.</param>
-        /// <param name="forPrinting">Render the page for printing.</param>
-        public void Render(int page, Graphics graphics, float dpiX, float dpiY, Rectangle bounds, bool forPrinting)
-        {
-            Render(page, graphics, dpiX, dpiY, bounds, forPrinting ? PdfRenderFlags.ForPrinting : PdfRenderFlags.None);
-        }
-
-        /// <summary>
-        /// Renders a page of the PDF document to the provided graphics instance.
-        /// </summary>
-        /// <param name="page">Number of the page to render.</param>
-        /// <param name="graphics">Graphics instance to render the page on.</param>
-        /// <param name="dpiX">Horizontal DPI.</param>
-        /// <param name="dpiY">Vertical DPI.</param>
-        /// <param name="bounds">Bounds to render the page in.</param>
-        /// <param name="flags">Flags used to influence the rendering.</param>
-        public void Render(int page, Graphics graphics, float dpiX, float dpiY, Rectangle bounds, PdfRenderFlags flags)
-        {
-            if (graphics == null)
-                throw new ArgumentNullException(nameof(graphics));
-            if (_disposed)
-                throw new ObjectDisposedException(GetType().Name);
-
-            float graphicsDpiX = graphics.DpiX;
-            float graphicsDpiY = graphics.DpiY;
-
-            var dc = graphics.GetHdc();
-
-            try
-            {
-                if ((int)graphicsDpiX != (int)dpiX || (int)graphicsDpiY != (int)dpiY)
-                {
-                    var transform = new NativeMethods.XFORM
-                    {
-                        eM11 = graphicsDpiX / dpiX,
-                        eM22 = graphicsDpiY / dpiY
-                    };
-
-                    _ = NativeMethods.SetGraphicsMode(dc, NativeMethods.GM_ADVANCED);
-                    NativeMethods.ModifyWorldTransform(dc, ref transform, NativeMethods.MWT_LEFTMULTIPLY);
-                }
-
-                var point = new NativeMethods.POINT();
-                NativeMethods.SetViewportOrgEx(dc, bounds.X, bounds.Y, out point);
-
-                bool success = _file!.RenderPDFPageToDC(
-                    page,
-                    dc,
-                    (int)dpiX, (int)dpiY,
-                    0, 0, bounds.Width, bounds.Height,
-                    FlagsToFPDFFlags(flags)
-                );
-
-                NativeMethods.SetViewportOrgEx(dc, point.X, point.Y, out point);
-
-                if (!success)
-                    throw new Win32Exception();
-            }
-            finally
-            {
-                graphics.ReleaseHdc(dc);
-            }
-        }
-
-        /// <summary>
-        /// Renders a page of the PDF document to an image.
-        /// </summary>
-        /// <param name="page">Number of the page to render.</param>
-        /// <param name="dpiX">Horizontal DPI.</param>
-        /// <param name="dpiY">Vertical DPI.</param>
-        /// <param name="forPrinting">Render the page for printing.</param>
-        /// <returns>The rendered image.</returns>
-        public Image Render(int page, float dpiX, float dpiY, bool forPrinting)
-        {
-            var size = PageSizes[page];
-
-            return Render(page, (int)size.Width, (int)size.Height, dpiX, dpiY, forPrinting);
-        }
-
-        /// <summary>
-        /// Renders a page of the PDF document to an image.
-        /// </summary>
-        /// <param name="page">Number of the page to render.</param>
-        /// <param name="dpiX">Horizontal DPI.</param>
-        /// <param name="dpiY">Vertical DPI.</param>
-        /// <param name="flags">Flags used to influence the rendering.</param>
-        /// <returns>The rendered image.</returns>
-        public Image Render(int page, float dpiX, float dpiY, PdfRenderFlags flags)
-        {
-            var size = PageSizes[page];
-
-            return Render(page, (int)size.Width, (int)size.Height, dpiX, dpiY, flags);
         }
 
         /// <summary>

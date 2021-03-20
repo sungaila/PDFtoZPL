@@ -25,7 +25,7 @@ namespace PDFtoZPL
 		/// <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
 		/// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
 		/// <returns>The converted PDF page as ZPL code.</returns>
-#if !NETSTANDARD
+#if NET5_0_OR_GREATER
 		[SupportedOSPlatform("Windows")]
 		[SupportedOSPlatform("Linux")]
 #endif
@@ -47,7 +47,7 @@ namespace PDFtoZPL
 		/// <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
 		/// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
 		/// <returns>The converted PDF page as ZPL code.</returns>
-#if !NETSTANDARD
+#if NET5_0_OR_GREATER
 		[SupportedOSPlatform("Windows")]
 		[SupportedOSPlatform("Linux")]
 #endif
@@ -72,7 +72,7 @@ namespace PDFtoZPL
 		/// <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
 		/// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
 		/// <returns>The converted PDF page as ZPL code.</returns>
-#if !NETSTANDARD
+#if NET5_0_OR_GREATER
 		[SupportedOSPlatform("Windows")]
 		[SupportedOSPlatform("Linux")]
 #endif

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <!-- Assembly -->
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net50</TargetFrameworks>
+    <TargetFrameworks>net50;netcoreapp3.0;net461</TargetFrameworks>
     <RuntimeIdentifiers>win-x86;win-x64;linux-x64</RuntimeIdentifiers>
     <AssemblyName>PDFtoZPL</AssemblyName>
     <RootNamespace>PDFtoZPL</RootNamespace>
@@ -12,7 +12,7 @@
 
   <!-- NuGet -->
   <PropertyGroup>
-    <VersionPrefix>1.2.0</VersionPrefix>
+    <VersionPrefix>1.2.1</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <Authors>David Sungaila</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -21,7 +21,8 @@
     <PackageProjectUrl>https://github.com/sungaila/PDFtoZPL</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/sungaila/PDFtoZPL/master/Icon_128.png</PackageIconUrl>
     <Description>A .NET library to convert PDF files (and bitmaps) into Zebra Programming Language code.</Description>
-    <PackageReleaseNotes>Adds support for Linux x86-64 and fixes .NET Framework targets.</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed support for Linux x86-64.
+.NET Framework 4.6.1, .NET Core 3.0 and .NET 5.0 are target frameworks now.</PackageReleaseNotes>
     <PackageTags>PDF ZPL Zebra Bitmap Convert Conversion C# PDFium</PackageTags>
     <RepositoryUrl>https://github.com/sungaila/PDFtoZPL.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -35,6 +36,7 @@
     <Nullable>enable</Nullable>
     <Features>strict</Features>
     <WarningsAsErrors>nullable</WarningsAsErrors>
+    <NoWarn>NETSDK1138</NoWarn>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>

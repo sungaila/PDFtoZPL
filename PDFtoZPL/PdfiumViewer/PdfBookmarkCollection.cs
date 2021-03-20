@@ -13,11 +13,6 @@ namespace PDFtoZPL.PdfiumViewer
         {
             Children = new PdfBookmarkCollection();
         }
-
-        public override string? ToString()
-        {
-            return Title;
-        }
     }
 
     internal class PdfBookmarkCollection : Collection<PdfBookmark>

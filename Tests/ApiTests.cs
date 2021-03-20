@@ -18,7 +18,11 @@ namespace Tests
         [TestMethod]
         public void StreamNullException()
         {
+#if NETCOREAPP3_0_OR_GREATER
             Assert.ThrowsException<ArgumentNullException>(() => ConvertBitmap((Stream)null!));
+#else
+            Assert.ThrowsException<ArgumentException>(() => ConvertBitmap((Stream)null!));
+#endif
         }
 
 #pragma warning disable CA1416
