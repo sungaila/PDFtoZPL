@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace PDFtoZPL.PdfiumViewer
@@ -9,11 +10,10 @@ namespace PDFtoZPL.PdfiumViewer
         static NativeMethods()
         {
             // Load the platform dependent Pdfium.dll if it exists.
-            if (!TryLoadNativeLibrary(AppDomain.CurrentDomain.RelativeSearchPath!))
-                TryLoadNativeLibrary(Path.GetDirectoryName(typeof(NativeMethods).Assembly.Location)!);
+            LoadNativeLibrary(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!);
         }
 
-        private static bool TryLoadNativeLibrary(string path)
+        private static bool LoadNativeLibrary(string path)
         {
             if (path == null)
                 return false;
