@@ -83,6 +83,7 @@ jobs:
       searchFolder: '$(System.DefaultWorkingDirectory)'
       runTestsInIsolation: true
       codeCoverageEnabled: true
+      testRunTitle: '.NET Framework 4.6.1 ($(agent.os))'
       platform: '$(buildPlatform)'
       configuration: '$(buildConfiguration)'
   - task: DotNetCoreCLI@2
