@@ -50,12 +50,12 @@ jobs:
   dependsOn: Build
   strategy:
     matrix:
-      windows:
+      Windows:
         imageName: 'windows-latest'
-      linux:
+      Linux:
         imageName: 'ubuntu-latest'
-#     mac:
-#       imageName: 'macOS-latest'
+      macOS:
+        imageName: 'macOS-latest'
   pool:
     vmImage: $(imageName)
   steps:
@@ -69,7 +69,7 @@ jobs:
       targetPath: '$(Pipeline.Workspace)'
   - task: VSTest@2
     displayName: '.NET Framework 4.6.1'
-    condition: eq(variables['agent.os'], 'Windows_NT')
+    demands: agent.os -equals Windows_NT
     inputs:
       testSelector: 'testAssemblies'
       testAssemblyVer2: '$(Pipeline.Workspace)\**\net461\PDFtoZPL.Tests.dll'
@@ -79,7 +79,7 @@ jobs:
       platform: '$(buildPlatform)'
       configuration: '$(buildConfiguration)'
   - task: DotNetCoreCLI@2
-    displayName: '.NET Core 3.0'
+    displayName: '.NET Core 3.0 (variables['agent.os'])'
     inputs:
       command: 'test'
       arguments: '$(Pipeline.Workspace)\**\netcoreapp3.0\PDFtoZPL.Tests.dll'
@@ -89,4 +89,4 @@ jobs:
     inputs:
       command: 'test'
       arguments: '$(Pipeline.Workspace)\**\net50\PDFtoZPL.Tests.dll'
-      testRunTitle: '.NET 5.0'
+      testRunTitle: '.NET 5.0 (variables['agent.os'])'
