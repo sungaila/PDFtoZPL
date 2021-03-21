@@ -69,7 +69,7 @@ jobs:
       targetPath: '$(Pipeline.Workspace)'
   - task: VSTest@2
     displayName: '.NET Framework 4.6.1'
-    demands: agent.os -equals Windows_NT
+    condition: eq(variables['agent.os'], 'Windows_NT')
     inputs:
       testSelector: 'testAssemblies'
       testAssemblyVer2: '$(Pipeline.Workspace)\**\net461\PDFtoZPL.Tests.dll'
