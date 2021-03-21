@@ -61,6 +61,13 @@ jobs:
   steps:
   - checkout: none
     displayName: 'Skip checkout'
+  - task: Bash@3
+    displayName: 'Get mono-libgdiplus (macOS)'
+    condition: eq(variables['agent.os'], 'Darwin')
+    inputs:
+      targetType: 'inline'
+      script: 'brew install mono-libgdiplus'
+      failOnStderr: true
   - task: DownloadPipelineArtifact@2
     displayName: 'Download test assemblies'
     inputs:
