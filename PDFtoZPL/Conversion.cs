@@ -135,8 +135,21 @@ namespace PDFtoZPL
 
         private static Bitmap MakeMonochromeBitmap(Bitmap pdfBitmap)
         {
-            var pdfBitmapData = pdfBitmap.LockBits(new Rectangle(0, 0, pdfBitmap.Width, pdfBitmap.Height), ImageLockMode.ReadOnly, PixelFormat.Format1bppIndexed);
-            return new Bitmap(pdfBitmap.Width, pdfBitmap.Height, pdfBitmapData.Stride, PixelFormat.Format1bppIndexed, pdfBitmapData.Scan0);
+            if (pdfBitmap == null)
+                throw new ArgumentNullException(nameof(pdfBitmap));
+
+            BitmapData? pdfBitmapData = null;
+
+            try
+            {
+                pdfBitmapData = pdfBitmap.LockBits(new Rectangle(0, 0, pdfBitmap.Width, pdfBitmap.Height), ImageLockMode.ReadOnly, pdfBitmap.PixelFormat);
+                return new Bitmap(pdfBitmap.Width, pdfBitmap.Height, pdfBitmapData.Stride, PixelFormat.Format1bppIndexed, pdfBitmapData.Scan0);
+            }
+            finally
+            {
+                if (pdfBitmapData != null)
+                    pdfBitmap.UnlockBits(pdfBitmapData);
+            }
         }
 
         private static string ConvertBitmapImpl(Bitmap pdfBitmap)
