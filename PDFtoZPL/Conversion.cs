@@ -138,18 +138,9 @@ namespace PDFtoZPL
             if (pdfBitmap == null)
                 throw new ArgumentNullException(nameof(pdfBitmap));
 
-            BitmapData? pdfBitmapData = null;
+            using Bitmap newBitmap = new Bitmap(pdfBitmap);
 
-            try
-            {
-                pdfBitmapData = pdfBitmap.LockBits(new Rectangle(0, 0, pdfBitmap.Width, pdfBitmap.Height), ImageLockMode.ReadOnly, pdfBitmap.PixelFormat);
-                return new Bitmap(pdfBitmap.Width, pdfBitmap.Height, pdfBitmapData.Stride, PixelFormat.Format1bppIndexed, pdfBitmapData.Scan0);
-            }
-            finally
-            {
-                if (pdfBitmapData != null)
-                    pdfBitmap.UnlockBits(pdfBitmapData);
-            }
+            return newBitmap.Clone(new Rectangle(0, 0, newBitmap.Width, newBitmap.Height), PixelFormat.Format1bppIndexed);
         }
 
         private static string ConvertBitmapImpl(Bitmap pdfBitmap)
