@@ -28,6 +28,7 @@ namespace PDFtoZPL
 #if NET5_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
+        [SupportedOSPlatform("macOS")]
 #endif
         public static string ConvertPdfPage(string pdfAsBase64String, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null)
         {
@@ -50,6 +51,7 @@ namespace PDFtoZPL
 #if NET5_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
+        [SupportedOSPlatform("macOS")]
 #endif
         public static string ConvertPdfPage(byte[] pdfAsByteArray, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null)
         {
@@ -75,6 +77,7 @@ namespace PDFtoZPL
 #if NET5_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
+        [SupportedOSPlatform("macOS")]
 #endif
         public static string ConvertPdfPage(Stream pdfStream, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null)
         {

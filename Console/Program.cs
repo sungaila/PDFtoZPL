@@ -30,7 +30,7 @@ namespace PDFtoZPL.Console
 #pragma warning disable CA1416
                         ? Conversion.ConvertPdfPage(inputStream)
 #pragma warning restore CA1416
-                        : throw new NotSupportedException("Only win-x86, win-x64 and linux-x64 are supported for PDF file conversion."),
+                        : throw new NotSupportedException("Only win-x86, win-x64, linux-x64 and osx-x64 are supported for PDF file conversion."),
                     ".bmp" => Conversion.ConvertBitmap(inputStream),
                     _ => throw new InvalidOperationException("The given input file path must have pdf or bmp as file extension."),
                 };

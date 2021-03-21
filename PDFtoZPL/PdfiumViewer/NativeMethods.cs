@@ -33,11 +33,17 @@ namespace PDFtoZPL.PdfiumViewer
             {
                 _pdfiumLibPath = Path.Combine(_pdfiumLibPath, Environment.Is64BitProcess ? "linux-x64" : throw new NotSupportedException("Only x86-64 is supported on Linux."));
                 _pdfiumLibPath = Path.Combine(_pdfiumLibPath, "native");
-                _pdfiumLibPath = Path.Combine(_pdfiumLibPath, "pdfium.dll");
+                _pdfiumLibPath = Path.Combine(_pdfiumLibPath, "libpdfium.so");
+            }
+            else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
+            {
+                _pdfiumLibPath = Path.Combine(_pdfiumLibPath, Environment.Is64BitProcess ? "osx-x64" : throw new NotSupportedException("Only x86-64 is supported on macOS."));
+                _pdfiumLibPath = Path.Combine(_pdfiumLibPath, "native");
+                _pdfiumLibPath = Path.Combine(_pdfiumLibPath, "libpdfium.dylib");
             }
             else
             {
-                throw new NotSupportedException("Only win-x86, win-x64 and linux-x64 are supported.");
+                throw new NotSupportedException("Only win-x86, win-x64, linux-x64 and osx-x64 are supported.");
             } 
 
             NativeLibrary.SetDllImportResolver(typeof(NativeMethods).Assembly, ImportResolver);
@@ -55,7 +61,7 @@ namespace PDFtoZPL.PdfiumViewer
 #if NETCOREAPP3_0_OR_GREATER
         private static IntPtr ImportResolver(string libraryName, Assembly assembly, DllImportSearchPath? searchPath)
         {
-            if (_pdfiumLibPath == null || Path.GetFileName(_pdfiumLibPath) != libraryName)
+            if (_pdfiumLibPath == null || libraryName != "pdfium.dll")
                 return IntPtr.Zero;
 
             return NativeLibrary.Load(_pdfiumLibPath);

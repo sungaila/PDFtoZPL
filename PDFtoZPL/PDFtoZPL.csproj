@@ -2,7 +2,7 @@
   <!-- Assembly -->
   <PropertyGroup>
     <TargetFrameworks>net50;netcoreapp3.0;net461</TargetFrameworks>
-    <RuntimeIdentifiers>win-x86;win-x64;linux-x64</RuntimeIdentifiers>
+    <RuntimeIdentifiers>win-x86;win-x64;linux-x64;osx-x64</RuntimeIdentifiers>
     <AssemblyName>PDFtoZPL</AssemblyName>
     <RootNamespace>PDFtoZPL</RootNamespace>
     <EmbedAllSources>true</EmbedAllSources>
@@ -73,10 +73,16 @@
       <PackagePath>runtimes\win-x86\native\pdfium.dll</PackagePath>
       <Visible>false</Visible>
     </None>
-    <None Include="runtimes\linux-x64\native\pdfium.dll">
+    <None Include="runtimes\linux-x64\native\libpdfium.so">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <Pack>true</Pack>
-      <PackagePath>runtimes\linux-x64\native\pdfium.dll</PackagePath>
+      <PackagePath>runtimes\linux-x64\native\libpdfium.so</PackagePath>
+      <Visible>false</Visible>
+    </None>
+    <None Include="runtimes\osx-x64\native\libpdfium.dylib">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <Pack>true</Pack>
+      <PackagePath>runtimes\osx-x64\native\libpdfium.dylib</PackagePath>
       <Visible>false</Visible>
     </None>
   </ItemGroup>
