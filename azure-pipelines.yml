@@ -67,14 +67,25 @@ jobs:
       buildType: 'current'
       artifactName: 'Tests'
       targetPath: '$(Pipeline.Workspace)'
+  - task: VSTest@2
+    displayName: '.NET Framework 4.6.1'
+    condition: eq(variables['agent.os'], 'Windows_NT')
+    inputs:
+      testSelector: 'testAssemblies'
+      testAssemblyVer2: '$(Pipeline.Workspace)\**\net461\PDFtoZPL.Tests.dll'
+      searchFolder: '$(System.DefaultWorkingDirectory)'
+      runTestsInIsolation: true
+      codeCoverageEnabled: true
+      platform: '$(buildPlatform)'
+      configuration: '$(buildConfiguration)'
   - task: DotNetCoreCLI@2
-    displayName: 'Run tests'
+    displayName: '.NET Core 3.0'
     inputs:
       command: 'test'
       arguments: '$(Pipeline.Workspace)\**\netcoreapp3.0\PDFtoZPL.Tests.dll'
       testRunTitle: '.NET Core 3.0'
   - task: DotNetCoreCLI@2
-    displayName: 'Run tests'
+    displayName: '.NET 5.0'
     inputs:
       command: 'test'
       arguments: '$(Pipeline.Workspace)\**\net50\PDFtoZPL.Tests.dll'
