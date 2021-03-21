@@ -99,11 +99,8 @@ namespace PDFtoZPL
             // PdfiumViewer.PdfDocument -> Image -> Bitmap
             using var pdfBitmap = new Bitmap(pdfDocument.Render(page, width ?? (int)pdfDocument.PageSizes[page].Width, height ?? (int)pdfDocument.PageSizes[page].Height, dpi, dpi, renderFlags));
 
-            // Bitmap (Format32bppArgb) -> Bitmap (Format1bppIndexed)
-            Bitmap downSampledBitmap = MakeMonochromeBitmap(pdfBitmap);
-
             // Bitmap -> ZPL code
-            return ConvertBitmap(downSampledBitmap);
+            return ConvertBitmap(pdfBitmap);
         }
 
         /// <summary>
@@ -126,31 +123,11 @@ namespace PDFtoZPL
             if (bitmap == null)
                 throw new ArgumentNullException(nameof(bitmap));
 
-            // no downsampling needed if the given color depth is 1 bit already
-            if (bitmap.PixelFormat == PixelFormat.Format1bppIndexed)
-                return ConvertBitmapImpl(bitmap);
-
-            // otherwise create a downsampled clone and use that instead
-            using var downSampledBitmap = MakeMonochromeBitmap(bitmap);
-
-            return ConvertBitmapImpl(downSampledBitmap);
-        }
-
-        private static Bitmap MakeMonochromeBitmap(Bitmap pdfBitmap)
-        {
-            if (pdfBitmap == null)
-                throw new ArgumentNullException(nameof(pdfBitmap));
-
-            using Bitmap newBitmap = new Bitmap(pdfBitmap);
-
-            return newBitmap.Clone(new Rectangle(0, 0, newBitmap.Width, newBitmap.Height), PixelFormat.Format1bppIndexed);
+            return ConvertBitmapImpl(bitmap);
         }
 
         private static string ConvertBitmapImpl(Bitmap pdfBitmap)
         {
-            if (pdfBitmap.PixelFormat != PixelFormat.Format1bppIndexed)
-                throw new ArgumentException($"The bitmap {nameof(PixelFormat)} must be {PixelFormat.Format1bppIndexed}.", nameof(pdfBitmap));
-
             // first convert the bitmap into ZPL hex values (representing the bitmap)
             string bitmapAsHex = ConvertBitmapToHex(pdfBitmap, out int binaryByteCount, out int bytesPerRow);
 
@@ -173,32 +150,46 @@ namespace PDFtoZPL
                 : pdfBitmap.Width / 8;
             binaryByteCount = pdfBitmap.Height * bytesPerRow;
 
-            // copy the bitmap into an array for faster iteration
-            BitmapData bitmapData = pdfBitmap.LockBits(new Rectangle(Point.Empty, pdfBitmap.Size), ImageLockMode.ReadOnly, pdfBitmap.PixelFormat);
-            byte[] rgbValues = new byte[bitmapData.Stride * bitmapData.Height];
-            Marshal.Copy(bitmapData.Scan0, rgbValues, 0, rgbValues.Length);
-            pdfBitmap.UnlockBits(bitmapData);
-
             int colorBits = 0;
             int j = 0;
 
             int width = pdfBitmap.Width;
             int height = pdfBitmap.Height;
-            int stride = bitmapData.Stride;
 
-            for (int h = 0; h < height; h++)
+            BitmapData? data = null;
+            byte[] rgbValues = Array.Empty<byte>();
+            int stride;
+
+            try
             {
-                for (int w = 0; w < width; w++)
+                data = pdfBitmap.LockBits(new Rectangle(Point.Empty, pdfBitmap.Size), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
+                stride = data.Stride;
+                int bytes = stride * pdfBitmap.Height;
+                rgbValues = new byte[bytes];
+                Marshal.Copy(data.Scan0, rgbValues, 0, bytes);
+            }
+            finally
+            {
+                if (data != null)
+                    pdfBitmap.UnlockBits(data);
+            }            
+
+            for (int y = 0; y < height; y++)
+            {
+                for (int x = 0; x < width; x++)
                 {
-                    int position = (h * stride) + (w / 8);
-                    bool blackPixel = (rgbValues[position] & (1 << (7 - (w % 8)))) == 0;
+                    byte red = rgbValues[y * stride + x * 3];
+                    byte green = rgbValues[y * stride + x * 3 + 1];
+                    byte blue = rgbValues[y * stride + x * 3 + 2];
+
+                    bool blackPixel = ((red + green + blue) / 3) < 128;
 
                     if (blackPixel)
                         colorBits |= 1 << (7 - j);
 
                     j++;
 
-                    if (j == 8 || w == (width - 1))
+                    if (j == 8 || x == (width - 1))
                     {
                         zplBuilder.Append(colorBits.ToString("X2"));
                         colorBits = 0;
@@ -217,7 +208,7 @@ namespace PDFtoZPL
             StringBuilder sbCode = new StringBuilder();
             StringBuilder sbLinea = new StringBuilder();
             string? previousLine = null;
-            int counter = 1;
+            int counter = 0;
             char aux = code[0];
             bool firstChar = false;
 
