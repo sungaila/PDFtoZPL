@@ -1,5 +1,4 @@
-﻿using PDFtoZPL.PdfiumViewer;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -87,20 +86,11 @@ namespace PDFtoZPL
             if (page < 0)
                 throw new ArgumentOutOfRangeException(nameof(page), "The page number must 0 or greater.");
 
-            // correct the width and height for the given dpi
-            // but only if both width and height are not specified (so the original sizes are corrected)
-            var renderFlags = PdfRenderFlags.ForPrinting | PdfRenderFlags.Grayscale;
-            if (width == null && height == null)
-                renderFlags |= PdfRenderFlags.CorrectFromDpi;
-
-            // Stream -> PdfiumViewer.PdfDocument
-            using var pdfDocument = PdfDocument.Load(pdfStream, password);
-
-            // PdfiumViewer.PdfDocument -> Image -> Bitmap
-            using var pdfBitmap = new Bitmap(pdfDocument.Render(page, width ?? (int)pdfDocument.PageSizes[page].Width, height ?? (int)pdfDocument.PageSizes[page].Height, dpi, dpi, renderFlags));
-
+            // Stream ->PdfiumViewer.PdfDocument -> Image
+            var pdfBitmap = PDFtoImage.Conversion.ToImage(pdfStream, password, page, dpi, width, height);
+            
             // Bitmap -> ZPL code
-            return ConvertBitmap(pdfBitmap);
+            return ConvertBitmap((Bitmap)pdfBitmap);
         }
 
         /// <summary>
