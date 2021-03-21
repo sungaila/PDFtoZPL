@@ -80,12 +80,14 @@ jobs:
       configuration: '$(buildConfiguration)'
   - task: DotNetCoreCLI@2
     displayName: '.NET Core 3.0'
+    condition: succeededOrFailed()
     inputs:
       command: 'test'
       arguments: '$(Pipeline.Workspace)\**\netcoreapp3.0\PDFtoZPL.Tests.dll'
       testRunTitle: '.NET Core 3.0 ($(agent.os))'
   - task: DotNetCoreCLI@2
     displayName: '.NET 5.0'
+    condition: succeededOrFailed()
     inputs:
       command: 'test'
       arguments: '$(Pipeline.Workspace)\**\net50\PDFtoZPL.Tests.dll'
