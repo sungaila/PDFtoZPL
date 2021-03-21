@@ -26,7 +26,12 @@ namespace PDFtoZPL.Console
                 
                 string zpl = (Path.GetExtension(inputPath).ToLower()) switch
                 {
-                    ".pdf" => OperatingSystem.IsWindows() || OperatingSystem.IsLinux()
+                    ".pdf" =>
+#if NET5_0_OR_GREATER
+                    OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()
+#else
+                    true
+#endif
 #pragma warning disable CA1416
                         ? Conversion.ConvertPdfPage(inputStream)
 #pragma warning restore CA1416
