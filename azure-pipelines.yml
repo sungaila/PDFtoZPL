@@ -62,7 +62,7 @@ jobs:
   - checkout: none
     displayName: 'Skip checkout'
   - task: Bash@3
-    displayName: 'Get mono-libgdiplus (macOS)'
+    displayName: 'Install mono-libgdiplus'
     condition: eq(variables['agent.os'], 'Darwin')
     inputs:
       targetType: 'inline'

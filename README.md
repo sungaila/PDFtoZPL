@@ -15,6 +15,18 @@ This .NET library is built on top of
 
 You can use [Labelary Online ZPL Viewer](http://labelary.com/viewer.html) to render the resulting ZPL code.
 
+## Prerequisite libgdiplus
+On platforms other than Windows you will have to have [libgdiplus](https://www.mono-project.com/docs/gui/libgdiplus/) installed.
+### Debian-based Linux distributions
+```console
+sudo apt-get install libgdiplus
+```
+
+### macOS (via [Homebrew](https://brew.sh/))
+```console
+brew install mono-libgdiplus
+```
+
 ### How does it work?
 0. Use PDFium to render a bitmap (for PDF files)
 1. Make the bitmap monochrome
