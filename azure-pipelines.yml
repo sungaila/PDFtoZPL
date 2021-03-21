@@ -6,21 +6,11 @@
 trigger:
 - master
 
-strategy:
-  matrix:
-    windows:
-      imageName: 'windows-latest'
-    linux:
-      imageName: 'ubuntu-latest'
-#   mac:
-#     imageName: 'macOS-latest'
-
-pool:
-  vmImage: $(imageName)
-
 jobs:
 - job: Build
   displayName: 'Build'
+  pool:
+    vmImage: 'windows-latest'
   steps:
   - task: DotNetCoreCLI@2
     displayName: 'Build solution'
@@ -58,6 +48,16 @@ jobs:
 - job: Test
   displayName: 'Test'
   dependsOn: Build
+  strategy:
+    matrix:
+      windows:
+        imageName: 'windows-latest'
+      linux:
+        imageName: 'ubuntu-latest'
+#     mac:
+#       imageName: 'macOS-latest'
+  pool:
+    vmImage: $(imageName)
   steps:
   - checkout: none
     displayName: 'Skip checkout'
