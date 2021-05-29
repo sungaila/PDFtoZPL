@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
 using static PDFtoZPL.Conversion;
+[assembly: Parallelize(Scope = ExecutionScope.MethodLevel)]
 
 namespace Tests
 {

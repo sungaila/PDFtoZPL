@@ -14,7 +14,7 @@ namespace PDFtoZPL.Console
 
             try
             {
-                ParseArguments(args, out string? inputPath, out string? outputPath);
+                ParseArguments(args, out string? inputPath, out string? outputPath, out int page, out int dpi);
 
                 if (inputPath == null)
                     throw new InvalidOperationException("There is no PDF or Bitmap file path.");
@@ -33,9 +33,9 @@ namespace PDFtoZPL.Console
                     true
 #endif
 #pragma warning disable CA1416
-                        ? Conversion.ConvertPdfPage(inputStream)
+                        ? Conversion.ConvertPdfPage(inputStream, page: page, dpi: dpi)
 #pragma warning restore CA1416
-                        : throw new NotSupportedException("Only win-x86, win-x64, linux-x64 and osx-x64 are supported for PDF file conversion."),
+                        : throw new NotSupportedException("Only win-x86, win-x64, linux-x64, osx-x64 and osx-arm64 are supported for PDF file conversion."),
                     ".bmp" => Conversion.ConvertBitmap(inputStream),
                     _ => throw new InvalidOperationException("The given input file path must have pdf or bmp as file extension."),
                 };
@@ -53,7 +53,7 @@ namespace PDFtoZPL.Console
             return 0;
         }
 
-        private static void ParseArguments(string[] args, out string? inputPath, out string? outputPath)
+        private static void ParseArguments(string[] args, out string? inputPath, out string? outputPath, out int page, out int dpi)
         {
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
@@ -87,6 +87,47 @@ namespace PDFtoZPL.Console
             }
 
             outputPath = outputPath.Trim('\"');
+
+            if (Path.GetExtension(inputPath).ToLower() != ".pdf")
+            {
+                page = default;
+                dpi = default;
+                return;
+            }
+
+            page = 1;
+
+            if (args.Length >= 3)
+            {
+                outputPath = args[2];
+            }
+            else
+            {
+                System.Console.Write("Enter PDF page number: ");
+
+                if (!int.TryParse(System.Console.ReadLine(), out page) || page <= 0)
+                {
+                    page = 1;
+                    System.Console.WriteLine($"PDF page number defaulting to {page}.");
+                }
+            }
+
+            dpi = 300;
+
+            if (args.Length >= 4)
+            {
+                outputPath = args[3];
+            }
+            else
+            {
+                System.Console.Write("Enter the target resolution in DPI: ");
+
+                if (!int.TryParse(System.Console.ReadLine(), out dpi) || dpi <= 0)
+                {
+                    dpi = 203;
+                    System.Console.WriteLine($"Target DPI defaulting to {dpi}.");
+                }
+            }
         }
     }
 }
