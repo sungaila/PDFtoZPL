@@ -14,7 +14,7 @@ namespace PDFtoZPL.Console
 
             try
             {
-                ParseArguments(args, out string? inputPath, out string? outputPath, out int page, out int dpi);
+                ParseArguments(args, out string? inputPath, out string? outputPath, out int page, out int dpi, out bool withAnnotations, out bool withFormFill);
 
                 if (inputPath == null)
                     throw new InvalidOperationException("There is no PDF or Bitmap file path.");
@@ -23,7 +23,7 @@ namespace PDFtoZPL.Console
                     throw new InvalidOperationException("There is no output ZPL plain text file path.");
 
                 using var inputStream = new FileStream(inputPath, FileMode.Open, FileAccess.Read);
-                
+
                 string zpl = (Path.GetExtension(inputPath).ToLower()) switch
                 {
                     ".pdf" =>
@@ -33,7 +33,7 @@ namespace PDFtoZPL.Console
                     true
 #endif
 #pragma warning disable CA1416
-                        ? Conversion.ConvertPdfPage(inputStream, page: page, dpi: dpi)
+                        ? Conversion.ConvertPdfPage(inputStream, page: page - 1, dpi: dpi, withAnnotations: withAnnotations, withFormFill: withFormFill)
 #pragma warning restore CA1416
                         : throw new NotSupportedException("Only win-x86, win-x64, linux-x64, osx-x64 and osx-arm64 are supported for PDF file conversion."),
                     ".bmp" => Conversion.ConvertBitmap(inputStream),
@@ -53,11 +53,11 @@ namespace PDFtoZPL.Console
             return 0;
         }
 
-        private static void ParseArguments(string[] args, out string? inputPath, out string? outputPath, out int page, out int dpi)
+        private static void ParseArguments(string[] args, out string? inputPath, out string? outputPath, out int page, out int dpi, out bool withAnnotations, out bool withFormFill)
         {
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
-            
+
             if (args.Length >= 1)
             {
                 inputPath = args[0];
@@ -92,6 +92,8 @@ namespace PDFtoZPL.Console
             {
                 page = default;
                 dpi = default;
+                withAnnotations = false;
+                withFormFill = false;
                 return;
             }
 
@@ -126,6 +128,58 @@ namespace PDFtoZPL.Console
                 {
                     dpi = 203;
                     System.Console.WriteLine($"Target DPI defaulting to {dpi}.");
+                }
+            }
+
+            withAnnotations = false;
+
+            if (args.Length >= 5)
+            {
+                outputPath = args[4];
+            }
+            else
+            {
+                System.Console.Write("Should annotations be rendered (y/n): ");
+
+                var input = System.Console.ReadLine();
+                if (input?.ToLowerInvariant() == "y")
+                {
+                    withAnnotations = true;
+                }
+                else if (input?.ToLowerInvariant() == "n")
+                {
+                    withAnnotations = false;
+                }
+                else
+                {
+                    withAnnotations = false;
+                    System.Console.WriteLine($"Annotations not rendered by default.");
+                }
+            }
+
+            withFormFill = false;
+
+            if (args.Length >= 6)
+            {
+                outputPath = args[5];
+            }
+            else
+            {
+                System.Console.Write("Should form filling be rendered (y/n): ");
+
+                var input = System.Console.ReadLine();
+                if (input?.ToLowerInvariant() == "y")
+                {
+                    withFormFill = true;
+                }
+                else if (input?.ToLowerInvariant() == "n")
+                {
+                    withFormFill = false;
+                }
+                else
+                {
+                    withFormFill = false;
+                    System.Console.WriteLine($"Form filling not rendered by default.");
                 }
             }
         }

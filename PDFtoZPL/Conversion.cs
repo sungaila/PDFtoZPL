@@ -23,18 +23,20 @@ namespace PDFtoZPL
         /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
         /// <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
         /// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
+        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
         /// <returns>The converted PDF page as ZPL code.</returns>
 #if NET5_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
 #endif
-        public static string ConvertPdfPage(string pdfAsBase64String, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null)
+        public static string ConvertPdfPage(string pdfAsBase64String, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
         {
             if (pdfAsBase64String == null)
                 throw new ArgumentNullException(nameof(pdfAsBase64String));
 
-            return ConvertPdfPage(Convert.FromBase64String(pdfAsBase64String), password, page, dpi, width, height);
+            return ConvertPdfPage(Convert.FromBase64String(pdfAsBase64String), password, page, dpi, width, height, withAnnotations, withFormFill);
         }
 
         /// <summary>
@@ -46,13 +48,15 @@ namespace PDFtoZPL
         /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
         /// <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
         /// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
+        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
         /// <returns>The converted PDF page as ZPL code.</returns>
 #if NET5_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
 #endif
-        public static string ConvertPdfPage(byte[] pdfAsByteArray, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null)
+        public static string ConvertPdfPage(byte[] pdfAsByteArray, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
         {
             if (pdfAsByteArray == null)
                 throw new ArgumentNullException(nameof(pdfAsByteArray));
@@ -60,7 +64,7 @@ namespace PDFtoZPL
             // Base64 string -> byte[] -> MemoryStream
             using var pdfStream = new MemoryStream(pdfAsByteArray, false);
 
-            return ConvertPdfPage(pdfStream, password, page, dpi, width, height);
+            return ConvertPdfPage(pdfStream, password, page, dpi, width, height, withAnnotations, withFormFill);
         }
 
         /// <summary>
@@ -72,13 +76,15 @@ namespace PDFtoZPL
         /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
         /// <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
         /// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
+        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
         /// <returns>The converted PDF page as ZPL code.</returns>
 #if NET5_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
 #endif
-        public static string ConvertPdfPage(Stream pdfStream, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null)
+        public static string ConvertPdfPage(Stream pdfStream, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
         {
             if (pdfStream == null)
                 throw new ArgumentNullException(nameof(pdfStream));
@@ -87,8 +93,8 @@ namespace PDFtoZPL
                 throw new ArgumentOutOfRangeException(nameof(page), "The page number must 0 or greater.");
 
             // Stream ->PdfiumViewer.PdfDocument -> Image
-            var pdfBitmap = PDFtoImage.Conversion.ToImage(pdfStream, password, page, dpi, width, height);
-            
+            var pdfBitmap = PDFtoImage.Conversion.ToImage(pdfStream, password, page, dpi, width, height, withAnnotations, withFormFill);
+
             // Bitmap -> ZPL code
             return ConvertBitmap((Bitmap)pdfBitmap);
         }
@@ -162,7 +168,7 @@ namespace PDFtoZPL
             {
                 if (data != null)
                     pdfBitmap.UnlockBits(data);
-            }            
+            }
 
             for (int y = 0; y < height; y++)
             {
