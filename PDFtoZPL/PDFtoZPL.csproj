@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <!-- Assembly -->
   <PropertyGroup>
-    <TargetFrameworks>net50;netcoreapp3.0;net461</TargetFrameworks>
+    <TargetFrameworks>net50;netcoreapp3.1;net461</TargetFrameworks>
     <RuntimeIdentifiers>win-x86;win-x64;linux-x64;osx-x64;osx-arm64</RuntimeIdentifiers>
     <AssemblyName>PDFtoZPL</AssemblyName>
     <RootNamespace>PDFtoZPL</RootNamespace>
@@ -12,8 +12,8 @@
 
   <!-- NuGet -->
   <PropertyGroup>
-    <VersionPrefix>2.1.0</VersionPrefix>
-    <VersionSuffix></VersionSuffix>
+    <VersionPrefix>2.1.1</VersionPrefix>
+    <VersionSuffix>preview</VersionSuffix>
     <Authors>David Sungaila</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -21,7 +21,7 @@
     <PackageProjectUrl>https://github.com/sungaila/PDFtoZPL</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/sungaila/PDFtoZPL/master/Icon_128.png</PackageIconUrl>
     <Description>A .NET library to convert PDF files (and bitmaps) into Zebra Programming Language code.</Description>
-    <PackageReleaseNotes>Added options to render annotations and form filling for PDFs.</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed pdfium.dll loading issues and include newer PDFium release.</PackageReleaseNotes>
     <PackageTags>PDF ZPL Zebra Bitmap Convert Conversion C# PDFium</PackageTags>
     <RepositoryUrl>https://github.com/sungaila/PDFtoZPL.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -35,18 +35,17 @@
     <Nullable>enable</Nullable>
     <Features>strict</Features>
     <WarningsAsErrors>nullable</WarningsAsErrors>
-    <NoWarn>NETSDK1138</NoWarn>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
 
   <!-- Debug builds -->
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <VersionSuffix>debug</VersionSuffix>
   </PropertyGroup>
 
   <!-- Release builds -->
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
     <SignAssembly>true</SignAssembly>
     <Optimize>true</Optimize>
   </PropertyGroup>
@@ -68,7 +67,7 @@
 
   <!-- SourceLink build steps and NuGet packages -->
   <ItemGroup>
-    <PackageReference Include="PDFtoImage" Version="1.1.0" />
+    <PackageReference Include="PDFtoImage" Version="1.1.1-preview" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

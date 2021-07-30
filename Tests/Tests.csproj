@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <!-- Assembly -->
   <PropertyGroup>
-    <TargetFrameworks>net50;netcoreapp3.0;net461</TargetFrameworks>
+    <TargetFrameworks>net50;netcoreapp3.1;net461</TargetFrameworks>
     <AssemblyName>PDFtoZPL.Tests</AssemblyName>
     <RootNamespace>PDFtoZPL.Tests</RootNamespace>
     <IsPackable>false</IsPackable>
@@ -16,12 +16,12 @@
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
-  
+
   <ItemGroup>
     <None Remove="Assets\SocialPreview.pdf" />
     <None Remove="Assets\SocialPreview.png" />
   </ItemGroup>
-  
+
   <ItemGroup>
     <Content Include="Assets\SocialPreview.pdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
