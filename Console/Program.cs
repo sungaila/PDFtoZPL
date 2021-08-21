@@ -4,9 +4,9 @@ using System.Reflection;
 
 namespace PDFtoZPL.Console
 {
-    class Program
+    public static class Program
     {
-        static int Main(string[] args)
+        public static int Main(string[] args)
         {
             var entryAssembly = Assembly.GetEntryAssembly();
             System.Console.WriteLine($"{entryAssembly?.GetName()?.ToString() ?? "PDFtoZPL"}");
