@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PDFtoZPL
 {
@@ -100,6 +103,185 @@ namespace PDFtoZPL
         }
 
         /// <summary>
+        /// Converts all pages of a given PDF into ZPL code.
+        /// </summary>
+        /// <param name="pdfAsBase64String">The PDF encoded as Base64.</param>
+        /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+        /// <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
+        /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
+        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <returns>The converted PDF pages as ZPL code.</returns>
+#if NET5_0_OR_GREATER
+        [SupportedOSPlatform("Windows")]
+        [SupportedOSPlatform("Linux")]
+        [SupportedOSPlatform("macOS")]
+#endif
+        public static IEnumerable<string> ConvertPdf(string pdfAsBase64String, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
+        {
+            if (pdfAsBase64String == null)
+                throw new ArgumentNullException(nameof(pdfAsBase64String));
+
+            foreach (var zplCode in ConvertPdf(Convert.FromBase64String(pdfAsBase64String), password, dpi, width, height, withAnnotations, withFormFill))
+            {
+                yield return zplCode;
+            }
+        }
+
+        /// <summary>
+        /// Converts all pages of a given PDF into ZPL code.
+        /// </summary>
+        /// <param name="pdfAsByteArray">The PDF as a byte array.</param>
+        /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+        /// <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
+        /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
+        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <returns>The converted PDF pages as ZPL code.</returns>
+#if NET5_0_OR_GREATER
+        [SupportedOSPlatform("Windows")]
+        [SupportedOSPlatform("Linux")]
+        [SupportedOSPlatform("macOS")]
+#endif
+        public static IEnumerable<string> ConvertPdf(byte[] pdfAsByteArray, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
+        {
+            if (pdfAsByteArray == null)
+                throw new ArgumentNullException(nameof(pdfAsByteArray));
+
+            // Base64 string -> byte[] -> MemoryStream
+            using var pdfStream = new MemoryStream(pdfAsByteArray, false);
+
+            foreach (var zplCode in ConvertPdf(pdfStream, password, dpi, width, height, withAnnotations, withFormFill))
+            {
+                yield return zplCode;
+            }
+        }
+
+        /// <summary>
+        /// Converts all pages of a given PDF into ZPL code.
+        /// </summary>
+        /// <param name="pdfStream">The PDF as a stream.</param>
+        /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+        /// <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
+        /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
+        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <returns>The converted PDF pages as ZPL code.</returns>
+#if NET5_0_OR_GREATER
+        [SupportedOSPlatform("Windows")]
+        [SupportedOSPlatform("Linux")]
+        [SupportedOSPlatform("macOS")]
+#endif
+        public static IEnumerable<string> ConvertPdf(Stream pdfStream, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
+        {
+            if (pdfStream == null)
+                throw new ArgumentNullException(nameof(pdfStream));
+
+            // Stream ->PdfiumViewer.PdfDocument -> Image
+            foreach (var image in PDFtoImage.Conversion.ToImages(pdfStream, password, dpi, width, height, withAnnotations, withFormFill))
+            {
+                // Bitmap -> ZPL code
+                yield return ConvertBitmap((Bitmap)image);
+            }
+        }
+
+#if NETCOREAPP3_0_OR_GREATER
+        /// <summary>
+        /// Converts all pages of a given PDF into ZPL code.
+        /// </summary>
+        /// <param name="pdfAsBase64String">The PDF encoded as Base64.</param>
+        /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+        /// <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
+        /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
+        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
+        /// <returns>The converted PDF pages as ZPL code.</returns>
+#if NET5_0_OR_GREATER
+        [SupportedOSPlatform("Windows")]
+        [SupportedOSPlatform("Linux")]
+        [SupportedOSPlatform("macOS")]
+#endif
+        public static async IAsyncEnumerable<string> ConvertPdfAsync(string pdfAsBase64String, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            if (pdfAsBase64String == null)
+                throw new ArgumentNullException(nameof(pdfAsBase64String));
+
+            await foreach (var zplCode in ConvertPdfAsync(Convert.FromBase64String(pdfAsBase64String), password, dpi, width, height, withAnnotations, withFormFill, cancellationToken))
+            {
+                yield return zplCode;
+            }
+        }
+
+        /// <summary>
+        /// Converts all pages of a given PDF into ZPL code.
+        /// </summary>
+        /// <param name="pdfAsByteArray">The PDF as a byte array.</param>
+        /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+        /// <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
+        /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
+        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
+        /// <returns>The converted PDF pages as ZPL code.</returns>
+#if NET5_0_OR_GREATER
+        [SupportedOSPlatform("Windows")]
+        [SupportedOSPlatform("Linux")]
+        [SupportedOSPlatform("macOS")]
+#endif
+        public static async IAsyncEnumerable<string> ConvertPdfAsync(byte[] pdfAsByteArray, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            if (pdfAsByteArray == null)
+                throw new ArgumentNullException(nameof(pdfAsByteArray));
+
+            // Base64 string -> byte[] -> MemoryStream
+            using var pdfStream = new MemoryStream(pdfAsByteArray, false);
+
+            await foreach (var zplCode in ConvertPdfAsync(pdfStream, password, dpi, width, height, withAnnotations, withFormFill, cancellationToken))
+            {
+                yield return zplCode;
+            }
+        }
+
+        /// <summary>
+        /// Converts all pages of a given PDF into ZPL code.
+        /// </summary>
+        /// <param name="pdfStream">The PDF as a stream.</param>
+        /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+        /// <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
+        /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
+        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
+        /// <returns>The converted PDF pages as ZPL code.</returns>
+#if NET5_0_OR_GREATER
+        [SupportedOSPlatform("Windows")]
+        [SupportedOSPlatform("Linux")]
+        [SupportedOSPlatform("macOS")]
+#endif
+        public static async IAsyncEnumerable<string> ConvertPdfAsync(Stream pdfStream, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
+            if (pdfStream == null)
+                throw new ArgumentNullException(nameof(pdfStream));
+
+            // Stream -> PdfiumViewer.PdfDocument -> Image
+            await foreach (var image in PDFtoImage.Conversion.ToImagesAsync(pdfStream, password, dpi, width, height, withAnnotations, withFormFill, cancellationToken))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                // Bitmap -> ZPL code
+                yield return await Task.Run(() => ConvertBitmap((Bitmap)image), cancellationToken);
+            }
+        }
+#endif
+
+        /// <summary>
         /// Converts a given <see cref="Bitmap"/> into ZPL code.
         /// </summary>
         /// <param name="bitmapAsStream">The <see cref="Bitmap"/> to convert.</param>
@@ -139,7 +321,7 @@ namespace PDFtoZPL
 
         private static string ConvertBitmapToHex(Bitmap pdfBitmap, out int binaryByteCount, out int bytesPerRow)
         {
-            StringBuilder zplBuilder = new StringBuilder();
+            var zplBuilder = new StringBuilder();
 
             bytesPerRow = pdfBitmap.Width % 8 > 0
                 ? pdfBitmap.Width / 8 + 1
@@ -201,8 +383,8 @@ namespace PDFtoZPL
         private static string CompressHex(string code, int widthBytes)
         {
             int maxlinea = widthBytes * 2;
-            StringBuilder sbCode = new StringBuilder();
-            StringBuilder sbLinea = new StringBuilder();
+            var sbCode = new StringBuilder();
+            var sbLinea = new StringBuilder();
             string? previousLine = null;
             int counter = 0;
             char aux = code[0];
@@ -313,12 +495,47 @@ namespace PDFtoZPL
         /// The mapping table used for compression.
         /// Each character count (the key) is represented by a certain char (the value).
         /// </summary>
-        private static readonly Dictionary<int, string> CompressionCountMapping = new Dictionary<int, string>()
+        private static readonly Dictionary<int, string> CompressionCountMapping = new()
         {
-            {1, "G"}, {2, "H"}, {3, "I"}, {4, "J"}, {5, "K"}, {6, "L"}, {7, "M"}, {8, "N"}, {9, "O" }, {10, "P"},
-            {11, "Q"}, {12, "R"}, {13, "S"}, {14, "T"}, {15, "U"}, {16, "V"}, {17, "W"}, {18, "X"}, {19, "Y"},
-            {20, "g"}, {40, "h"}, {60, "i"}, {80, "j" }, {100, "k"}, {120, "l"}, {140, "m"}, {160, "n"}, {180, "o"}, {200, "p"},
-            {220, "q"}, {240, "r"}, {260, "s"}, {280, "t"}, {300, "u"}, {320, "v"}, {340, "w"}, {360, "x"}, {380, "y"}, {400, "z" }
+            { 1, "G" },
+            { 2, "H" },
+            { 3, "I" },
+            { 4, "J" },
+            { 5, "K" },
+            { 6, "L" },
+            { 7, "M" },
+            { 8, "N" },
+            { 9, "O" },
+            { 10, "P" },
+            { 11, "Q" },
+            { 12, "R" },
+            { 13, "S" },
+            { 14, "T" },
+            { 15, "U" },
+            { 16, "V" },
+            { 17, "W" },
+            { 18, "X" },
+            { 19, "Y" },
+            { 20, "g" },
+            { 40, "h" },
+            { 60, "i" },
+            { 80, "j" },
+            { 100, "k" },
+            { 120, "l" },
+            { 140, "m" },
+            { 160, "n" },
+            { 180, "o" },
+            { 200, "p" },
+            { 220, "q" },
+            { 240, "r" },
+            { 260, "s" },
+            { 280, "t" },
+            { 300, "u" },
+            { 320, "v" },
+            { 340, "w" },
+            { 360, "x" },
+            { 380, "y" },
+            { 400, "z" }
         };
     }
 }
