@@ -1,6 +1,5 @@
-<img src="https://raw.githubusercontent.com/sungaila/PDFtoZPL/master/Icon.png" align="left" width="64" height="64" alt="PDFtoZPL Logo">
+# ![PDFtoZPL Logo](https://raw.githubusercontent.com/sungaila/PDFtoZPL/master/Icon_64.png) PDFtoZPL
 
-# PDFtoZPL
 [![Azure DevOps builds (branch)](https://img.shields.io/azure-devops/build/sungaila/fa66f1e9-b342-4f33-bcd4-40f7b082949d/4/master?style=flat-square)](https://dev.azure.com/sungaila/PDFtoZPL/_build/latest?definitionId=4&branchName=master)
 [![Azure DevOps tests (branch)](https://img.shields.io/azure-devops/tests/sungaila/PDFtoZPL/4/master?style=flat-square)](https://dev.azure.com/sungaila/PDFtoZPL/_build/latest?definitionId=4&branchName=master)
 [![SonarCloud Quality Gate](https://img.shields.io/sonar/quality_gate/sungaila_PDFtoZPL?server=https%3A%2F%2Fsonarcloud.io&style=flat-square)](https://sonarcloud.io/dashboard?id=sungaila_PDFtoZPL)
@@ -15,6 +14,13 @@ This .NET library is built on top of
 * [PdfiumViewer](https://github.com/pvginkel/PdfiumViewer) (wrapper for PDFium)
 
 You can use [Labelary Online ZPL Viewer](http://labelary.com/viewer.html) to render the resulting ZPL code.
+
+## Getting started
+Just call one of the following static methods:
+* `PDFtoZPL.Conversion.ConvertPdfPage()`
+* `PDFtoZPL.Conversion.ConvertPdf()`
+* `PDFtoZPL.Conversion.ConvertPdfAsync()`
+* `PDFtoZPL.Conversion.ConvertBitmap()`
 
 ## Prerequisite libgdiplus
 On platforms other than Windows you will have to have [libgdiplus](https://www.mono-project.com/docs/gui/libgdiplus/) installed.

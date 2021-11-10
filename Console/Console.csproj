@@ -1,12 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <!-- Assembly -->
   <PropertyGroup>
-    <TargetFrameworks>net50;net461</TargetFrameworks>
+    <TargetFrameworks>net5.0;net461</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <AssemblyName>PDFtoZPL.Console</AssemblyName>
     <RootNamespace>PDFtoZPL.Console</RootNamespace>
     <StartupObject>PDFtoZPL.Console.Program</StartupObject>
-    <Version>2.2.0</Version>
+    <Version>2.2.1</Version>
+    <Configurations>Debug;Release;ReleaseSigned</Configurations>
   </PropertyGroup>
 
   <!-- C# compiler -->
@@ -23,4 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\PDFtoZPL\PDFtoZPL.csproj" />
   </ItemGroup>
+
+  <Import Project="..\PDFtoZPL\PDFtoZPL.PropertiesSigning.targets" />
+  <Import Project="..\PDFtoZPL\PDFtoZPL.CodeSigning.targets" />
 </Project>

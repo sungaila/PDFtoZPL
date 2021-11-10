@@ -1,18 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <!-- Assembly -->
   <PropertyGroup>
-    <TargetFrameworks>net50;netcoreapp3.1;net461</TargetFrameworks>
-    <RuntimeIdentifiers>win-x86;win-x64;linux-x64;linux-arm;osx-x64;osx-arm64</RuntimeIdentifiers>
+    <TargetFrameworks>net5.0;netcoreapp3.1;net461</TargetFrameworks>
+    <RuntimeIdentifiers>win-x86;win-x64;linux-x64;linux-arm;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
     <AssemblyName>PDFtoZPL</AssemblyName>
     <RootNamespace>PDFtoZPL</RootNamespace>
     <EmbedAllSources>true</EmbedAllSources>
     <AssemblyOriginatorKeyFile>PDFtoZPL.snk</AssemblyOriginatorKeyFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Configurations>Debug;Release;ReleaseSigned</Configurations>
   </PropertyGroup>
 
   <!-- NuGet -->
   <PropertyGroup>
-    <VersionPrefix>2.2.0</VersionPrefix>
+    <VersionPrefix>2.2.1</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <Authors>David Sungaila</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -21,12 +22,13 @@
     <PackageProjectUrl>https://github.com/sungaila/PDFtoZPL</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/sungaila/PDFtoZPL/master/Icon_128.png</PackageIconUrl>
     <Description>A .NET library to convert PDF files (and bitmaps) into Zebra Programming Language code.</Description>
-    <PackageReleaseNotes>Added functions to convert all PDF pages at once (a)synchronously.</PackageReleaseNotes>
+    <PackageReleaseNotes>Assemblies and NuGet package digitally signed.</PackageReleaseNotes>
     <PackageTags>PDF ZPL Zebra Bitmap Convert Conversion C# PDFium</PackageTags>
     <RepositoryUrl>https://github.com/sungaila/PDFtoZPL.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <IncludeSymbols>true</IncludeSymbols>
     <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
   <!-- C# compiler -->
@@ -45,7 +47,7 @@
   </PropertyGroup>
 
   <!-- Release builds -->
-  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+  <PropertyGroup Condition="'$(Configuration)'=='Release' or '$(Configuration)'=='ReleaseSigned'">
     <SignAssembly>true</SignAssembly>
     <Optimize>true</Optimize>
     <Deterministic>true</Deterministic>
@@ -58,31 +60,26 @@
     <AdditionalFiles Include="PublicAPI/$(TargetFramework)/PublicAPI.Unshipped.txt" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Include="..\Icon_128.png">
-      <Pack>true</Pack>
-      <PackagePath></PackagePath>
-    </None>
-  </ItemGroup>
-
   <!-- NuGet Icon -->
   <ItemGroup>
-    <None Include="..\Icon_128.png">
-      <Pack>true</Pack>
-      <PackagePath></PackagePath>
-    </None>
+    <None Include="..\Icon_128.png" Pack="true" PackagePath="" />
+    <None Include="..\README.md" Pack="true" PackagePath="" />
   </ItemGroup>
 
   <!-- SourceLink build steps and NuGet packages -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.2">
+    <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.3">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="PDFtoImage" Version="1.2.0" />
+    <PackageReference Include="PDFtoImage" Version="1.2.1" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
   </ItemGroup>
+
+  <Import Project="PDFtoZPL.PropertiesSigning.targets" />
+  <Import Project="PDFtoZPL.CodeSigning.targets" />
+  <Import Project="PDFtoZPL.PackageSigning.targets" />
 </Project>
