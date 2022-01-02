@@ -12,6 +12,7 @@ A .NET library to convert [PDF files](https://en.wikipedia.org/wiki/PDF) (and bi
 This .NET library is built on top of
 * [PDFium](https://pdfium.googlesource.com/pdfium/) (native PDF renderer)
 * [PdfiumViewer](https://github.com/pvginkel/PdfiumViewer) (wrapper for PDFium)
+* [SkiaSharp](https://github.com/mono/SkiaSharp) (cross-platform 2D graphics API)
 
 You can use [Labelary Online ZPL Viewer](http://labelary.com/viewer.html) to render the resulting ZPL code.
 
@@ -21,18 +22,6 @@ Just call one of the following static methods:
 * `PDFtoZPL.Conversion.ConvertPdf()`
 * `PDFtoZPL.Conversion.ConvertPdfAsync()`
 * `PDFtoZPL.Conversion.ConvertBitmap()`
-
-## Prerequisite libgdiplus
-On platforms other than Windows you will have to have [libgdiplus](https://www.mono-project.com/docs/gui/libgdiplus/) installed.
-### Debian-based Linux distributions
-```console
-sudo apt-get install libgdiplus
-```
-
-### macOS (via [Homebrew](https://brew.sh/))
-```console
-brew install mono-libgdiplus
-```
 
 ### How does it work?
 0. Use PDFium to render a bitmap (for PDF files)

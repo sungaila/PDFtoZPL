@@ -1,8 +1,8 @@
-﻿using System;
+﻿using SkiaSharp;
+using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
@@ -13,10 +13,36 @@ using System.Threading.Tasks;
 namespace PDFtoZPL
 {
     /// <summary>
-    /// Provides methods to convert PDFs and <see cref="Bitmap"/>s into ZPL code.
+    /// Provides methods to convert PDFs and <see cref="SKBitmap"/>s into ZPL code.
     /// </summary>
     public static class Conversion
     {
+#if !NETCOREAPP3_0_OR_GREATER
+        static Conversion()
+        {
+            // .NET Framework needs some extra code to find and load SkiaSharp from the runtimes folder
+            var workingDir = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().GetName(false).CodeBase!).LocalPath)!;
+            var skiaSharpLibPath = Path.Combine(workingDir, "runtimes", Environment.Is64BitProcess ? "win-x64" : "win-x86", "native", "libSkiaSharp.dll");
+
+            LoadLibrary(skiaSharpLibPath);
+        }
+
+        /// <summary>Loads the specified module into the address space of the calling process.</summary>
+        /// <param name="lpLibFileName">
+        /// <para>The name of the module. This can be either a library module (a .dll file) or an executable module (an .exe file). The name specified is the file name of the module and is not related to the name stored in the library module itself, as specified by the <b>LIBRARY</b> keyword in the module-definition (.def) file. If the string specifies a full path, the function searches only that path for the module. If the string specifies a relative path or a module name without a path, the function uses a standard search strategy to find the module; for more information, see the Remarks. If the function cannot find the  module, the function fails. When specifying a path, be sure to use backslashes (\\), not forward slashes (/). For more information about paths, see <a href="https://docs.microsoft.com/windows/desktop/FileIO/naming-a-file">Naming a File or Directory</a>. If the string specifies a module name without a path and the file name extension is omitted, the function appends the default library extension .dll to the module name. To prevent the function from appending .dll to the module name, include a trailing point character (.) in the module name string.</para>
+        /// <para><see href="https://docs.microsoft.com/windows/win32/api//libloaderapi/nf-libloaderapi-loadlibraryw#parameters">Read more on docs.microsoft.com</see>.</para>
+        /// </param>
+        /// <returns>
+        /// <para>If the function succeeds, the return value is a handle to the module. If the function fails, the return value is NULL. To get extended error information, call <a href="/windows/desktop/api/errhandlingapi/nf-errhandlingapi-getlasterror">GetLastError</a>.</para>
+        /// </returns>
+        /// <remarks>
+        /// <para><see href="https://docs.microsoft.com/windows/win32/api//libloaderapi/nf-libloaderapi-loadlibraryw">Learn more about this API from docs.microsoft.com.</see></para>
+        /// </remarks>
+        [DllImport("Kernel32", ExactSpelling = true, EntryPoint = "LoadLibraryW", SetLastError = true)]
+        [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
+        private static extern IntPtr LoadLibrary([MarshalAs(UnmanagedType.LPWStr)] string lpLibFileName);
+#endif
+
         /// <summary>
         /// Converts a single page of a given PDF into ZPL code.
         /// </summary>
@@ -99,7 +125,7 @@ namespace PDFtoZPL
             var pdfBitmap = PDFtoImage.Conversion.ToImage(pdfStream, password, page, dpi, width, height, withAnnotations, withFormFill);
 
             // Bitmap -> ZPL code
-            return ConvertBitmap((Bitmap)pdfBitmap);
+            return ConvertBitmap(pdfBitmap);
         }
 
         /// <summary>
@@ -184,7 +210,7 @@ namespace PDFtoZPL
             foreach (var image in PDFtoImage.Conversion.ToImages(pdfStream, password, dpi, width, height, withAnnotations, withFormFill))
             {
                 // Bitmap -> ZPL code
-                yield return ConvertBitmap((Bitmap)image);
+                yield return ConvertBitmap(image);
             }
         }
 
@@ -276,27 +302,47 @@ namespace PDFtoZPL
                 cancellationToken.ThrowIfCancellationRequested();
 
                 // Bitmap -> ZPL code
-                yield return await Task.Run(() => ConvertBitmap((Bitmap)image), cancellationToken);
+                yield return await Task.Run(() => ConvertBitmap(image), cancellationToken);
             }
         }
 #endif
 
         /// <summary>
-        /// Converts a given <see cref="Bitmap"/> into ZPL code.
+        /// Converts a given image into ZPL code.
         /// </summary>
-        /// <param name="bitmapAsStream">The <see cref="Bitmap"/> to convert.</param>
-        /// <returns>The converted <see cref="Bitmap"/> as ZPL code.</returns>
-        public static string ConvertBitmap(Stream bitmapAsStream)
+        /// <param name="bitmapPath">The file path of the image to convert.</param>
+        /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
+        public static string ConvertBitmap(string bitmapPath)
         {
-            return ConvertBitmap(new Bitmap(bitmapAsStream));
+            return ConvertBitmap(SKBitmap.Decode(bitmapPath));
         }
 
         /// <summary>
-        /// Converts a given <see cref="Bitmap"/> into ZPL code.
+        /// Converts a given <see cref="SKBitmap"/> into ZPL code.
         /// </summary>
-        /// <param name="bitmap">The <see cref="Bitmap"/> to convert.</param>
-        /// <returns>The converted <see cref="Bitmap"/> as ZPL code.</returns>
-        public static string ConvertBitmap(Bitmap bitmap)
+        /// <param name="bitmapAsStream">The <see cref="SKBitmap"/> to convert.</param>
+        /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
+        public static string ConvertBitmap(Stream bitmapAsStream)
+        {
+            return ConvertBitmap(SKBitmap.Decode(bitmapAsStream));
+        }
+
+        /// <summary>
+        /// Converts a given image into ZPL code.
+        /// </summary>
+        /// <param name="bitmapAsByteArray">The image as byte array to convert.</param>
+        /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
+        public static string ConvertBitmap(byte[] bitmapAsByteArray)
+        {
+            return ConvertBitmap(SKBitmap.Decode(bitmapAsByteArray));
+        }
+
+        /// <summary>
+        /// Converts a given <see cref="SKBitmap"/> into ZPL code.
+        /// </summary>
+        /// <param name="bitmap">The <see cref="SKBitmap"/> to convert.</param>
+        /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
+        internal static string ConvertBitmap(SKBitmap bitmap)
         {
             if (bitmap == null)
                 throw new ArgumentNullException(nameof(bitmap));
@@ -304,7 +350,7 @@ namespace PDFtoZPL
             return ConvertBitmapImpl(bitmap);
         }
 
-        private static string ConvertBitmapImpl(Bitmap pdfBitmap)
+        private static string ConvertBitmapImpl(SKBitmap pdfBitmap)
         {
             // first convert the bitmap into ZPL hex values (representing the bitmap)
             string bitmapAsHex = ConvertBitmapToHex(pdfBitmap, out int binaryByteCount, out int bytesPerRow);
@@ -319,7 +365,7 @@ namespace PDFtoZPL
             return $"^XA{graphicField}^XZ";
         }
 
-        private static string ConvertBitmapToHex(Bitmap pdfBitmap, out int binaryByteCount, out int bytesPerRow)
+        private static string ConvertBitmapToHex(SKBitmap pdfBitmap, out int binaryByteCount, out int bytesPerRow)
         {
             var zplBuilder = new StringBuilder();
 
@@ -334,31 +380,17 @@ namespace PDFtoZPL
             int width = pdfBitmap.Width;
             int height = pdfBitmap.Height;
 
-            BitmapData? data = null;
-            byte[] rgbValues = Array.Empty<byte>();
-            int stride;
-
-            try
-            {
-                data = pdfBitmap.LockBits(new Rectangle(Point.Empty, pdfBitmap.Size), ImageLockMode.ReadOnly, PixelFormat.Format24bppRgb);
-                stride = data.Stride;
-                int bytes = stride * pdfBitmap.Height;
-                rgbValues = new byte[bytes];
-                Marshal.Copy(data.Scan0, rgbValues, 0, bytes);
-            }
-            finally
-            {
-                if (data != null)
-                    pdfBitmap.UnlockBits(data);
-            }
+            SKColor[] data = pdfBitmap.Pixels;
 
             for (int y = 0; y < height; y++)
             {
                 for (int x = 0; x < width; x++)
                 {
-                    byte red = rgbValues[y * stride + x * 3];
-                    byte green = rgbValues[y * stride + x * 3 + 1];
-                    byte blue = rgbValues[y * stride + x * 3 + 2];
+                    var pixel = data[y * width + x];
+
+                    byte red = pixel.Red;
+                    byte green = pixel.Green;
+                    byte blue = pixel.Blue;
 
                     bool blackPixel = ((red + green + blue) / 3) < 128;
 

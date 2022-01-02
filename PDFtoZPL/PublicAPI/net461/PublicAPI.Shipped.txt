@@ -1,10 +1,11 @@
 ﻿#nullable enable
 PDFtoZPL.Conversion
-static PDFtoZPL.Conversion.ConvertBitmap(System.Drawing.Bitmap! bitmap) -> string!
+static PDFtoZPL.Conversion.ConvertBitmap(byte[]! bitmapAsByteArray) -> string!
+static PDFtoZPL.Conversion.ConvertBitmap(string! bitmapPath) -> string!
 static PDFtoZPL.Conversion.ConvertBitmap(System.IO.Stream! bitmapAsStream) -> string!
-static PDFtoZPL.Conversion.ConvertPdfPage(byte[]! pdfAsByteArray, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false) -> string!
-static PDFtoZPL.Conversion.ConvertPdfPage(string! pdfAsBase64String, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false) -> string!
-static PDFtoZPL.Conversion.ConvertPdfPage(System.IO.Stream! pdfStream, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false) -> string!
 static PDFtoZPL.Conversion.ConvertPdf(byte[]! pdfAsByteArray, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false) -> System.Collections.Generic.IEnumerable<string!>!
 static PDFtoZPL.Conversion.ConvertPdf(string! pdfAsBase64String, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false) -> System.Collections.Generic.IEnumerable<string!>!
 static PDFtoZPL.Conversion.ConvertPdf(System.IO.Stream! pdfStream, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false) -> System.Collections.Generic.IEnumerable<string!>!
+static PDFtoZPL.Conversion.ConvertPdfPage(byte[]! pdfAsByteArray, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false) -> string!
+static PDFtoZPL.Conversion.ConvertPdfPage(string! pdfAsBase64String, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false) -> string!
+static PDFtoZPL.Conversion.ConvertPdfPage(System.IO.Stream! pdfStream, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false) -> string!
