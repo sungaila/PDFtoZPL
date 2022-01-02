@@ -17,14 +17,14 @@ namespace PDFtoZPL.Console
                 ParseArguments(args, out string? inputPath, out string? outputPath, out int page, out int dpi, out bool withAnnotations, out bool withFormFill);
 
                 if (inputPath == null)
-                    throw new InvalidOperationException("There is no PDF or Bitmap file path.");
+                    throw new InvalidOperationException("There is no PDF file path.");
 
                 if (outputPath == null)
                     throw new InvalidOperationException("There is no output ZPL plain text file path.");
 
                 using var inputStream = new FileStream(inputPath, FileMode.Open, FileAccess.Read);
 
-                string zpl = (Path.GetExtension(inputPath).ToLower()) switch
+                string zpl = Path.GetExtension(inputPath).ToLower() switch
                 {
                     ".pdf" =>
 #if NET5_0_OR_GREATER
@@ -36,8 +36,7 @@ namespace PDFtoZPL.Console
                         ? Conversion.ConvertPdfPage(inputStream, page: page - 1, dpi: dpi, withAnnotations: withAnnotations, withFormFill: withFormFill)
 #pragma warning restore CA1416
                         : throw new NotSupportedException("Only win-x86, win-x64, linux-x64, linux-arm, linux-arm64, osx-x64 and osx-arm64 are supported for PDF file conversion."),
-                    ".bmp" => Conversion.ConvertBitmap(inputStream),
-                    _ => throw new InvalidOperationException("The given input file path must have pdf or bmp as file extension."),
+                    _ => throw new InvalidOperationException("The given input file path must have pdf as file extension."),
                 };
 
                 File.WriteAllText(outputPath, zpl);
@@ -64,7 +63,7 @@ namespace PDFtoZPL.Console
             }
             else
             {
-                System.Console.Write("Enter the path to the PDF or Bitmap file: ");
+                System.Console.Write("Enter the path to the PDF file: ");
                 inputPath = System.Console.ReadLine();
             }
 
