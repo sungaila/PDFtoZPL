@@ -210,7 +210,7 @@ namespace PDFtoZPL
             foreach (var image in PDFtoImage.Conversion.ToImages(pdfStream, password, dpi, width, height, withAnnotations, withFormFill))
             {
                 // Bitmap -> ZPL code
-                yield return ConvertBitmap((SKBitmap)image);
+                yield return ConvertBitmap(image);
             }
         }
 

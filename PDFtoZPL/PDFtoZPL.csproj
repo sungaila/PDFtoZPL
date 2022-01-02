@@ -13,8 +13,8 @@
 
   <!-- NuGet -->
   <PropertyGroup>
-    <VersionPrefix>2.2.1</VersionPrefix>
-    <VersionSuffix></VersionSuffix>
+    <VersionPrefix>3.0.0</VersionPrefix>
+    <VersionSuffix>preview</VersionSuffix>
     <Authors>David Sungaila</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
