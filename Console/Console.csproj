@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <!-- Assembly -->
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net462</TargetFrameworks>
+    <TargetFrameworks>net462;net6.0</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <AssemblyName>PDFtoZPL.Console</AssemblyName>
     <RootNamespace>PDFtoZPL.Console</RootNamespace>
@@ -12,7 +12,7 @@
 
   <!-- C# compiler -->
   <PropertyGroup>
-    <LangVersion>9.0</LangVersion>
+    <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <Features>strict</Features>
     <WarningsAsErrors>nullable</WarningsAsErrors>
