@@ -13,7 +13,7 @@ namespace Tests
         [TestInitialize]
         public void Initialize()
         {
-#if NET5_0_OR_GREATER
+#if NET6_0_OR_GREATER
             if (!OperatingSystem.IsWindows() && !OperatingSystem.IsLinux() && !OperatingSystem.IsMacOS())
                 Assert.Inconclusive("This test must run on Windows, Linux or macOS.");
 #endif
@@ -88,7 +88,7 @@ namespace Tests
             Assert.AreEqual(_expectedZplResults.Length, page);
         }
 
-#if NETCOREAPP3_0_OR_GREATER
+#if NETCOREAPP3_1_OR_GREATER
         [TestMethod]
         [DataRow(false, DisplayName = "Without annotations")]
         [DataRow(true, DisplayName = "With annotations")]
