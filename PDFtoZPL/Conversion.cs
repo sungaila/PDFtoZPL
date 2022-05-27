@@ -87,6 +87,29 @@ namespace PDFtoZPL
 #endif
         public static string ConvertPdfPage(Stream pdfStream, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
         {
+            return ConvertPdfPage(pdfStream, false, password, page, dpi, width, height, withAnnotations, withFormFill);
+        }
+
+        /// <summary>
+        /// Converts a single page of a given PDF into ZPL code.
+        /// </summary>
+        /// <param name="pdfStream">The PDF as a stream.</param>
+        /// <param name="leaveOpen"><see langword="true"/> to leave the <paramref name="pdfStream"/> open after the PDF document is loaded; otherwise, <see langword="false"/>.</param>
+        /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+        /// <param name="page">The specific page to be converted.</param>
+        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+        /// <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
+        /// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
+        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <returns>The converted PDF page as ZPL code.</returns>
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("Windows")]
+        [SupportedOSPlatform("Linux")]
+        [SupportedOSPlatform("macOS")]
+#endif
+        public static string ConvertPdfPage(Stream pdfStream, bool leaveOpen, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
+        {
             if (pdfStream == null)
                 throw new ArgumentNullException(nameof(pdfStream));
 
@@ -94,7 +117,7 @@ namespace PDFtoZPL
                 throw new ArgumentOutOfRangeException(nameof(page), "The page number must 0 or greater.");
 
             // Stream ->PdfiumViewer.PdfDocument -> Image
-            var pdfBitmap = PDFtoImage.Conversion.ToImage(pdfStream, password, page, dpi, width, height, withAnnotations, withFormFill);
+            var pdfBitmap = PDFtoImage.Conversion.ToImage(pdfStream, leaveOpen, password, page, dpi, width, height, withAnnotations, withFormFill);
 
             // Bitmap -> ZPL code
             return ConvertBitmap(pdfBitmap);
@@ -175,11 +198,33 @@ namespace PDFtoZPL
 #endif
         public static IEnumerable<string> ConvertPdf(Stream pdfStream, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
         {
+            return ConvertPdf(pdfStream, false, password, dpi, width, height, withAnnotations, withFormFill);
+        }
+
+        /// <summary>
+        /// Converts all pages of a given PDF into ZPL code.
+        /// </summary>
+        /// <param name="pdfStream">The PDF as a stream.</param>
+        /// <param name="leaveOpen"><see langword="true"/> to leave the <paramref name="pdfStream"/> open after the PDF document is loaded; otherwise, <see langword="false"/>.</param>
+        /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+        /// <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
+        /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
+        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <returns>The converted PDF pages as ZPL code.</returns>
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("Windows")]
+        [SupportedOSPlatform("Linux")]
+        [SupportedOSPlatform("macOS")]
+#endif
+        public static IEnumerable<string> ConvertPdf(Stream pdfStream, bool leaveOpen, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
+        {
             if (pdfStream == null)
                 throw new ArgumentNullException(nameof(pdfStream));
 
             // Stream ->PdfiumViewer.PdfDocument -> Image
-            foreach (var image in PDFtoImage.Conversion.ToImages(pdfStream, password, dpi, width, height, withAnnotations, withFormFill))
+            foreach (var image in PDFtoImage.Conversion.ToImages(pdfStream, leaveOpen, password, dpi, width, height, withAnnotations, withFormFill))
             {
                 // Bitmap -> ZPL code
                 yield return ConvertBitmap(image);
@@ -265,11 +310,37 @@ namespace PDFtoZPL
 #endif
         public static async IAsyncEnumerable<string> ConvertPdfAsync(Stream pdfStream, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
+            await foreach (var zplCode in ConvertPdfAsync(pdfStream, false, password, dpi, width, height, withAnnotations, withFormFill, cancellationToken))
+            {
+                yield return zplCode;
+            }
+        }
+
+        /// <summary>
+        /// Converts all pages of a given PDF into ZPL code.
+        /// </summary>
+        /// <param name="pdfStream">The PDF as a stream.</param>
+        /// <param name="leaveOpen"><see langword="true"/> to leave the <paramref name="pdfStream"/> open after the PDF document is loaded; otherwise, <see langword="false"/>.</param>
+        /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+        /// <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
+        /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
+        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
+        /// <returns>The converted PDF pages as ZPL code.</returns>
+#if NET6_0_OR_GREATER
+        [SupportedOSPlatform("Windows")]
+        [SupportedOSPlatform("Linux")]
+        [SupportedOSPlatform("macOS")]
+#endif
+        public static async IAsyncEnumerable<string> ConvertPdfAsync(Stream pdfStream, bool leaveOpen, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        {
             if (pdfStream == null)
                 throw new ArgumentNullException(nameof(pdfStream));
 
             // Stream -> PdfiumViewer.PdfDocument -> Image
-            await foreach (var image in PDFtoImage.Conversion.ToImagesAsync(pdfStream, password, dpi, width, height, withAnnotations, withFormFill, cancellationToken))
+            await foreach (var image in PDFtoImage.Conversion.ToImagesAsync(pdfStream, leaveOpen, password, dpi, width, height, withAnnotations, withFormFill, cancellationToken))
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -296,6 +367,30 @@ namespace PDFtoZPL
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
         public static string ConvertBitmap(Stream bitmapAsStream)
         {
+            return ConvertBitmap(bitmapAsStream, false);
+        }
+
+        /// <summary>
+        /// Converts a given <see cref="SKBitmap"/> into ZPL code.
+        /// </summary>
+        /// <param name="bitmapAsStream">The <see cref="SKBitmap"/> to convert.</param>
+        /// <param name="leaveOpen"><see langword="true"/> to leave the <paramref name="bitmapAsStream"/> open after the PDF document is loaded; otherwise, <see langword="false"/>.</param>
+        /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
+        public static string ConvertBitmap(Stream bitmapAsStream, bool leaveOpen)
+        {
+            if (bitmapAsStream == null)
+                throw new ArgumentNullException(nameof(bitmapAsStream));
+
+            if (leaveOpen)
+            {
+                // SKBitmap.Decode will close the stream
+                using var memoryStream = new MemoryStream();
+                bitmapAsStream.CopyTo(memoryStream);
+                memoryStream.Position = 0;
+                return ConvertBitmap(SKBitmap.Decode(memoryStream));
+            }
+
+            bitmapAsStream.Position = 0;
             return ConvertBitmap(SKBitmap.Decode(bitmapAsStream));
         }
 
