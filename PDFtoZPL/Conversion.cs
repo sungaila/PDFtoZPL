@@ -27,7 +27,7 @@ namespace PDFtoZPL
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
         /// <returns>The converted PDF page as ZPL code.</returns>
-#if NET5_0_OR_GREATER
+#if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
@@ -52,7 +52,7 @@ namespace PDFtoZPL
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
         /// <returns>The converted PDF page as ZPL code.</returns>
-#if NET5_0_OR_GREATER
+#if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
@@ -80,7 +80,7 @@ namespace PDFtoZPL
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
         /// <returns>The converted PDF page as ZPL code.</returns>
-#if NET5_0_OR_GREATER
+#if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
@@ -111,7 +111,7 @@ namespace PDFtoZPL
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
-#if NET5_0_OR_GREATER
+#if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
@@ -138,7 +138,7 @@ namespace PDFtoZPL
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
-#if NET5_0_OR_GREATER
+#if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
@@ -168,7 +168,7 @@ namespace PDFtoZPL
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
-#if NET5_0_OR_GREATER
+#if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
@@ -186,7 +186,7 @@ namespace PDFtoZPL
             }
         }
 
-#if NETCOREAPP3_0_OR_GREATER
+#if NETCOREAPP3_1_OR_GREATER
         /// <summary>
         /// Converts all pages of a given PDF into ZPL code.
         /// </summary>
@@ -199,7 +199,7 @@ namespace PDFtoZPL
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
-#if NET5_0_OR_GREATER
+#if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
@@ -227,7 +227,7 @@ namespace PDFtoZPL
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
-#if NET5_0_OR_GREATER
+#if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
@@ -258,7 +258,7 @@ namespace PDFtoZPL
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
-#if NET5_0_OR_GREATER
+#if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]

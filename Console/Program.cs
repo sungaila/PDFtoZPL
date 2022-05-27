@@ -27,7 +27,7 @@ namespace PDFtoZPL.Console
                 string zpl = Path.GetExtension(inputPath).ToLower() switch
                 {
                     ".pdf" =>
-#if NET5_0_OR_GREATER
+#if NET6_0_OR_GREATER
                     OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()
 #else
                     true
