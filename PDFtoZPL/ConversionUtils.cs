@@ -246,7 +246,7 @@ namespace PDFtoZPL
         /// <see href="http://www.sanity-free.com/133/crc_16_ccitt_in_csharp.html"/>
         /// <seealso href="https://github.com/nullfx/NullFX.CRC"/>
         /// </summary>
-        private class Crc16Ccitt
+        private sealed class Crc16Ccitt
         {
             const ushort Poly = 4129;
             private readonly ushort[] _table = new ushort[256];
@@ -260,12 +260,6 @@ namespace PDFtoZPL
                     crc = (ushort)((crc << 8) ^ _table[((crc >> 8) ^ (0xff & bytes[i]))]);
                 }
                 return crc;
-            }
-
-            public byte[] ComputeChecksumBytes(byte[] bytes)
-            {
-                ushort crc = ComputeChecksum(bytes);
-                return new byte[] { (byte)(crc >> 8), (byte)(crc & 0x00ff) };
             }
 
             public Crc16Ccitt(InitialCrcValue initialValue)
