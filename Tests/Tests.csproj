@@ -21,6 +21,9 @@
     <None Remove="Assets\SocialPreview.pdf" />
     <None Remove="Assets\SocialPreview.png" />
     <None Remove="Assets\Wikimedia_Commons_web.pdf" />
+    <Compile Update="EncodingTests.ExpectedResults.cs">
+      <DependentUpon>EncodingTests.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>

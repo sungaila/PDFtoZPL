@@ -2,11 +2,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static PDFtoZPL.ConversionUtils;
 
 namespace PDFtoZPL
 {
@@ -26,18 +28,21 @@ namespace PDFtoZPL
         /// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <returns>The converted PDF page as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
-        public static string ConvertPdfPage(string pdfAsBase64String, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
+        public static string ConvertPdfPage(string pdfAsBase64String, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
             if (pdfAsBase64String == null)
                 throw new ArgumentNullException(nameof(pdfAsBase64String));
 
-            return ConvertPdfPage(Convert.FromBase64String(pdfAsBase64String), password, page, dpi, width, height, withAnnotations, withFormFill);
+            return ConvertPdfPage(Convert.FromBase64String(pdfAsBase64String), password, page, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly);
         }
 
         /// <summary>
@@ -51,13 +56,16 @@ namespace PDFtoZPL
         /// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <returns>The converted PDF page as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
-        public static string ConvertPdfPage(byte[] pdfAsByteArray, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
+        public static string ConvertPdfPage(byte[] pdfAsByteArray, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
             if (pdfAsByteArray == null)
                 throw new ArgumentNullException(nameof(pdfAsByteArray));
@@ -65,7 +73,7 @@ namespace PDFtoZPL
             // Base64 string -> byte[] -> MemoryStream
             using var pdfStream = new MemoryStream(pdfAsByteArray, false);
 
-            return ConvertPdfPage(pdfStream, password, page, dpi, width, height, withAnnotations, withFormFill);
+            return ConvertPdfPage(pdfStream, password, page, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly);
         }
 
         /// <summary>
@@ -79,15 +87,18 @@ namespace PDFtoZPL
         /// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <returns>The converted PDF page as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
-        public static string ConvertPdfPage(Stream pdfStream, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
+        public static string ConvertPdfPage(Stream pdfStream, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
-            return ConvertPdfPage(pdfStream, false, password, page, dpi, width, height, withAnnotations, withFormFill);
+            return ConvertPdfPage(pdfStream, false, password, page, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly);
         }
 
         /// <summary>
@@ -102,13 +113,16 @@ namespace PDFtoZPL
         /// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <returns>The converted PDF page as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
-        public static string ConvertPdfPage(Stream pdfStream, bool leaveOpen, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
+        public static string ConvertPdfPage(Stream pdfStream, bool leaveOpen, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
             if (pdfStream == null)
                 throw new ArgumentNullException(nameof(pdfStream));
@@ -120,7 +134,7 @@ namespace PDFtoZPL
             var pdfBitmap = PDFtoImage.Conversion.ToImage(pdfStream, leaveOpen, password, page, dpi, width, height, withAnnotations, withFormFill);
 
             // Bitmap -> ZPL code
-            return ConvertBitmap(pdfBitmap);
+            return ConvertBitmap(pdfBitmap, encodingKind, graphicFieldOnly);
         }
 
         /// <summary>
@@ -133,18 +147,21 @@ namespace PDFtoZPL
         /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
-        public static IEnumerable<string> ConvertPdf(string pdfAsBase64String, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
+        public static IEnumerable<string> ConvertPdf(string pdfAsBase64String, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
             if (pdfAsBase64String == null)
                 throw new ArgumentNullException(nameof(pdfAsBase64String));
 
-            foreach (var zplCode in ConvertPdf(Convert.FromBase64String(pdfAsBase64String), password, dpi, width, height, withAnnotations, withFormFill))
+            foreach (var zplCode in ConvertPdf(Convert.FromBase64String(pdfAsBase64String), password, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly))
             {
                 yield return zplCode;
             }
@@ -160,13 +177,16 @@ namespace PDFtoZPL
         /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
-        public static IEnumerable<string> ConvertPdf(byte[] pdfAsByteArray, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
+        public static IEnumerable<string> ConvertPdf(byte[] pdfAsByteArray, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
             if (pdfAsByteArray == null)
                 throw new ArgumentNullException(nameof(pdfAsByteArray));
@@ -174,7 +194,7 @@ namespace PDFtoZPL
             // Base64 string -> byte[] -> MemoryStream
             using var pdfStream = new MemoryStream(pdfAsByteArray, false);
 
-            foreach (var zplCode in ConvertPdf(pdfStream, password, dpi, width, height, withAnnotations, withFormFill))
+            foreach (var zplCode in ConvertPdf(pdfStream, password, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly))
             {
                 yield return zplCode;
             }
@@ -190,15 +210,18 @@ namespace PDFtoZPL
         /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
-        public static IEnumerable<string> ConvertPdf(Stream pdfStream, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
+        public static IEnumerable<string> ConvertPdf(Stream pdfStream, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
-            return ConvertPdf(pdfStream, false, password, dpi, width, height, withAnnotations, withFormFill);
+            return ConvertPdf(pdfStream, false, password, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly);
         }
 
         /// <summary>
@@ -212,13 +235,16 @@ namespace PDFtoZPL
         /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
-        public static IEnumerable<string> ConvertPdf(Stream pdfStream, bool leaveOpen, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false)
+        public static IEnumerable<string> ConvertPdf(Stream pdfStream, bool leaveOpen, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
             if (pdfStream == null)
                 throw new ArgumentNullException(nameof(pdfStream));
@@ -227,7 +253,7 @@ namespace PDFtoZPL
             foreach (var image in PDFtoImage.Conversion.ToImages(pdfStream, leaveOpen, password, dpi, width, height, withAnnotations, withFormFill))
             {
                 // Bitmap -> ZPL code
-                yield return ConvertBitmap(image);
+                yield return ConvertBitmap(image, encodingKind, graphicFieldOnly);
             }
         }
 
@@ -242,19 +268,22 @@ namespace PDFtoZPL
         /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
-        public static async IAsyncEnumerable<string> ConvertPdfAsync(string pdfAsBase64String, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public static async IAsyncEnumerable<string> ConvertPdfAsync(string pdfAsBase64String, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (pdfAsBase64String == null)
                 throw new ArgumentNullException(nameof(pdfAsBase64String));
 
-            await foreach (var zplCode in ConvertPdfAsync(Convert.FromBase64String(pdfAsBase64String), password, dpi, width, height, withAnnotations, withFormFill, cancellationToken))
+            await foreach (var zplCode in ConvertPdfAsync(Convert.FromBase64String(pdfAsBase64String), password, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly, cancellationToken))
             {
                 yield return zplCode;
             }
@@ -270,14 +299,17 @@ namespace PDFtoZPL
         /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
-        public static async IAsyncEnumerable<string> ConvertPdfAsync(byte[] pdfAsByteArray, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public static async IAsyncEnumerable<string> ConvertPdfAsync(byte[] pdfAsByteArray, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (pdfAsByteArray == null)
                 throw new ArgumentNullException(nameof(pdfAsByteArray));
@@ -285,7 +317,7 @@ namespace PDFtoZPL
             // Base64 string -> byte[] -> MemoryStream
             using var pdfStream = new MemoryStream(pdfAsByteArray, false);
 
-            await foreach (var zplCode in ConvertPdfAsync(pdfStream, password, dpi, width, height, withAnnotations, withFormFill, cancellationToken))
+            await foreach (var zplCode in ConvertPdfAsync(pdfStream, password, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly, cancellationToken))
             {
                 yield return zplCode;
             }
@@ -301,16 +333,19 @@ namespace PDFtoZPL
         /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
-        public static async IAsyncEnumerable<string> ConvertPdfAsync(Stream pdfStream, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public static async IAsyncEnumerable<string> ConvertPdfAsync(Stream pdfStream, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            await foreach (var zplCode in ConvertPdfAsync(pdfStream, false, password, dpi, width, height, withAnnotations, withFormFill, cancellationToken))
+            await foreach (var zplCode in ConvertPdfAsync(pdfStream, false, password, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly, cancellationToken))
             {
                 yield return zplCode;
             }
@@ -327,14 +362,17 @@ namespace PDFtoZPL
         /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
         /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
         /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
-        public static async IAsyncEnumerable<string> ConvertPdfAsync(Stream pdfStream, bool leaveOpen, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public static async IAsyncEnumerable<string> ConvertPdfAsync(Stream pdfStream, bool leaveOpen, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (pdfStream == null)
                 throw new ArgumentNullException(nameof(pdfStream));
@@ -345,7 +383,7 @@ namespace PDFtoZPL
                 cancellationToken.ThrowIfCancellationRequested();
 
                 // Bitmap -> ZPL code
-                yield return await Task.Run(() => ConvertBitmap(image), cancellationToken);
+                yield return await Task.Run(() => ConvertBitmap(image, encodingKind, graphicFieldOnly), cancellationToken);
             }
         }
 #endif
@@ -354,20 +392,24 @@ namespace PDFtoZPL
         /// Converts a given image into ZPL code.
         /// </summary>
         /// <param name="bitmapPath">The file path of the image to convert.</param>
+        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
-        public static string ConvertBitmap(string bitmapPath)
+        public static string ConvertBitmap(string bitmapPath, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
-            return ConvertBitmap(SKBitmap.Decode(bitmapPath));
+            return ConvertBitmap(SKBitmap.Decode(bitmapPath), encodingKind, graphicFieldOnly);
         }
 
         /// <summary>
         /// Converts a given <see cref="SKBitmap"/> into ZPL code.
         /// </summary>
         /// <param name="bitmapAsStream">The <see cref="SKBitmap"/> to convert.</param>
+        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
-        public static string ConvertBitmap(Stream bitmapAsStream)
+        public static string ConvertBitmap(Stream bitmapAsStream, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
-            return ConvertBitmap(bitmapAsStream, false);
+            return ConvertBitmap(bitmapAsStream, false, encodingKind, graphicFieldOnly);
         }
 
         /// <summary>
@@ -375,8 +417,10 @@ namespace PDFtoZPL
         /// </summary>
         /// <param name="bitmapAsStream">The <see cref="SKBitmap"/> to convert.</param>
         /// <param name="leaveOpen"><see langword="true"/> to leave the <paramref name="bitmapAsStream"/> open after the PDF document is loaded; otherwise, <see langword="false"/>.</param>
+        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
-        public static string ConvertBitmap(Stream bitmapAsStream, bool leaveOpen)
+        public static string ConvertBitmap(Stream bitmapAsStream, bool leaveOpen, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
             if (bitmapAsStream == null)
                 throw new ArgumentNullException(nameof(bitmapAsStream));
@@ -387,254 +431,114 @@ namespace PDFtoZPL
                 using var memoryStream = new MemoryStream();
                 bitmapAsStream.CopyTo(memoryStream);
                 memoryStream.Position = 0;
-                return ConvertBitmap(SKBitmap.Decode(memoryStream));
+                return ConvertBitmap(SKBitmap.Decode(memoryStream), encodingKind, graphicFieldOnly);
             }
 
             bitmapAsStream.Position = 0;
-            return ConvertBitmap(SKBitmap.Decode(bitmapAsStream));
+            return ConvertBitmap(SKBitmap.Decode(bitmapAsStream), encodingKind, graphicFieldOnly);
         }
 
         /// <summary>
         /// Converts a given image into ZPL code.
         /// </summary>
         /// <param name="bitmapAsByteArray">The image as byte array to convert.</param>
+        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
-        public static string ConvertBitmap(byte[] bitmapAsByteArray)
+        public static string ConvertBitmap(byte[] bitmapAsByteArray, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
-            return ConvertBitmap(SKBitmap.Decode(bitmapAsByteArray));
+            return ConvertBitmap(SKBitmap.Decode(bitmapAsByteArray), encodingKind, graphicFieldOnly);
         }
 
         /// <summary>
         /// Converts a given <see cref="SKBitmap"/> into ZPL code.
         /// </summary>
         /// <param name="bitmap">The <see cref="SKBitmap"/> to convert.</param>
+        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
-        internal static string ConvertBitmap(SKBitmap bitmap)
+        internal static string ConvertBitmap(SKBitmap bitmap, BitmapEncodingKind encodingKind, bool graphicFieldOnly)
         {
             if (bitmap == null)
                 throw new ArgumentNullException(nameof(bitmap));
 
-            return ConvertBitmapImpl(bitmap);
+            return ConvertBitmapImpl(bitmap, encodingKind, graphicFieldOnly);
         }
 
-        private static string ConvertBitmapImpl(SKBitmap pdfBitmap)
+        private static string ConvertBitmapImpl(SKBitmap pdfBitmap, BitmapEncodingKind encodingKind, bool graphicFieldOnly)
         {
             // first convert the bitmap into ZPL hex values (representing the bitmap)
             string bitmapAsHex = ConvertBitmapToHex(pdfBitmap, out int binaryByteCount, out int bytesPerRow);
+            string bitmapPayload;
 
-            // then compress the hex values to reduce its size
-            bitmapAsHex = CompressHex(bitmapAsHex, bytesPerRow);
+            if (encodingKind == BitmapEncodingKind.Hexadecimal)
+            {
+                bitmapPayload = bitmapAsHex;
+            }
+            else if (encodingKind == BitmapEncodingKind.HexadecimalCompressed)
+            {
+                bitmapPayload = CompressHex(bitmapAsHex, bytesPerRow);
+            }
+            else if (encodingKind == BitmapEncodingKind.Base64 || encodingKind == BitmapEncodingKind.Base64Compressed)
+            {
+                bitmapPayload = bitmapAsHex.Replace("\n", string.Empty);
+
+                string encodingId = "B64";
+                byte[] bitmapAsBytes = HexToByteArray(bitmapPayload);
+
+                if (encodingKind == BitmapEncodingKind.Base64Compressed)
+                {
+                    encodingId = "Z64";
+                    bitmapAsBytes = Deflate(bitmapAsBytes);
+                }
+
+                var base64 = Convert.ToBase64String(bitmapAsBytes);
+                var csc = ComputeBitmapChecksum(base64);
+
+                bitmapPayload = $":{encodingId}:{base64}:{csc}";
+            }
+            else
+            {
+                throw new ArgumentOutOfRangeException(nameof(encodingKind), $"Unknown {nameof(BitmapEncodingKind)} '{encodingKind}'.");
+            }
 
             // build the Graphic Field (^GFA) command
-            string graphicField = $"^GFA,{binaryByteCount},{binaryByteCount},{bytesPerRow},{bitmapAsHex}^FS";
+            string graphicField = $"^GFA,{binaryByteCount},{binaryByteCount},{bytesPerRow},{bitmapPayload}";
+
+            if (graphicFieldOnly)
+                return graphicField;
 
             // finally return the complete ZPL code
-            return $"^XA{graphicField}^XZ";
-        }
-
-        private static string ConvertBitmapToHex(SKBitmap pdfBitmap, out int binaryByteCount, out int bytesPerRow)
-        {
-            var zplBuilder = new StringBuilder();
-
-            bytesPerRow = pdfBitmap.Width % 8 > 0
-                ? pdfBitmap.Width / 8 + 1
-                : pdfBitmap.Width / 8;
-            binaryByteCount = pdfBitmap.Height * bytesPerRow;
-
-            int colorBits = 0;
-            int j = 0;
-
-            int width = pdfBitmap.Width;
-            int height = pdfBitmap.Height;
-
-            SKColor[] data = pdfBitmap.Pixels;
-
-            for (int y = 0; y < height; y++)
-            {
-                for (int x = 0; x < width; x++)
-                {
-                    var pixel = data[y * width + x];
-
-                    byte red = pixel.Red;
-                    byte green = pixel.Green;
-                    byte blue = pixel.Blue;
-
-                    bool blackPixel = ((red + green + blue) / 3) < 128;
-
-                    if (blackPixel)
-                        colorBits |= 1 << (7 - j);
-
-                    j++;
-
-                    if (j == 8 || x == (width - 1))
-                    {
-                        zplBuilder.Append(colorBits.ToString("X2"));
-                        colorBits = 0;
-                        j = 0;
-                    }
-                }
-                zplBuilder.Append('\n');
-            }
-
-            return zplBuilder.ToString();
-        }
-
-        private static string CompressHex(string code, int widthBytes)
-        {
-            int maxlinea = widthBytes * 2;
-            var sbCode = new StringBuilder();
-            var sbLinea = new StringBuilder();
-            string? previousLine = null;
-            int counter = 0;
-            char aux = code[0];
-            bool firstChar = false;
-
-            foreach (char item in code)
-            {
-                if (firstChar)
-                {
-                    aux = item;
-                    firstChar = false;
-                    continue;
-                }
-                if (item == '\n')
-                {
-                    if (counter >= maxlinea && aux == '0')
-                    {
-                        sbLinea.Append(',');
-                    }
-                    else if (counter >= maxlinea && aux == 'F')
-                    {
-                        sbLinea.Append('!');
-                    }
-                    else if (counter > 20)
-                    {
-                        int multi20 = (counter / 20) * 20;
-                        sbLinea.Append(CompressionCountMapping[Math.Min(multi20, 400)]);
-
-                        int restover400 = multi20 / 400;
-                        if (restover400 > 0)
-                        {
-                            for (; restover400 > 1; restover400--)
-                                sbLinea.Append(CompressionCountMapping[400]);
-
-                            int restto400 = (counter % 400) / 20 * 20;
-
-                            if (restto400 > 0)
-                                sbLinea.Append(CompressionCountMapping[restto400]);
-                        }
-
-                        int resto20 = (counter % 20);
-
-                        if (resto20 != 0)
-                            sbLinea.Append(CompressionCountMapping[resto20]).Append(aux);
-                        else
-                            sbLinea.Append(aux);
-                    }
-                    else
-                    {
-                        sbLinea.Append(CompressionCountMapping[counter]).Append(aux);
-                    }
-                    counter = 1;
-                    firstChar = true;
-
-                    if (sbLinea.ToString().Equals(previousLine))
-                        sbCode.Append(':');
-                    else
-                        sbCode.Append(sbLinea);
-
-                    previousLine = sbLinea.ToString();
-                    sbLinea.Length = 0;
-                    continue;
-                }
-
-                if (aux == item)
-                {
-                    counter++;
-                }
-                else
-                {
-                    if (counter > 20)
-                    {
-                        int multi20 = (counter / 20) * 20;
-                        sbLinea.Append(CompressionCountMapping[Math.Min(multi20, 400)]);
-
-                        int restover400 = multi20 / 400;
-                        if (restover400 > 0)
-                        {
-                            for (; restover400 > 1; restover400--)
-                                sbLinea.Append(CompressionCountMapping[400]);
-
-                            int restto400 = (counter % 400) / 20 * 20;
-
-                            if (restto400 > 0)
-                                sbLinea.Append(CompressionCountMapping[restto400]);
-                        }
-
-                        int resto20 = (counter % 20);
-
-                        if (resto20 != 0)
-                            sbLinea.Append(CompressionCountMapping[resto20]).Append(aux);
-                        else
-                            sbLinea.Append(aux);
-                    }
-                    else
-                    {
-                        sbLinea.Append(CompressionCountMapping[counter]).Append(aux);
-                    }
-                    counter = 1;
-                    aux = item;
-                }
-            }
-
-            return sbCode.ToString();
+            return $"^XA{graphicField}^FS^XZ";
         }
 
         /// <summary>
-        /// The mapping table used for compression.
-        /// Each character count (the key) is represented by a certain char (the value).
+        /// The supported encoding options for the bitmap within the generated ZPL code.
         /// </summary>
-        private static readonly Dictionary<int, string> CompressionCountMapping = new()
+        public enum BitmapEncodingKind
         {
-            { 1, "G" },
-            { 2, "H" },
-            { 3, "I" },
-            { 4, "J" },
-            { 5, "K" },
-            { 6, "L" },
-            { 7, "M" },
-            { 8, "N" },
-            { 9, "O" },
-            { 10, "P" },
-            { 11, "Q" },
-            { 12, "R" },
-            { 13, "S" },
-            { 14, "T" },
-            { 15, "U" },
-            { 16, "V" },
-            { 17, "W" },
-            { 18, "X" },
-            { 19, "Y" },
-            { 20, "g" },
-            { 40, "h" },
-            { 60, "i" },
-            { 80, "j" },
-            { 100, "k" },
-            { 120, "l" },
-            { 140, "m" },
-            { 160, "n" },
-            { 180, "o" },
-            { 200, "p" },
-            { 220, "q" },
-            { 240, "r" },
-            { 260, "s" },
-            { 280, "t" },
-            { 300, "u" },
-            { 320, "v" },
-            { 340, "w" },
-            { 360, "x" },
-            { 380, "y" },
-            { 400, "z" }
-        };
+            /// <summary>
+            /// <b>Not recommended.</b> The bitmap is encoded as hexadecimals.<br/>
+            /// Its output might be to large for the printer's bitmap storage area.
+            /// </summary>
+            Hexadecimal,
+
+            /// <summary>
+            /// The bitmap is encoded as hexadecimals and then compressed (via ZPL ASCII compression).<br/>
+            /// It's significantly more space-saving than <see cref="Hexadecimal"/>.
+            /// </summary>
+            HexadecimalCompressed,
+
+            /// <summary>
+            /// <b>Not recommended.</b> The bitmap is encoded as Base64 (MIME). This encoding is referred to as <b>B64</b> in the ZPL II programming guide.<br/>
+            /// Its output might be to large for the printer's bitmap storage area. Still more space-saving than <see cref="Hexadecimal"/> though.
+            /// </summary>
+            Base64,
+
+            /// <summary>
+            /// Recommended. The bitmap is compressed with Deflate (RFC 1951) and then encoded as Base64 (MIME). This encoding is referred to as <b>Z64</b> in the ZPL II programming guide.
+            /// </summary>
+            Base64Compressed
+        }
     }
 }
