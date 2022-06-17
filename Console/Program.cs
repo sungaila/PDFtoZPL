@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using static PDFtoZPL.Conversion;
 
 namespace PDFtoZPL.Console
 {
@@ -14,7 +15,7 @@ namespace PDFtoZPL.Console
 
             try
             {
-                ParseArguments(args, out string? inputPath, out string? outputPath, out int page, out int dpi, out bool withAnnotations, out bool withFormFill);
+                ParseArguments(args, out string? inputPath, out string? outputPath, out int page, out int dpi, out bool withAnnotations, out bool withFormFill, out var encodingKind);
 
                 if (inputPath == null)
                     throw new InvalidOperationException("There is no PDF file path.");
@@ -33,7 +34,7 @@ namespace PDFtoZPL.Console
                     true
 #endif
 #pragma warning disable CA1416
-                        ? Conversion.ConvertPdfPage(inputStream, page: page - 1, dpi: dpi, withAnnotations: withAnnotations, withFormFill: withFormFill)
+                        ? Conversion.ConvertPdfPage(inputStream, page: page - 1, dpi: dpi, withAnnotations: withAnnotations, withFormFill: withFormFill, encodingKind: encodingKind)
 #pragma warning restore CA1416
                         : throw new NotSupportedException("Only win-x86, win-x64, win-arm64, linux-x64, linux-arm, linux-arm64, osx-x64 and osx-arm64 are supported for PDF file conversion."),
                     _ => throw new InvalidOperationException("The given input file path must have pdf as file extension."),
@@ -52,7 +53,7 @@ namespace PDFtoZPL.Console
             return 0;
         }
 
-        private static void ParseArguments(string[] args, out string? inputPath, out string? outputPath, out int page, out int dpi, out bool withAnnotations, out bool withFormFill)
+        private static void ParseArguments(string[] args, out string? inputPath, out string? outputPath, out int page, out int dpi, out bool withAnnotations, out bool withFormFill, out BitmapEncodingKind encodingKind)
         {
             if (args == null)
                 throw new ArgumentNullException(nameof(args));
@@ -93,6 +94,7 @@ namespace PDFtoZPL.Console
                 dpi = default;
                 withAnnotations = false;
                 withFormFill = false;
+                encodingKind = BitmapEncodingKind.Base64Compressed;
                 return;
             }
 
@@ -179,6 +181,40 @@ namespace PDFtoZPL.Console
                 {
                     withFormFill = false;
                     System.Console.WriteLine($"Form filling not rendered by default.");
+                }
+            }
+
+            encodingKind = BitmapEncodingKind.Base64Compressed;
+
+            if (args.Length >= 7)
+            {
+                outputPath = args[6];
+            }
+            else
+            {
+                System.Console.Write("Select an encoding type (hex/hexc/b64/z64): ");
+
+                var input = System.Console.ReadLine();
+                if (input?.ToLowerInvariant() == "hex")
+                {
+                    encodingKind = BitmapEncodingKind.Hexadecimal;
+                }
+                else if (input?.ToLowerInvariant() == "hexc")
+                {
+                    encodingKind = BitmapEncodingKind.HexadecimalCompressed;
+                }
+                else if (input?.ToLowerInvariant() == "b64")
+                {
+                    encodingKind = BitmapEncodingKind.Base64;
+                }
+                else if (input?.ToLowerInvariant() == "z64")
+                {
+                    encodingKind = BitmapEncodingKind.Base64Compressed;
+                }
+                else
+                {
+                    encodingKind = BitmapEncodingKind.Base64Compressed;
+                    System.Console.WriteLine("Target DPI defaulting to z64.");
                 }
             }
         }
