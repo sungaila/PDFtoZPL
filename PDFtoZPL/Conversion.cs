@@ -35,7 +35,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("Android")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
         public static string ConvertPdfPage(string pdfAsBase64String, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
@@ -63,7 +63,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("Android")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
         public static string ConvertPdfPage(byte[] pdfAsByteArray, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
@@ -94,7 +94,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("Android")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
         public static string ConvertPdfPage(Stream pdfStream, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
@@ -120,7 +120,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("Android")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
         public static string ConvertPdfPage(Stream pdfStream, bool leaveOpen, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
@@ -154,7 +154,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("Android")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
         public static IEnumerable<string> ConvertPdf(string pdfAsBase64String, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
@@ -184,7 +184,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("Android")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
         public static IEnumerable<string> ConvertPdf(byte[] pdfAsByteArray, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
@@ -217,7 +217,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("Android")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
         public static IEnumerable<string> ConvertPdf(Stream pdfStream, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
@@ -242,7 +242,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("Android")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
         public static IEnumerable<string> ConvertPdf(Stream pdfStream, bool leaveOpen, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false)
         {
@@ -276,7 +276,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("Android")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
         public static async IAsyncEnumerable<string> ConvertPdfAsync(string pdfAsBase64String, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
@@ -307,7 +307,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("Android")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
         public static async IAsyncEnumerable<string> ConvertPdfAsync(byte[] pdfAsByteArray, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
@@ -341,7 +341,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("Android")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
         public static async IAsyncEnumerable<string> ConvertPdfAsync(Stream pdfStream, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
@@ -370,7 +370,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("Android")]
+        [SupportedOSPlatform("Android31.0")]
 #endif
         public static async IAsyncEnumerable<string> ConvertPdfAsync(Stream pdfStream, bool leaveOpen, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
