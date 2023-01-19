@@ -59,7 +59,7 @@ namespace Tests
             Assert.ThrowsException<ArgumentNullException>(() => ConvertPdf((byte[])null!).ToList());
         }
 
-#if NETCOREAPP3_1_OR_GREATER
+#if NET6_0_OR_GREATER
         [TestMethod]
         public async Task PdfAllAsyncStreamNullException()
         {
@@ -163,7 +163,7 @@ namespace Tests
             Assert.IsTrue(fileStream.CanRead, "The stream should be open when calling leaveOpen with true.");
         }
 
-#if NETCOREAPP3_1_OR_GREATER
+#if NET6_0_OR_GREATER
         [TestMethod]
         public async Task ConvertPdfAsyncLeaveOpenDefault()
         {

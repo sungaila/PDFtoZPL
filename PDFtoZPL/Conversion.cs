@@ -257,7 +257,7 @@ namespace PDFtoZPL
             }
         }
 
-#if NETCOREAPP3_1_OR_GREATER
+#if NET6_0_OR_GREATER
         /// <summary>
         /// Converts all pages of a given PDF into ZPL code.
         /// </summary>
@@ -272,12 +272,10 @@ namespace PDFtoZPL
         /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
-#if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
-#endif
         public static async IAsyncEnumerable<string> ConvertPdfAsync(string pdfAsBase64String, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (pdfAsBase64String == null)

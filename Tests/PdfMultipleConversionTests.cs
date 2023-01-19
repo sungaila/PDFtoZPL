@@ -88,7 +88,7 @@ namespace Tests
             Assert.AreEqual(_expectedZplResults.Length, page);
         }
 
-#if NETCOREAPP3_1_OR_GREATER
+#if NET6_0_OR_GREATER
         [TestMethod]
         [DataRow(false, DisplayName = "Without annotations")]
         [DataRow(true, DisplayName = "With annotations")]
