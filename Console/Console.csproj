@@ -6,7 +6,7 @@
     <AssemblyName>PDFtoZPL.Console</AssemblyName>
     <RootNamespace>PDFtoZPL.Console</RootNamespace>
     <StartupObject>PDFtoZPL.Console.Program</StartupObject>
-    <Version>3.2.2</Version>
+    <Version>3.2.3</Version>
     <Configurations>Debug;Release;ReleaseSigned</Configurations>
   </PropertyGroup>
 
@@ -16,8 +16,6 @@
     <Nullable>enable</Nullable>
     <Features>strict</Features>
     <WarningsAsErrors>nullable</WarningsAsErrors>
-    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
 
   <!-- References -->
