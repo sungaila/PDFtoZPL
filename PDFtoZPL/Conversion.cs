@@ -466,7 +466,6 @@ namespace PDFtoZPL
         /// <param name="bitmap">The <see cref="SKBitmap"/> to convert.</param>
         /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
         /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
         internal static string ConvertBitmap(SKBitmap bitmap, BitmapEncodingKind encodingKind, bool graphicFieldOnly)
         {
