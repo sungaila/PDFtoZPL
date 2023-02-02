@@ -34,7 +34,7 @@ namespace PDFtoZPL.Console
                     true
 #endif
 #pragma warning disable CA1416
-                        ? Conversion.ConvertPdfPage(inputStream, page: page - 1, dpi: dpi, withAnnotations: withAnnotations, withFormFill: withFormFill, encodingKind: encodingKind)
+                        ? Conversion.ConvertPdfPage(inputStream, width: 200, withAspectRatio: true, page: page - 1, dpi: dpi, withAnnotations: withAnnotations, withFormFill: withFormFill, encodingKind: encodingKind)
 #pragma warning restore CA1416
                         : throw new NotSupportedException("Only win-x86, win-x64, win-arm64, linux-x64, linux-arm, linux-arm64, osx-x64 and osx-arm64 are supported for PDF file conversion."),
                     _ => throw new InvalidOperationException("The given input file path must have pdf as file extension."),
