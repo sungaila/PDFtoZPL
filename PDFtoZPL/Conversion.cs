@@ -266,10 +266,10 @@ namespace PDFtoZPL
                 throw new ArgumentNullException(nameof(pdfStream));
 
             // Stream ->PdfiumViewer.PdfDocument -> Image
-            foreach (var image in PDFtoImage.Conversion.ToImages(pdfStream, leaveOpen, password, dpi, width, height, withAnnotations, withFormFill, withAspectRatio, setLabelLength))
+            foreach (var image in PDFtoImage.Conversion.ToImages(pdfStream, leaveOpen, password, dpi, width, height, withAnnotations, withFormFill, withAspectRatio))
             {
                 // Bitmap -> ZPL code
-                yield return ConvertBitmap(image, encodingKind, graphicFieldOnly);
+                yield return ConvertBitmap(image, encodingKind, graphicFieldOnly, setLabelLength);
             }
         }
 
