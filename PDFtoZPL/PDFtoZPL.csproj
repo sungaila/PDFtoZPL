@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras/3.0.44">
   <!-- Assembly -->
   <PropertyGroup>
-    <TargetFrameworks>net462;net481;net6.0;net6.0-android;monoandroid10.0</TargetFrameworks>
+    <TargetFrameworks>net462;net481;net6.0;net7.0;net7.0-android;monoandroid10.0</TargetFrameworks>
     <AssemblyName>PDFtoZPL</AssemblyName>
     <RootNamespace>PDFtoZPL</RootNamespace>
     <EmbedAllSources>true</EmbedAllSources>
