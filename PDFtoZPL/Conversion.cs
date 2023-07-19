@@ -2,10 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
 using System.Runtime.CompilerServices;
 using System.Runtime.Versioning;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using static PDFtoZPL.ConversionUtils;
@@ -535,7 +533,7 @@ namespace PDFtoZPL
             if (graphicFieldOnly)
                 return graphicField;
 
-            if(setLabelLength)
+            if (setLabelLength)
                 return $"^XA^LL{pdfBitmap.Height}{graphicField}^FS^XZ";
 
             // finally return the complete ZPL code

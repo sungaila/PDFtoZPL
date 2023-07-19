@@ -19,6 +19,9 @@
     <None Remove="Assets\SocialPreview.pdf" />
     <None Remove="Assets\SocialPreview.png" />
     <None Remove="Assets\Wikimedia_Commons_web.pdf" />
+    <Compile Update="LabelLengthTests.ExpectedResults.cs">
+      <DependentUpon>LabelLengthTests.cs</DependentUpon>
+    </Compile>
     <Compile Update="EncodingTests.ExpectedResults.cs">
       <DependentUpon>EncodingTests.cs</DependentUpon>
     </Compile>

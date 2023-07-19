@@ -3,22 +3,21 @@ using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.IO.Compression;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace PDFtoZPL
 {
     internal static class ConversionUtils
     {
-        private static readonly Dictionary<string, byte> _hexLookupTable = new();
+        private static readonly IReadOnlyDictionary<string, byte> _hexLookupTable;
 
         static ConversionUtils()
         {
+            _hexLookupTable = new Dictionary<string, byte>();
+
             for (int i = 0; i <= 255; i++)
             {
-                _hexLookupTable.Add(i.ToString("X2"), (byte)i);
+                ((Dictionary<string, byte>)_hexLookupTable).Add(i.ToString("X2"), (byte)i);
             }
         }
 
@@ -194,7 +193,7 @@ namespace PDFtoZPL
         /// The mapping table used for compression.
         /// Each character count (the key) is represented by a certain char (the value).
         /// </summary>
-        private static readonly Dictionary<int, string> CompressionCountMapping = new()
+        private static readonly IReadOnlyDictionary<int, string> CompressionCountMapping = new Dictionary<int, string>()
         {
             { 1, "G" },
             { 2, "H" },
