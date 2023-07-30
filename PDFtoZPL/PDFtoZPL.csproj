@@ -12,7 +12,7 @@
 
   <!-- NuGet -->
   <PropertyGroup>
-    <VersionPrefix>3.4.0</VersionPrefix>
+    <VersionPrefix>3.4.1</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <Authors>David Sungaila</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -21,8 +21,7 @@
     <PackageProjectUrl>https://github.com/sungaila/PDFtoZPL</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/sungaila/PDFtoZPL/master/Icon_128.png</PackageIconUrl>
     <Description>A .NET library to convert PDF files (and bitmaps) into Zebra Programming Language code.</Description>
-    <PackageReleaseNotes>- Added optional parameter rotation (90 degree intervals; PDF only).
-- Added optional parameter setLabelLength for continuous media (e.g. receipt paper).</PackageReleaseNotes>
+    <PackageReleaseNotes>- Fixed an issue where the pdfium libraries couldn't be loaded inside a Docker container.</PackageReleaseNotes>
     <PackageTags>PDF ZPL Zebra Bitmap Convert Conversion C# PDFium MAUI</PackageTags>
     <RepositoryUrl>https://github.com/sungaila/PDFtoZPL.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -66,7 +65,7 @@
 
   <!-- SourceLink build steps and NuGet packages -->
   <ItemGroup>
-    <PackageReference Include="PDFtoImage" Version="2.3.0" PrivateAssets="analyzers" />
+    <PackageReference Include="PDFtoImage" Version="2.3.1" PrivateAssets="analyzers" />
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
