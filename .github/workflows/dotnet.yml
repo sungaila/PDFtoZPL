@@ -139,7 +139,7 @@ jobs:
         uses: exuanbo/actions-deploy-gist@main
         with:
           token: ${{ secrets.GIST_TOKEN }}
-          gist_id: 003e8ab2211221897e4b3c0e564ed7b6
+          gist_id: 47230c16cb63a1be5b5604830579714d
           gist_description: ${{ github.repository }} test results as JSON
           gist_file_name: ${{ github.repository_owner }}_${{ github.event.repository.name }}_test-results.json
           file_path: test-results.json
