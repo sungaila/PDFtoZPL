@@ -1,0 +1,206 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'master'
+  pull_request:
+    branches:
+      - '**'
+
+env:
+  BUILD_CONFIGURATION: Debug
+
+jobs:
+  build:
+    name: Build
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@main
+        with:
+          fetch-depth: 0
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@main
+        with:
+          msbuild-architecture: x64
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@main
+        with:
+          dotnet-version: 6.x
+      - name: Setup .NET 7
+        uses: actions/setup-dotnet@main
+        with:
+          dotnet-version: 7.0.306 # TEMP FIX: SDK 7.0.400 broke the Android builds
+      - name: Setup .NET workload Android
+        run: dotnet workload install android
+      - name: Setup JDK 17
+        uses: actions/setup-java@main
+        with:
+          java-version: 17
+          java-package: jdk
+          distribution: 'zulu'
+      - name: Restore
+        run: dotnet restore PDFtoZPL.sln
+      - name: Build
+        run: msbuild PDFtoZPL.sln /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:VersionSuffix=ci /p:RestorePackages=false
+      - name: Pack
+        run: msbuild PDFtoZPL/PDFtoZPL.csproj /t:pack /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:VersionSuffix=ci /p:RestorePackages=false
+      - name: Publish libraries
+        uses: actions/upload-artifact@main
+        with:
+          name: Library assemblies
+          path: |
+            PDFtoZPL/bin/${{env.BUILD_CONFIGURATION}}
+            !**/*.nupkg
+            !**/*.snupkg
+          if-no-files-found: error
+      - name: Publish tests
+        uses: actions/upload-artifact@main
+        with:
+          name: Test assemblies
+          path: Tests/bin/${{env.BUILD_CONFIGURATION}}
+          if-no-files-found: error
+          retention-days: 1
+      - name: Publish NuGet packages
+        uses: actions/upload-artifact@main
+        with:
+          name: NuGet packages
+          path: |
+            PDFtoZPL/bin/${{env.BUILD_CONFIGURATION}}/*.nupkg
+            PDFtoZPL/bin/${{env.BUILD_CONFIGURATION}}/*.snupkg
+          if-no-files-found: error
+  test:
+    name: Test (${{ matrix.os }})
+    needs: build
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@main
+        with:
+          dotnet-version: 6.x
+      - name: Setup .NET 7
+        uses: actions/setup-dotnet@main
+        with:
+          dotnet-version: 7.x
+      - name: Download test assemblies
+        uses: actions/download-artifact@main
+        with:
+          name: Test assemblies
+      - name: .NET Framework 4.6.2
+        if: runner.os == 'Windows' && success()
+        run: dotnet test net462/*.Tests.dll --logger trx --verbosity detailed
+      - name: .NET Framework 4.8.1
+        if: runner.os == 'Windows' && (success() || failure())
+        run: dotnet test net481/*.Tests.dll --logger trx --verbosity detailed
+      - name: .NET 6
+        if: success() || failure()
+        run: dotnet test net6.0/*.Tests.dll --logger trx --verbosity detailed
+      - name: .NET 7
+        if: success() || failure()
+        run: dotnet test net7.0/*.Tests.dll --logger trx --verbosity detailed
+      - name: Upload test results
+        if: success() || failure()
+        uses: actions/upload-artifact@main
+        with:
+          name: Test results (${{ matrix.os }})
+          path: ./**/*.trx
+          retention-days: 1
+  publish-test-results:
+    name: Publish tests results
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      checks: write
+      pull-requests: write
+    if: success() || failure()
+    steps:
+      - name: Download Artifacts
+        uses: actions/download-artifact@main
+        with:
+          path: artifacts
+      - name: Publish test results
+        uses: EnricoMi/publish-unit-test-result-action@master
+        with:
+          files: artifacts/**/*.trx
+          check_name: Test results
+          compare_to_earlier_commit: false
+          action_fail_on_inconclusive: true
+          json_file: test-results.json
+      - name: Upload test results to GitHub Gist
+        if: github.repository == 'sungaila/PDFtoZPL' && github.ref == 'refs/heads/master' && success()
+        uses: exuanbo/actions-deploy-gist@main
+        with:
+          token: ${{ secrets.GIST_TOKEN }}
+          gist_id: 47230c16cb63a1be5b5604830579714d
+          gist_description: ${{ github.repository }} test results as JSON
+          gist_file_name: ${{ github.repository_owner }}_${{ github.event.repository.name }}_test-results.json
+          file_path: test-results.json
+          file_type: text
+  sonarcloud:
+    name: SonarCloud
+    runs-on: windows-latest
+    if: github.repository == 'sungaila/PDFtoZPL'
+    steps:
+      - uses: actions/checkout@main
+        with:
+          fetch-depth: 0
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@main
+        with:
+          msbuild-architecture: x64
+      - name: Setup .NET 6
+        uses: actions/setup-dotnet@main
+        with:
+           dotnet-version: 6.x
+      - name: Setup .NET 7
+        uses: actions/setup-dotnet@main
+        with:
+          dotnet-version: 7.0.306 # TEMP FIX: SDK 7.0.400 broke the Android builds
+      - name: Setup dotnet-coverage
+        run: dotnet tool install --global dotnet-coverage
+      - name: Setup .NET workload Android
+        run: dotnet workload install android
+      - name: Setup JDK 17
+        uses: actions/setup-java@main
+        with:
+          java-version: 17
+          java-package: jdk
+          distribution: 'zulu'
+      - name: Cache SonarCloud packages
+        uses: actions/cache@v3
+        with:
+          path: ~\sonar\cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+      - name: Cache SonarCloud scanner
+        id: cache-sonar-scanner
+        uses: actions/cache@v3
+        with:
+          path: .\.sonar\scanner
+          key: ${{ runner.os }}-sonar-scanner
+          restore-keys: ${{ runner.os }}-sonar-scanner
+      - name: Install SonarCloud scanner
+        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
+        shell: powershell
+        run: |
+          New-Item -Path .\.sonar\scanner -ItemType Directory
+          dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
+      - name: Analyze
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        shell: powershell
+        run: |
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"sungaila_PDFtoZPL" /o:"sungaila" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+          dotnet restore PDFtoZPL.sln
+          msbuild PDFtoZPL.sln /p:Configuration=${{env.BUILD_CONFIGURATION}}
+          dotnet-coverage collect "dotnet test PDFtoZPL.sln --verbosity detailed" -f xml -o "coverage.xml"
+          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"

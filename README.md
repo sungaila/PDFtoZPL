@@ -1,10 +1,10 @@
 # ![PDFtoZPL Logo](https://raw.githubusercontent.com/sungaila/PDFtoZPL/master/Icon_64.png) PDFtoZPL
 
-[![Azure DevOps builds (branch)](https://img.shields.io/azure-devops/build/sungaila/fa66f1e9-b342-4f33-bcd4-40f7b082949d/4/master?style=flat-square)](https://dev.azure.com/sungaila/PDFtoZPL/_build/latest?definitionId=4&branchName=master)
-[![Azure DevOps tests (branch)](https://img.shields.io/azure-devops/tests/sungaila/PDFtoZPL/4/master?style=flat-square)](https://dev.azure.com/sungaila/PDFtoZPL/_build/latest?definitionId=4&branchName=master)
-[![SonarCloud Quality Gate](https://img.shields.io/sonar/quality_gate/sungaila_PDFtoZPL?server=https%3A%2F%2Fsonarcloud.io&style=flat-square)](https://sonarcloud.io/dashboard?id=sungaila_PDFtoZPL)
-[![NuGet version](https://img.shields.io/nuget/v/PDFtoZPL.svg?style=flat-square)](https://www.nuget.org/packages/PDFtoZPL/)
-[![NuGet downloads](https://img.shields.io/nuget/dt/PDFtoZPL.svg?style=flat-square)](https://www.nuget.org/packages/PDFtoZPL/)
+[![GitHub Workflow Build Status](https://img.shields.io/github/actions/workflow/status/sungaila/PDFtoZPL/dotnet.yml?event=push&style=flat-square&logo=github&logoColor=white)](https://github.com/sungaila/PDFtoZPL/actions/workflows/dotnet.yml)
+[![GitHub Workflow Test Runs Succeeded](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fgist.githubusercontent.com%2Fsungaila%2F47230c16cb63a1be5b5604830579714d%2Fraw&query=%24.stats.runs_succ&suffix=%20passed&style=flat-square&logo=github&logoColor=white&label=tests&color=45cc11)](https://github.com/sungaila/PDFtoZPL/actions/workflows/dotnet.yml)
+[![SonarCloud Quality Gate](https://img.shields.io/sonar/quality_gate/sungaila_PDFtoZPL?server=https%3A%2F%2Fsonarcloud.io&style=flat-square&logo=sonarcloud&logoColor=white)](https://sonarcloud.io/project/overview?id=sungaila_PDFtoZPL)
+[![NuGet version](https://img.shields.io/nuget/v/PDFtoZPL.svg?style=flat-square&logo=nuget&logoColor=white)](https://www.nuget.org/packages/PDFtoZPL/)
+[![NuGet downloads](https://img.shields.io/nuget/dt/PDFtoZPL.svg?style=flat-square&logo=nuget&logoColor=white)](https://www.nuget.org/packages/PDFtoZPL/)
 [![GitHub license](https://img.shields.io/github/license/sungaila/PDFtoZPL?style=flat-square)](https://github.com/sungaila/PDFtoZPL/blob/master/LICENSE)
 
 A .NET library to convert [PDF files](https://en.wikipedia.org/wiki/PDF) (and bitmaps) into [Zebra Programming Language commands](https://en.wikipedia.org/wiki/Zebra_(programming_language)).
