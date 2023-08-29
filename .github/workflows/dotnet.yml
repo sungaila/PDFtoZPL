@@ -45,7 +45,7 @@ jobs:
   build:
     name: Build
     runs-on: windows-latest
-    if: inputs.run_build == true
+    if: (inputs.run_build || true) == true
     steps:
       - name: Checkout
         uses: actions/checkout@main
@@ -74,15 +74,15 @@ jobs:
       - name: Restore
         run: dotnet restore PDFtoZPL.sln
       - name: Build
-        run: msbuild PDFtoZPL.sln /p:Configuration=${{ inputs.build_configuration }} /p:VersionSuffix=ci /p:RestorePackages=false
+        run: msbuild PDFtoZPL.sln /p:Configuration=${{ (inputs.build_configuration || 'Debug') }} /p:VersionSuffix=ci /p:RestorePackages=false
       - name: Pack
-        run: msbuild PDFtoZPL/PDFtoZPL.csproj /t:pack /p:Configuration=${{ inputs.build_configuration }} /p:VersionSuffix=ci /p:RestorePackages=false
+        run: msbuild PDFtoZPL/PDFtoZPL.csproj /t:pack /p:Configuration=${{ (inputs.build_configuration || 'Debug') }} /p:VersionSuffix=ci /p:RestorePackages=false
       - name: Publish libraries
         uses: actions/upload-artifact@main
         with:
           name: Library assemblies
           path: |
-            PDFtoZPL/bin/${{ inputs.build_configuration }}
+            PDFtoZPL/bin/${{ (inputs.build_configuration || 'Debug') }}
             !**/*.nupkg
             !**/*.snupkg
           if-no-files-found: error
@@ -90,7 +90,7 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: Test assemblies
-          path: Tests/bin/${{ inputs.build_configuration }}
+          path: Tests/bin/${{ (inputs.build_configuration || 'Debug') }}
           if-no-files-found: error
           retention-days: 1
       - name: Publish NuGet packages
@@ -98,8 +98,8 @@ jobs:
         with:
           name: NuGet packages
           path: |
-            PDFtoZPL/bin/${{ inputs.build_configuration }}/*.nupkg
-            PDFtoZPL/bin/${{ inputs.build_configuration }}/*.snupkg
+            PDFtoZPL/bin/${{ (inputs.build_configuration || 'Debug') }}/*.nupkg
+            PDFtoZPL/bin/${{ (inputs.build_configuration || 'Debug') }}/*.snupkg
           if-no-files-found: error
   test:
     name: Test (${{ matrix.os }})
@@ -109,7 +109,7 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
-    if: success() && inputs.run_tests == true
+    if: success() && (inputs.run_tests || true) == true
     steps:
       - name: Setup .NET 6
         uses: actions/setup-dotnet@main
@@ -149,7 +149,7 @@ jobs:
     permissions:
       checks: write
       pull-requests: write
-    if: (success() || failure()) && inputs.publish_testresults == true
+    if: (success() || failure()) && (inputs.publish_testresults || true) == true
     steps:
       - name: Download Artifacts
         uses: actions/download-artifact@main
@@ -176,7 +176,7 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: windows-latest
-    if: (github.repository == 'sungaila/PDFtoZPL' && inputs.run_sonarcloud) && inputs.run_sonarcloud == true
+    if: (github.repository == 'sungaila/PDFtoZPL' && success()) && (inputs.run_sonarcloud || true) == true
     steps:
       - name: Checkout
         uses: actions/checkout@main
@@ -231,6 +231,6 @@ jobs:
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"sungaila_PDFtoZPL" /o:"sungaila" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
           dotnet restore PDFtoZPL.sln
-          msbuild PDFtoZPL.sln /p:Configuration=${{ inputs.build_configuration }}
+          msbuild PDFtoZPL.sln /p:Configuration=${{ (inputs.build_configuration || 'Debug') }}
           dotnet-coverage collect "dotnet test PDFtoZPL.sln --verbosity detailed" -f xml -o "coverage.xml"
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
