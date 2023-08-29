@@ -5,6 +5,35 @@ name: CI
 
 on:
   workflow_dispatch:
+    inputs:
+      build_configuration:
+        type: choice
+        description: Build configuration
+        options: 
+        - Debug
+        - Release
+        required: true
+        default: 'Debug'
+      run_build:
+        type: boolean
+        description: Run build
+        required: true
+        default: true
+      run_tests:
+        type: boolean
+        description: Run tests
+        required: true
+        default: true
+      publish_testresults:
+        type: boolean
+        description: Publish test results
+        required: true
+        default: true
+      run_sonarcloud:
+        type: boolean
+        description: Run SonarCloud
+        required: true
+        default: true
   push:
     branches:
       - 'master'
@@ -12,15 +41,14 @@ on:
     branches:
       - '**'
 
-env:
-  BUILD_CONFIGURATION: Debug
-
 jobs:
   build:
     name: Build
     runs-on: windows-latest
+    if: inputs.run_build == true
     steps:
-      - uses: actions/checkout@main
+      - name: Checkout
+        uses: actions/checkout@main
         with:
           fetch-depth: 0
       - name: Setup MSBuild
@@ -46,15 +74,15 @@ jobs:
       - name: Restore
         run: dotnet restore PDFtoZPL.sln
       - name: Build
-        run: msbuild PDFtoZPL.sln /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:VersionSuffix=ci /p:RestorePackages=false
+        run: msbuild PDFtoZPL.sln /p:Configuration=${{ inputs.build_configuration }} /p:VersionSuffix=ci /p:RestorePackages=false
       - name: Pack
-        run: msbuild PDFtoZPL/PDFtoZPL.csproj /t:pack /p:Configuration=${{env.BUILD_CONFIGURATION}} /p:VersionSuffix=ci /p:RestorePackages=false
+        run: msbuild PDFtoZPL/PDFtoZPL.csproj /t:pack /p:Configuration=${{ inputs.build_configuration }} /p:VersionSuffix=ci /p:RestorePackages=false
       - name: Publish libraries
         uses: actions/upload-artifact@main
         with:
           name: Library assemblies
           path: |
-            PDFtoZPL/bin/${{env.BUILD_CONFIGURATION}}
+            PDFtoZPL/bin/${{ inputs.build_configuration }}
             !**/*.nupkg
             !**/*.snupkg
           if-no-files-found: error
@@ -62,7 +90,7 @@ jobs:
         uses: actions/upload-artifact@main
         with:
           name: Test assemblies
-          path: Tests/bin/${{env.BUILD_CONFIGURATION}}
+          path: Tests/bin/${{ inputs.build_configuration }}
           if-no-files-found: error
           retention-days: 1
       - name: Publish NuGet packages
@@ -70,8 +98,8 @@ jobs:
         with:
           name: NuGet packages
           path: |
-            PDFtoZPL/bin/${{env.BUILD_CONFIGURATION}}/*.nupkg
-            PDFtoZPL/bin/${{env.BUILD_CONFIGURATION}}/*.snupkg
+            PDFtoZPL/bin/${{ inputs.build_configuration }}/*.nupkg
+            PDFtoZPL/bin/${{ inputs.build_configuration }}/*.snupkg
           if-no-files-found: error
   test:
     name: Test (${{ matrix.os }})
@@ -81,6 +109,7 @@ jobs:
       matrix:
         os: [windows-latest, ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
+    if: success() && inputs.run_tests == true
     steps:
       - name: Setup .NET 6
         uses: actions/setup-dotnet@main
@@ -120,7 +149,7 @@ jobs:
     permissions:
       checks: write
       pull-requests: write
-    if: success() || failure()
+    if: (success() || failure()) && inputs.publish_testresults == true
     steps:
       - name: Download Artifacts
         uses: actions/download-artifact@main
@@ -147,9 +176,10 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: windows-latest
-    if: github.repository == 'sungaila/PDFtoZPL'
+    if: (github.repository == 'sungaila/PDFtoZPL' && inputs.run_sonarcloud) && inputs.run_sonarcloud == true
     steps:
-      - uses: actions/checkout@main
+      - name: Checkout
+        uses: actions/checkout@main
         with:
           fetch-depth: 0
       - name: Setup MSBuild
@@ -201,6 +231,6 @@ jobs:
         run: |
           .\.sonar\scanner\dotnet-sonarscanner begin /k:"sungaila_PDFtoZPL" /o:"sungaila" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
           dotnet restore PDFtoZPL.sln
-          msbuild PDFtoZPL.sln /p:Configuration=${{env.BUILD_CONFIGURATION}}
+          msbuild PDFtoZPL.sln /p:Configuration=${{ inputs.build_configuration }}
           dotnet-coverage collect "dotnet test PDFtoZPL.sln --verbosity detailed" -f xml -o "coverage.xml"
           .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
