@@ -1,0 +1,95 @@
+# This workflow will build a .NET project
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-net
+
+name: GitHub Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - 'master'
+      - 'webconverter'
+
+jobs:
+  publish:
+    name: Publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@main
+        with:
+          fetch-depth: 0
+      - name: Setup .NET 7
+        uses: actions/setup-dotnet@main
+        with:
+          dotnet-version: 7.x
+      - name: Setup .NET workload android
+        run: dotnet workload install android
+      - name: Setup .NET workload wasm-tools
+        run: dotnet workload install wasm-tools
+      - name: Update relative paths
+        working-directory: WebConverter/wwwroot
+        run: |
+            sed -i 's/<base href="\/" \/>/<base href="\/${{github.event.repository.name}}\/" \/>/g' index.html
+            sed -i 's/"scope": "\/"/"scope": "\/${{github.event.repository.name}}\/"/g' manifest.webmanifest
+            sed -i 's/"start_url": "\/"/"start_url": "\/${{github.event.repository.name}}\/"/g' manifest.webmanifest
+            sed -i 's/"action": "\/"/"action": "\/${{github.event.repository.name}}\/"/g' manifest.webmanifest
+            sed -i 's/"action": "\/receive-webshare"/"action": "\/${{github.event.repository.name}}\/receive-webshare"/g' manifest.webmanifest
+      - name: Restore
+        run: dotnet restore PDFtoZPL.sln
+      - name: Publish
+        run: dotnet publish WebConverter/WebConverter.csproj -c Release -p:PublishProfile=WebConverter/Properties/PublishProfiles/PublishSite.pubxml --no-restore
+      - name: Create .nojekyll file
+        run: touch WebConverter/bin/Release/net7.0/publish/wwwroot/.nojekyll
+      - name: Update service-worker-assets.js hashes
+        working-directory: WebConverter/bin/Release/net7.0/publish/wwwroot
+        if: false
+        run: |
+          jsFile=$(<service-worker-assets.js)
+          # remove JavaScript from contents so it can be interpreted as JSON
+          json=$(echo "$jsFile" | sed "s/self.assetsManifest = //g" | sed "s/;//g")
+          # grab the assets JSON array
+          assets=$(echo "$json" | jq '.assets[]' -c)
+          for asset in $assets
+          do
+            oldHash=$(echo "$asset" | jq '.hash')
+            #remove leading and trailing quotes
+            oldHash="${oldHash:1:-1}"
+            path=$(echo "$asset" | jq '.url')
+            #remove leading and trailing quotes
+            path="${path:1:-1}"
+            newHash="sha256-$(openssl dgst -sha256 -binary $path | openssl base64 -A)"
+          
+            if [ $oldHash != $newHash ]; then
+              # escape slashes for json
+              oldHash=$(echo "$oldHash" | sed 's;/;\\/;g')
+              newHash=$(echo "$newHash" | sed 's;/;\\/;g')
+              echo "Updating hash for $path from $oldHash to $newHash"
+              # escape slashes second time for sed
+              oldHash=$(echo "$oldHash" | sed 's;/;\\/;g')
+              jsFile=$(echo -n "$jsFile" | sed "s;$oldHash;$newHash;g")
+            fi
+          done
+          echo -n "$jsFile" > service-worker-assets.js
+      - name: Upload pages artifact
+        uses: actions/upload-pages-artifact@main
+        with:
+          path: WebConverter/bin/Release/net7.0/publish/wwwroot
+  deploy:
+    name: Deploy
+    needs: publish
+    runs-on: ubuntu-latest
+
+    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    permissions:
+      pages: write      # to deploy to Pages
+      id-token: write   # to verify the deployment originates from an appropriate source
+      
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@main

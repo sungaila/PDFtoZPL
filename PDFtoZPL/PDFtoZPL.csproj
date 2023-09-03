@@ -12,7 +12,7 @@
 
   <!-- NuGet -->
   <PropertyGroup>
-    <VersionPrefix>3.4.2</VersionPrefix>
+    <VersionPrefix>3.5.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <Authors>David Sungaila</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -21,8 +21,8 @@
     <PackageProjectUrl>https://github.com/sungaila/PDFtoZPL</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/sungaila/PDFtoZPL/master/Icon_128.png</PackageIconUrl>
     <Description>A .NET library to convert PDF files (and bitmaps) into Zebra Programming Language code.</Description>
-    <PackageReleaseNotes>- Fixed an issue where colors were assigned incorrectly (e.g. blue instead of red) for macOS and Android.</PackageReleaseNotes>
-    <PackageTags>PDF ZPL Zebra Bitmap Convert Conversion C# PDFium MAUI</PackageTags>
+    <PackageReleaseNotes>- Added support for WebAssembly (e.g. ASP.NET Core Blazor WebAssembly).</PackageReleaseNotes>
+    <PackageTags>PDF ZPL Zebra Bitmap Convert Conversion C# PDFium MAUI WASM WebAssembly</PackageTags>
     <RepositoryUrl>https://github.com/sungaila/PDFtoZPL.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <IncludeSymbols>true</IncludeSymbols>
@@ -65,7 +65,7 @@
 
   <!-- SourceLink build steps and NuGet packages -->
   <ItemGroup>
-    <PackageReference Include="PDFtoImage" Version="2.3.2" PrivateAssets="analyzers" />
+    <PackageReference Include="PDFtoImage" Version="2.4.0" PrivateAssets="analyzers" />
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="3.3.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
