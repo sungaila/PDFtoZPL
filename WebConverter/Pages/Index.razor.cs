@@ -125,10 +125,10 @@ namespace PDFtoZPL.WebConverter.Pages
 							height: Model.Height,
 							withAnnotations: Model.WithAnnotations,
 							withFormFill: Model.WithFormFill,
-							encodingKind: Conversion.BitmapEncodingKind.Base64Compressed,
-							graphicFieldOnly: false,
+							encodingKind: Model.Encoding,
+							graphicFieldOnly: Model.GraphicFieldOnly,
 							withAspectRatio: Model.WithAspectRatio,
-							setLabelLength: false,
+							setLabelLength: Model.SetLabelLength,
 							rotation: Model.Rotation
 						);
 					}
