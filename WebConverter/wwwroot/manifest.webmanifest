@@ -61,42 +61,42 @@
   "screenshots": [
     {
       "src": "screenshots/narrow_light.png",
-      "sizes": "864x1791",
+      "sizes": "864x1550",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "PDFtoZPL on mobile (light theme)"
     },
     {
       "src": "screenshots/narrow_dark.png",
-      "sizes": "864x1791",
+      "sizes": "864x1550",
       "type": "image/png",
       "form_factor": "narrow",
       "label": "PDFtoZPL on mobile (dark theme)"
     },
     {
       "src": "screenshots/wide_big_light.png",
-      "sizes": "2097x1241",
+      "sizes": "1872x1040",
       "type": "image/png",
       "form_factor": "wide",
       "label": "PDFtoZPL on desktop (light theme)"
     },
     {
       "src": "screenshots/wide_small_light.png",
-      "sizes": "898x1241",
+      "sizes": "898x1043",
       "type": "image/png",
       "form_factor": "wide",
       "label": "PDFtoZPL on desktop (light theme; small)"
     },
     {
       "src": "screenshots/wide_big_dark.png",
-      "sizes": "2097x1241",
+      "sizes": "1872x1040",
       "type": "image/png",
       "form_factor": "wide",
       "label": "PDFtoZPL on desktop (dark theme)"
     },
     {
       "src": "screenshots/wide_small_dark.png",
-      "sizes": "898x1241",
+      "sizes": "898x1043",
       "type": "image/png",
       "form_factor": "wide",
       "label": "PDFtoZPL on desktop (dark theme; small)"
