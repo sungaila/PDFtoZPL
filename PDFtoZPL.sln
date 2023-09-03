@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Console", "Console\Console.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{8C50448B-27B4-4012-90A9-BFFBCC980D85}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebConverter", "WebConverter\WebConverter.csproj", "{AC631A6E-97A9-4FFE-A05C-FF7616C1FAAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,6 +44,12 @@ Global
 		{8C50448B-27B4-4012-90A9-BFFBCC980D85}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8C50448B-27B4-4012-90A9-BFFBCC980D85}.ReleaseSigned|Any CPU.ActiveCfg = Release|Any CPU
 		{8C50448B-27B4-4012-90A9-BFFBCC980D85}.ReleaseSigned|Any CPU.Build.0 = Release|Any CPU
+		{AC631A6E-97A9-4FFE-A05C-FF7616C1FAAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC631A6E-97A9-4FFE-A05C-FF7616C1FAAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC631A6E-97A9-4FFE-A05C-FF7616C1FAAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC631A6E-97A9-4FFE-A05C-FF7616C1FAAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC631A6E-97A9-4FFE-A05C-FF7616C1FAAE}.ReleaseSigned|Any CPU.ActiveCfg = Release|Any CPU
+		{AC631A6E-97A9-4FFE-A05C-FF7616C1FAAE}.ReleaseSigned|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
