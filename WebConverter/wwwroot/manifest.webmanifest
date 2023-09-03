@@ -3,7 +3,7 @@
   "name": "PDFtoZPL",
   "short_name": "PDFtoZPL",
   "start_url": "/",
-  "background_color": "#ffffff",
+  "background_color": "#212529",
   "theme_color": "#263238",
   "description": "Converts PDF files and images into Zebra Programming Language commands.",
   "lang": "en",
@@ -108,6 +108,18 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
+    },
+    {
+      "src": "icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "icon-512-monochrome.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "monochrome maskable"
     },
     {
       "src": "icon-192.png",
