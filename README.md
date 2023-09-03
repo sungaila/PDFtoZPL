@@ -5,6 +5,7 @@
 [![SonarCloud Quality Gate](https://img.shields.io/sonar/quality_gate/sungaila_PDFtoZPL?server=https%3A%2F%2Fsonarcloud.io&style=flat-square&logo=sonarcloud&logoColor=white)](https://sonarcloud.io/project/overview?id=sungaila_PDFtoZPL)
 [![NuGet version](https://img.shields.io/nuget/v/PDFtoZPL.svg?style=flat-square&logo=nuget&logoColor=white)](https://www.nuget.org/packages/PDFtoZPL/)
 [![NuGet downloads](https://img.shields.io/nuget/dt/PDFtoZPL.svg?style=flat-square&logo=nuget&logoColor=white)](https://www.nuget.org/packages/PDFtoZPL/)
+[![Website](https://img.shields.io/website?up_message=online&down_message=offline&url=https%3A%2F%2Fsungaila.github.io%2FPDFtoZPL%2F&style=flat-square&label=website)](https://sungaila.github.io/PDFtoZPL/)
 [![GitHub license](https://img.shields.io/github/license/sungaila/PDFtoZPL?style=flat-square)](https://github.com/sungaila/PDFtoZPL/blob/master/LICENSE)
 
 A .NET library to convert [PDF files](https://en.wikipedia.org/wiki/PDF) (and bitmaps) into [Zebra Programming Language commands](https://en.wikipedia.org/wiki/Zebra_(programming_language)).
