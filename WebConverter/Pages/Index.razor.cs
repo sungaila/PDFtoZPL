@@ -2,14 +2,12 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using PDFtoZPL.WebConverter.Models;
-using SkiaSharp;
 using System;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Thinktecture.Blazor.WebShare.Models;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace PDFtoZPL.WebConverter.Pages
 {
