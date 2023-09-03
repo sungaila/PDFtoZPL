@@ -27,6 +27,12 @@ namespace PDFtoZPL.WebConverter.Models
 		public SKEncodedImageFormat Format { get; set; } = SKEncodedImageFormat.Png;
 
 		[Required]
+		public Conversion.BitmapEncodingKind Encoding { get; set; } = Conversion.BitmapEncodingKind.Base64Compressed;
+
+		[Required]
+		public bool WithAnnotations { get; set; } = true;
+
+		[Required]
 		[Range(0, 100, ErrorMessage = "Quality invalid (1-100).")]
 		public int Quality { get; set; } = 100;
 
@@ -45,7 +51,17 @@ namespace PDFtoZPL.WebConverter.Models
 		public int Page { get; set; } = 0;
 
 		[Required]
-		public bool WithAnnotations { get; set; } = true;
+		public bool GraphicFieldOnly { get; set; } = false;
+
+		[Required]
+		public bool IncludeStartFormat
+		{
+			get => !GraphicFieldOnly;
+			set => GraphicFieldOnly = !value;
+		}
+
+		[Required]
+		public bool SetLabelLength { get; set; } = true;
 
 		[Required]
 		public bool WithFormFill { get; set; } = true;
@@ -73,11 +89,11 @@ namespace PDFtoZPL.WebConverter.Models
 			_ => throw new ArgumentOutOfRangeException(nameof(format))
 		};
 
-		public static string GetOutputFileName(RenderRequest model) => $"{model.File!.Name}.{model.Format.ToString().ToLowerInvariant()}";
+		public static string GetOutputFileName(RenderRequest model) => $"{model.File!.Name}.txt";
 
 		public Stream? Input { get; set; }
 
-		public Stream? Output { get; set; }
+		public string? Output { get; set; }
 
 		public override string ToString()
 		{
@@ -92,8 +108,6 @@ namespace PDFtoZPL.WebConverter.Models
 				{
 					Input?.Dispose();
 					Input = null;
-					Output?.Dispose();
-					Output = null;
 				}
 
 				disposedValue = true;

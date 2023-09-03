@@ -23,7 +23,18 @@
     {
       "action": "/",
       "accept": {
-        "application/pdf": [ ".pdf" ]
+        "application/pdf": [ ".pdf" ],
+        "image/bmp": [ ".bmp" ],
+        "image/x-bmp": [ ".bmp" ],
+        "image/x-ms-bmp": [ ".bmp" ],
+        "image/gif": [ ".gif" ],
+        "image/x-icon": [ ".ico" ],
+        "image/jpeg": [ ".jpeg", ".jpg", ".jpe" ],
+        "image/png": [ ".png" ],
+        "image/vnd.wap.wbmp": [ ".wbmp" ],
+        "image/webp": [ ".webp" ],
+        "image/ktx": [ ".ktx" ],
+        "image/dng": [ ".dng" ]
       }
     }
   ],
@@ -44,8 +55,8 @@
       "url": "url",
       "files": [
         {
-          "name": "pdfs",
-          "accept": [ "application/pdf", ".pdf" ]
+          "name": "files",
+          "accept": [ "application/pdf", ".pdf", "image/bmp", "image/x-bmp", "image/x-ms-bmp", ".bmp", "image/gif", ".gif", "image/x-icon", ".ico", "image/jpeg", ".jpeg", ".jpg", ".jpe", "image/png", ".png", "image/vnd.wap.wbmp", ".wbmp", "image/webp", ".webp", "image/ktx", ".ktx", "image/dng", ".dng" ]
         }
       ]
     }

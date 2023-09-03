@@ -81,7 +81,7 @@ async function onMessage(event) {
     if (webShareFormData !== undefined && webShareFormData !== null) {
         var filesStringified = [];
 
-        for (const file of webShareFormData.getAll('pdfs')) {
+        for (const file of webShareFormData.getAll('files')) {
 
             var fileStringified = {
                 name: file.name,

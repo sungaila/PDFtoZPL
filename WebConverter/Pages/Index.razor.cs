@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Thinktecture.Blazor.WebShare.Models;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PDFtoZPL.WebConverter.Pages
 {
@@ -80,36 +81,15 @@ namespace PDFtoZPL.WebConverter.Pages
 			Model.File = e.File;
 			Model.Input?.Dispose();
 			Model.Input = null;
-			Model.Output?.Dispose();
 			Model.Output = null;
 			StateHasChanged();
-
-			await JS.InvokeVoidAsync("resetImage", "outputImage");
 		}
 
-		private async Task SetImage()
-		{
-			if (Model.Output == null)
-			{
-				await JS.InvokeVoidAsync("resetImage", "outputImage");
-				return;
-			}
-
-			Model.Output.Position = 0;
-			using var fs = new MemoryStream();
-			await Model.Output.CopyToAsync(fs);
-			fs.Position = 0;
-
-			using var streamRef = new DotNetStreamReference(fs);
-			await JS.InvokeVoidAsync("setImage", "outputImage", streamRef);
-		}
-
-		private async Task Reset()
+		private void Reset()
 		{
 			Model.Dispose();
 			Model = new();
 			LastException = null;
-			await JS.InvokeVoidAsync("resetImage", "outputImage");
 		}
 
 		private const long MaxAllowedSize = 250 * 1000 * 1000;
@@ -123,7 +103,7 @@ namespace PDFtoZPL.WebConverter.Pages
 				IsLoading = true;
 				LastException = null;
 
-				Model.Output = new MemoryStream();
+				Model.Output = null;
 
 				if (Model.Input == null)
 				{
@@ -132,35 +112,39 @@ namespace PDFtoZPL.WebConverter.Pages
 				}
 
 				Model.Input.Position = 0;
-				SKBitmap? bitmap = null;
-				bool encodeSuccess = false;
 
 				await Task.Run(() =>
 				{
-					bitmap = PDFtoImage.Conversion.ToImage(
-						Model.Input,
-						leaveOpen: true,
-						password: !string.IsNullOrEmpty(Model.Password) ? Model.Password : null,
-						page: Model.Page,
-						dpi: Model.Dpi,
-						width: Model.Width,
-						height: Model.Height,
-						withAnnotations: Model.WithAnnotations,
-						withFormFill: Model.WithFormFill,
-						withAspectRatio: Model.WithAspectRatio,
-						rotation: Model.Rotation
-
-					);
-					encodeSuccess = bitmap!.Encode(Model.Output, Model.Format, Model.Quality);
+					if (Model.File?.ContentType == "application/pdf")
+					{
+						Model.Output = PDFtoZPL.Conversion.ConvertPdfPage(
+							Model.Input,
+							leaveOpen: true,
+							password: !string.IsNullOrEmpty(Model.Password) ? Model.Password : null,
+							page: Model.Page,
+							dpi: Model.Dpi,
+							width: Model.Width,
+							height: Model.Height,
+							withAnnotations: Model.WithAnnotations,
+							withFormFill: Model.WithFormFill,
+							encodingKind: Conversion.BitmapEncodingKind.Base64Compressed,
+							graphicFieldOnly: false,
+							withAspectRatio: Model.WithAspectRatio,
+							setLabelLength: false,
+							rotation: Model.Rotation
+						);
+					}
+					else
+					{
+						Model.Output = PDFtoZPL.Conversion.ConvertBitmap(
+							Model.Input,
+							leaveOpen: true,
+							encodingKind: Model.Encoding,
+							graphicFieldOnly: Model.GraphicFieldOnly,
+							setLabelLength: Model.SetLabelLength
+						);
+					}
 				});
-
-				if (!encodeSuccess)
-				{
-					Model.Output?.Dispose();
-					Model.Output = null;
-				}
-
-				await SetImage();
 			}
 			catch (Exception ex)
 			{
@@ -173,20 +157,22 @@ namespace PDFtoZPL.WebConverter.Pages
 			}
 		}
 
-		private async Task DownloadImage()
+		private async Task CopyToClipboard()
+		{
+			if (Model.Output == null)
+				return;
+
+			await JS.InvokeVoidAsync("navigator.clipboard.writeText", Model.Output);
+		}
+
+		private async Task Download()
 		{
 			if (Model.Output == null)
 				return;
 
 			try
 			{
-				Model.Output.Position = 0;
-				using var fs = new MemoryStream();
-				await Model.Output.CopyToAsync(fs);
-				fs.Position = 0;
-
-				using var streamRef = new DotNetStreamReference(fs);
-				await JS.InvokeVoidAsync("downloadFileFromStream", RenderRequest.GetOutputFileName(Model), streamRef);
+				await JS.InvokeVoidAsync("downloadFileFromText", RenderRequest.GetOutputFileName(Model), Model.Output);
 			}
 			catch (Exception ex)
 			{
@@ -194,24 +180,16 @@ namespace PDFtoZPL.WebConverter.Pages
 			}
 		}
 
-		private async Task ShareImage()
+		private async Task Share()
 		{
 			if (Model.Output == null)
 				return;
 
 			try
 			{
-				Model.Output.Position = 0;
-				using var fs = new MemoryStream();
-				await Model.Output.CopyToAsync(fs);
-				fs.Position = 0;
-
-				using var streamRef = new DotNetStreamReference(fs);
-
-				var file = await JS.InvokeAsync<IJSObjectReference>("createFileFromStream", RenderRequest.GetOutputFileName(Model), RenderRequest.GetMimeType(Model.Format), streamRef);
 				var data = new WebShareDataModel
 				{
-					Files = new[] { file }
+					Text = Model.Output
 				};
 
 				if (!await WebShareService.CanShareAsync(data))

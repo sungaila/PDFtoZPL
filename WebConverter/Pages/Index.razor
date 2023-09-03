@@ -51,18 +51,18 @@
 						<div class="form-group row mb-1">
 							<label for="fileUpload" class="col-sm-3 col-form-label label-nowrap">File</label>
 							<div class="col-sm">
-								<InputFile OnChange="OnInputFileChange" id="fileUpload" single class="custom-file-input form-control-file" accept="application/pdf" />
+								<InputFile OnChange="OnInputFileChange" id="fileUpload" single class="custom-file-input form-control-file" accept="application/pdf,image/bmp,image/x-bmp,image/x-ms-bmp,image/gif,image/x-icon,image/jpeg,image/png,image/vnd.wap.wbmp,image/webp,image/ktx,image/dng" />
 							</div>
 						</div>
 
-						<div class="form-group row mb-1">
+						<div class="form-group row mb-1" hidden="@(Model.File?.ContentType != "application/pdf")">
 							<label for="fileUploadPassword" class="col-sm-3 col-form-label label-nowrap">Password</label>
 							<div class="col-sm">
 								<InputText @bind-Value="Model.Password" type="password" autocomplete="current-password" id="fileUploadPassword" class="form-control form-control-sm" placeholder="if needed" />
 							</div>
 						</div>
 
-						<div class="form-group row">
+						<div class="form-group row" hidden="@(Model.File?.ContentType != "application/pdf")">
 							<label for="page" class="col-sm-3 col-form-label label-nowrap">Page</label>
 							<div class="col-sm">
 								<InputNumber @bind-Value="Model.Page" id="page" class="form-control form-control-sm" min="0" max="@int.MaxValue" step="1" />
@@ -78,26 +78,34 @@
 					<h5 class="card-header">Output</h5>
 					<div class="card-body">
 						<div class="form-group row">
-							<label for="fileType" class="col-sm-3 col-form-label label-nowrap">Format</label>
+							<label for="encodingType" class="col-sm-3 col-form-label label-nowrap">Encoding</label>
 							<div class="col-sm">
-								<InputSelect @bind-Value="Model.Format" id="fileType" class="form-control form-control-sm">
-									@foreach (var format in RenderRequest.FormatWhitelist)
+								<InputSelect @bind-Value="Model.Encoding" id="encodingType" class="form-control form-control-sm">
+									@foreach (var encoding in Enum.GetValues<PDFtoZPL.Conversion.BitmapEncodingKind>())
 									{
-										<option value="@format">@format</option>
+										<option value="@encoding">@encoding</option>
 									}
 								</InputSelect>
 							</div>
+						</div>
 
-							<label for="quality" class="col-sm-3 col-form-label label-nowrap">Quality</label>
-							<div class="col-sm">
-								<InputNumber @bind-Value="Model.Quality" id="quality" class="form-control form-control-sm" min="0" max="100" step="1" aria-describedby="qualityHint" />
-								<small id="qualityHint" class="form-text text-muted">Relevant for Jpeg only</small>
+						<div class="form-group row mb-1">
+							<div>
+								<InputCheckbox @bind-Value="Model.IncludeStartFormat" id="graphicFieldOnly" class="form-check-input" />
+								<label for="graphicFieldOnly">Include Start Format (^XA)</label>
+							</div>
+						</div>
+
+						<div class="form-group row mb-1">
+							<div>
+								<InputCheckbox @bind-Value="Model.SetLabelLength" id="setLabelLength" class="form-check-input" disabled="@(!Model.IncludeStartFormat)" />
+								<label for="setLabelLength">Include Label Length (^LL)</label>
 							</div>
 						</div>
 					</div>
 				</div>
 
-				<div class="card mb-3">
+				<div class="card mb-3" hidden="@(Model.File?.ContentType != "application/pdf")">
 					<h5 class="card-header">Sizing &amp; rotation</h5>
 					<div class="card-body">
 						<div class="form-group row mb-1">
@@ -140,7 +148,7 @@
 					</div>
 				</div>
 
-				<div class="card mb-3">
+				<div class="card mb-3" hidden="@(Model.File?.ContentType != "application/pdf")">
 					<h5 class="card-header">Render options</h5>
 					<div class="card-body">
 						<div class="form-group row mb-1">
@@ -164,21 +172,20 @@
 		<div class="col-sm">
 			<div hidden="@(IsLoading || Model.Output == null || LastException != null)">
 				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-success" @onclick="DownloadImage">
+					<button type="button" class="btn btn-success" @onclick="CopyToClipboard">
+						<span class="oi oi-clipboard" aria-hidden="true" /> Copy to clipboard
+					</button>
+					<button type="button" class="btn btn-outline-success" @onclick="Download">
 						<span class="oi oi-data-transfer-download" aria-hidden="true" /> Download
 					</button>
 					@if (IsWebShareSupported)
 					{
-						<button type="button" class="btn btn-outline-success" @onclick="ShareImage">
+						<button type="button" class="btn btn-outline-success" @onclick="Share">
 							<span class="oi oi-share-boxed" aria-hidden="true" /> Share
 						</button>
 					}
 				</div>
-				<div class="card mt-3">
-					<div class="card-body">
-						<img id="outputImage" class="card-img-bottom" alt="The converted PDF output." style="max-width: 100%; width: auto; height: auto" />
-					</div>
-				</div>
+				<InputTextArea @bind-Value="Model.Output" type="text" class="form-control mt-3" title="Generated ZPL code" style="min-height: 12rem" readonly />
 			</div>
 		</div>
 	</div>
@@ -187,7 +194,7 @@
 <script>
 	window.setDotNetHelper = dotNetHelper => {
 		window.dotNetHelper = dotNetHelper;
-	}
+	};
 
 	navigator.serviceWorker.onmessage = async event => {
 		if (event.data?.type === 'receive-webshare') {
@@ -202,15 +209,8 @@
 			}
 		});
 
-	window.createFileFromStream = async (fileName, mimeType, contentStreamReference) => {
-		const arrayBuffer = await contentStreamReference.arrayBuffer();
-		const blob = new Blob([arrayBuffer], { type: mimeType });
-		return new File([blob], fileName, { type: blob.type });
-	}
-
-	window.downloadFileFromStream = async (fileName, contentStreamReference) => {
-		const arrayBuffer = await contentStreamReference.arrayBuffer();
-		const blob = new Blob([arrayBuffer]);
+	window.downloadFileFromText = async (fileName, fileContent) => {
+		const blob = new Blob([fileContent], { type: 'text/plain' });
 		const url = URL.createObjectURL(blob);
 		const anchorElement = document.createElement('a');
 		anchorElement.href = url;
@@ -218,21 +218,5 @@
 		anchorElement.click();
 		anchorElement.remove();
 		URL.revokeObjectURL(url);
-	}
-
-	window.setImage = async (imageElementId, imageStream) => {
-		const arrayBuffer = await imageStream.arrayBuffer();
-		const blob = new Blob([arrayBuffer]);
-		const url = URL.createObjectURL(blob);
-		const image = document.getElementById(imageElementId);
-		image.onload = () => {
-			URL.revokeObjectURL(url);
-		}
-		image.src = url;
-	}
-
-	window.resetImage = async (imageElementId) => {
-		const image = document.getElementById(imageElementId);
-		image.src = 'favicon.png';
-	}
+	};
 </script>
