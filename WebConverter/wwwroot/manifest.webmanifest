@@ -5,7 +5,7 @@
   "start_url": "/",
   "background_color": "#ffffff",
   "theme_color": "#263238",
-  "description": "Converts PDF files into images.",
+  "description": "Converts PDF files and images into Zebra Programming Language commands.",
   "lang": "en",
   "categories": [ "utilities" ],
   "display": "standalone",
