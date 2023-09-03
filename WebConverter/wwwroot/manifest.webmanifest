@@ -60,18 +60,25 @@
   },
   "screenshots": [
     {
-      "src": "screenshots/narrow_light.png",
-      "sizes": "864x1550",
-      "type": "image/png",
+      "src": "screenshots/narrow_1.jpg",
+      "sizes": "1080x1920",
+      "type": "image/jpeg",
       "form_factor": "narrow",
-      "label": "PDFtoZPL on mobile (light theme)"
+      "label": "PDFtoZPL on mobile"
     },
     {
-      "src": "screenshots/narrow_dark.png",
-      "sizes": "864x1550",
-      "type": "image/png",
+      "src": "screenshots/narrow_2.jpg",
+      "sizes": "1080x1920",
+      "type": "image/jpeg",
       "form_factor": "narrow",
-      "label": "PDFtoZPL on mobile (dark theme)"
+      "label": "PDFtoZPL with options"
+    },
+    {
+      "src": "screenshots/narrow_3.jpg",
+      "sizes": "1080x1920",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "PDFtoZPL in dark theme"
     },
     {
       "src": "screenshots/wide_big_light.png",
