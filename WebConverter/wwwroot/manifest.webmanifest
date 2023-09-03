@@ -81,6 +81,13 @@
       "label": "PDFtoZPL in dark theme"
     },
     {
+      "src": "screenshots/narrow_4.jpg",
+      "sizes": "1080x1920",
+      "type": "image/jpeg",
+      "form_factor": "wide",
+      "label": "PDFtoZPL runs in any browser"
+    },
+    {
       "src": "screenshots/wide_big_light.png",
       "sizes": "1872x1040",
       "type": "image/png",
