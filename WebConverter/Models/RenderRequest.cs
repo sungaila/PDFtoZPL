@@ -29,6 +29,15 @@ namespace PDFtoZPL.WebConverter.Models
 		[Required]
 		public Conversion.BitmapEncodingKind Encoding { get; set; } = Conversion.BitmapEncodingKind.Base64Compressed;
 
+		public static string GetEncodingLocalized(Conversion.BitmapEncodingKind encoding) => encoding switch
+		{
+			Conversion.BitmapEncodingKind.Hexadecimal => "Hexadecimal [not recommended]",
+			Conversion.BitmapEncodingKind.HexadecimalCompressed => "Hexadecimal with compression",
+			Conversion.BitmapEncodingKind.Base64 => "Base64 [not recommended]",
+			Conversion.BitmapEncodingKind.Base64Compressed => "Base64 with compression",
+			_ => throw new ArgumentOutOfRangeException(nameof(encoding))
+		};
+
 		[Required]
 		public bool WithAnnotations { get; set; } = true;
 

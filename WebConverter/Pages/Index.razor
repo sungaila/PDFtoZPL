@@ -83,7 +83,7 @@
 								<InputSelect @bind-Value="Model.Encoding" id="encodingType" class="form-control form-control-sm">
 									@foreach (var encoding in Enum.GetValues<PDFtoZPL.Conversion.BitmapEncodingKind>())
 									{
-										<option value="@encoding">@encoding</option>
+										<option value="@encoding">@(RenderRequest.GetEncodingLocalized(encoding))</option>
 									}
 								</InputSelect>
 							</div>
