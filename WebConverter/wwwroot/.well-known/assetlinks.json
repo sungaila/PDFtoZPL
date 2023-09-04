@@ -1,0 +1,10 @@
+[
+  {
+    "relation": [ "delegate_permission/common.handle_all_urls" ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "de.sungaila.pdftozpl",
+      "sha256_cert_fingerprints": [ "EB:A5:FD:75:2A:32:ED:0F:10:1D:66:3E:1B:90:D3:23:12:44:A4:44:0C:9E:4B:C6:60:2C:56:10:80:50:4E:71" ]
+    }
+  }
+]
