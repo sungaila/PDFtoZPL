@@ -183,7 +183,7 @@ namespace PDFtoZPL.WebConverter.Pages
 		private static readonly uint _black = (uint)new SKColor(0, 0, 0);
 		private static readonly uint _white = (uint)new SKColor(255, 255, 255);
 
-		private static unsafe SKBitmap MakeMonochrome(SKBitmap input)
+		private static SKBitmap MakeMonochrome(SKBitmap input)
 		{
 			const byte threshold = 128;
 
