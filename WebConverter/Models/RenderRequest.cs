@@ -90,6 +90,27 @@ namespace PDFtoZPL.WebConverter.Models
 			_ => throw new ArgumentOutOfRangeException(nameof(rotation))
 		};
 
+		public byte Threshold { get; set; } = 128;
+
+		[Required]
+		[Range(0, byte.MaxValue, ErrorMessage = "Threshold number invalid (must be between 0 and 255).")]
+		public int ThresholdAsInt
+		{
+			get => Threshold;
+			set => Threshold = (byte)value;
+		}
+
+		[Required]
+		public Conversion.DitheringKind Dithering { get; set; } = Conversion.DitheringKind.None;
+
+		public static string GetDitheringLocalized(Conversion.DitheringKind dithering) => dithering switch
+		{
+			Conversion.DitheringKind.None => "None",
+			Conversion.DitheringKind.FloydSteinberg => "Floyd–Steinberg",
+			Conversion.DitheringKind.Atkinson => "Atkinson",
+			_ => throw new ArgumentOutOfRangeException(nameof(dithering))
+		};
+
 		public static string GetMimeType(SKEncodedImageFormat format) => format switch
 		{
 			SKEncodedImageFormat.Png => "image/png",
@@ -119,6 +140,8 @@ namespace PDFtoZPL.WebConverter.Models
 				{
 					Input?.Dispose();
 					Input = null;
+					OutputPreviewImage?.Dispose();
+					OutputPreviewImage = null;
 				}
 
 				disposedValue = true;

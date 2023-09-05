@@ -78,6 +78,28 @@
 					<h5 class="card-header">Output</h5>
 					<div class="card-body">
 						<div class="form-group row mb-1">
+							<label for="threshold" class="col-sm-3 col-form-label label-nowrap">Threshold</label>
+							<div class="col-sm">
+								<input type="range" @bind-value="Model.ThresholdAsInt" style="width: inherit; min-height: 34px;" min="0" max="@byte.MaxValue" step="1" />
+							</div>
+							<div class="col-sm">
+								<InputNumber @bind-Value="Model.ThresholdAsInt" id="threshold" class="form-control form-control-sm" min="0" max="@byte.MaxValue" step="1" />
+							</div>
+						</div>
+
+						<div class="form-group row mb-1">
+							<label for="ditheringType" class="col-sm-3 col-form-label label-nowrap">Dithering</label>
+							<div class="col-sm">
+								<InputSelect @bind-Value="Model.Dithering" id="ditheringType" class="form-control form-control-sm">
+									@foreach (var dithering in Enum.GetValues<PDFtoZPL.Conversion.DitheringKind>())
+									{
+										<option value="@dithering">@(RenderRequest.GetDitheringLocalized(dithering))</option>
+									}
+								</InputSelect>
+							</div>
+						</div>
+
+						<div class="form-group row mb-1">
 							<label for="encodingType" class="col-sm-3 col-form-label label-nowrap">Encoding</label>
 							<div class="col-sm">
 								<InputSelect @bind-Value="Model.Encoding" id="encodingType" class="form-control form-control-sm">

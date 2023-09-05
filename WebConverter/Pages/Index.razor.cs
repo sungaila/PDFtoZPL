@@ -150,14 +150,16 @@ namespace PDFtoZPL.WebConverter.Pages
 							inputToConvert,
 							encodingKind: Model.Encoding,
 							graphicFieldOnly: Model.GraphicFieldOnly,
-							setLabelLength: Model.SetLabelLength
+							setLabelLength: Model.SetLabelLength,
+							threshold: Model.Threshold,
+							ditheringKind: Model.Dithering
 						);
 
 					Model.OutputPreviewImage = new MemoryStream();
 
 					using (inputToConvert)
 					{
-						encodeSuccess = MakeMonochrome(inputToConvert).Encode(Model.OutputPreviewImage, SKEncodedImageFormat.Png, 100);
+						encodeSuccess = inputToConvert.ToMonochrome(Model.Threshold, Model.Dithering).Encode(Model.OutputPreviewImage, SKEncodedImageFormat.Png, 100);
 					}
 
 					await SetImage();
@@ -178,52 +180,6 @@ namespace PDFtoZPL.WebConverter.Pages
 			{
 				IsLoading = false;
 			}
-		}
-
-		private static readonly uint _black = (uint)new SKColor(0, 0, 0);
-		private static readonly uint _white = (uint)new SKColor(255, 255, 255);
-
-		private static SKBitmap MakeMonochrome(SKBitmap input)
-		{
-			const byte threshold = 128;
-
-			var width = input.Width;
-			var height = input.Height;
-
-			var output = input.Copy(SKColorType.Rgba8888);
-
-			IntPtr pixelsAddr = output.GetPixels();
-
-			unsafe
-			{
-				unchecked
-				{
-					uint* ptr = (uint*)pixelsAddr.ToPointer();
-
-					for (int row = 0; row < output.Height; row++)
-					{
-						for (int col = 0; col < output.Width; col++)
-						{
-							/*uint value = *ptr;
-							uint sum = 0;
-
-							sum += value % 256;
-							sum += (byte)((value >> 8) % 256);
-							sum += (byte)((value >> 16) % 256);
-
-							bool blackPixel = (sum / 3) < threshold;
-							*ptr++ = blackPixel
-								? _black
-								: _white;*/
-							*ptr++ = (((*ptr % 256) + ((*ptr >> 8) % 256) + ((*ptr >> 16) % 256)) / 3) < threshold
-								? _black
-								: _white;
-						}
-					}
-				}
-			}
-
-			return output;
 		}
 
 		private async Task CopyToClipboard()
