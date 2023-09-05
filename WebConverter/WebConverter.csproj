@@ -21,6 +21,7 @@
     <Features>strict</Features>
     <WarningsAsErrors>nullable</WarningsAsErrors>
     <NoWarn>CA1416</NoWarn>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">

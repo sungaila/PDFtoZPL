@@ -495,7 +495,7 @@ namespace PDFtoZPL
         /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
-        internal static string ConvertBitmap(SKBitmap bitmap, BitmapEncodingKind encodingKind, bool graphicFieldOnly, bool setLabelLength)
+        public static string ConvertBitmap(SKBitmap bitmap, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false)
         {
             if (bitmap == null)
                 throw new ArgumentNullException(nameof(bitmap));

@@ -170,7 +170,7 @@
 		</div>
 
 		<div class="col-sm">
-			<div hidden="@(IsLoading || Model.Output == null || LastException != null)">
+			<div class="row" hidden="@(IsLoading || Model.Output == null || LastException != null)">
 				<div class="btn-group" role="group">
 					<button type="button" class="btn btn-success" @onclick="CopyToClipboard">
 						<span class="oi oi-clipboard" aria-hidden="true" /> Copy to clipboard
@@ -186,6 +186,11 @@
 					}
 				</div>
 				<InputTextArea @bind-Value="Model.Output" type="text" class="form-control mt-3" title="Generated ZPL code" style="min-height: 12rem; overflow-x: hidden;" readonly />
+			</div>
+
+			<div class="row mt-3" hidden="@(IsLoading || Model.Output == null || LastException != null)">
+				<img id="outputImage" alt="Preview of the generated ZPL code as an Image" hidden="@(Model.OutputPreviewImage == null)" aria-describedby="previewHint" style="max-width: 100%; width: auto; height: auto; border-radius: 8px; padding: 0;border-style: solid; border-width: thin; border-color: var(--bs-border-color-translucent);" />
+				<small id="previewHint" class="form-text text-muted">This preview image is a mockup. Results on a Zebra printer may vary.</small>
 			</div>
 		</div>
 	</div>
@@ -219,4 +224,20 @@
 		anchorElement.remove();
 		URL.revokeObjectURL(url);
 	};
+
+	window.setImage = async (imageElementId, imageMime, imageStream) => {
+		const arrayBuffer = await imageStream.arrayBuffer();
+		const blob = new Blob([arrayBuffer], { type: imageMime });
+		const url = URL.createObjectURL(blob);
+		const image = document.getElementById(imageElementId);
+		image.onload = () => {
+			URL.revokeObjectURL(url);
+		}
+		image.src = url;
+	}
+
+	window.resetImage = async (imageElementId) => {
+		const image = document.getElementById(imageElementId);
+		image.src = 'favicon.png';
+	}
 </script>

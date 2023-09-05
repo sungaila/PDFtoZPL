@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
 using PDFtoZPL.WebConverter.Models;
+using SkiaSharp;
 using System;
 using System.IO;
 using System.Linq;
@@ -74,20 +75,23 @@ namespace PDFtoZPL.WebConverter.Pages
 			StateHasChanged();
 		}
 
-		private async Task OnInputFileChange(InputFileChangeEventArgs e)
+		private void OnInputFileChange(InputFileChangeEventArgs e)
 		{
 			Model.File = e.File;
 			Model.Input?.Dispose();
 			Model.Input = null;
 			Model.Output = null;
+			Model.OutputPreviewImage?.Dispose();
+			Model.OutputPreviewImage = null;
 			StateHasChanged();
 		}
 
-		private void Reset()
+		private async Task Reset()
 		{
 			Model.Dispose();
 			Model = new();
 			LastException = null;
+			await JS.InvokeVoidAsync("resetImage", "outputImage");
 		}
 
 		private const long MaxAllowedSize = 250 * 1000 * 1000;
@@ -102,6 +106,8 @@ namespace PDFtoZPL.WebConverter.Pages
 				LastException = null;
 
 				Model.Output = null;
+				Model.OutputPreviewImage = null;
+				Model.OutputPreviewImage?.Dispose();
 
 				if (Model.Input == null)
 				{
@@ -110,12 +116,15 @@ namespace PDFtoZPL.WebConverter.Pages
 				}
 
 				Model.Input.Position = 0;
+				bool encodeSuccess = false;
 
-				await Task.Run(() =>
+				await Task.Run(async () =>
 				{
+					SKBitmap? inputToConvert;
+
 					if (Model.File?.ContentType == "application/pdf")
 					{
-						Model.Output = PDFtoZPL.Conversion.ConvertPdfPage(
+						inputToConvert = PDFtoImage.Conversion.ToImage(
 							Model.Input,
 							leaveOpen: true,
 							password: !string.IsNullOrEmpty(Model.Password) ? Model.Password : null,
@@ -125,24 +134,40 @@ namespace PDFtoZPL.WebConverter.Pages
 							height: Model.Height,
 							withAnnotations: Model.WithAnnotations,
 							withFormFill: Model.WithFormFill,
-							encodingKind: Model.Encoding,
-							graphicFieldOnly: Model.GraphicFieldOnly,
 							withAspectRatio: Model.WithAspectRatio,
-							setLabelLength: Model.SetLabelLength,
 							rotation: Model.Rotation
-						);
+							);
 					}
 					else
 					{
-						Model.Output = PDFtoZPL.Conversion.ConvertBitmap(
-							Model.Input,
-							leaveOpen: true,
+						using var memoryStream = new MemoryStream();
+						Model.Input.CopyTo(memoryStream);
+						memoryStream.Position = 0;
+						inputToConvert = SKBitmap.Decode(memoryStream);
+					}
+
+					Model.Output = PDFtoZPL.Conversion.ConvertBitmap(
+							inputToConvert,
 							encodingKind: Model.Encoding,
 							graphicFieldOnly: Model.GraphicFieldOnly,
 							setLabelLength: Model.SetLabelLength
 						);
+
+					Model.OutputPreviewImage = new MemoryStream();
+
+					using (inputToConvert)
+					{
+						encodeSuccess = MakeMonochrome(inputToConvert).Encode(Model.OutputPreviewImage, SKEncodedImageFormat.Png, 100);
 					}
+
+					await SetImage();
 				});
+
+				if (!encodeSuccess)
+				{
+					Model.OutputPreviewImage?.Dispose();
+					Model.OutputPreviewImage = null;
+				}
 			}
 			catch (Exception ex)
 			{
@@ -153,6 +178,52 @@ namespace PDFtoZPL.WebConverter.Pages
 			{
 				IsLoading = false;
 			}
+		}
+
+		private static readonly uint _black = (uint)new SKColor(0, 0, 0);
+		private static readonly uint _white = (uint)new SKColor(255, 255, 255);
+
+		private static unsafe SKBitmap MakeMonochrome(SKBitmap input)
+		{
+			const byte threshold = 128;
+
+			var width = input.Width;
+			var height = input.Height;
+
+			var output = input.Copy(SKColorType.Rgba8888);
+
+			IntPtr pixelsAddr = output.GetPixels();
+
+			unsafe
+			{
+				unchecked
+				{
+					uint* ptr = (uint*)pixelsAddr.ToPointer();
+
+					for (int row = 0; row < output.Height; row++)
+					{
+						for (int col = 0; col < output.Width; col++)
+						{
+							/*uint value = *ptr;
+							uint sum = 0;
+
+							sum += value % 256;
+							sum += (byte)((value >> 8) % 256);
+							sum += (byte)((value >> 16) % 256);
+
+							bool blackPixel = (sum / 3) < threshold;
+							*ptr++ = blackPixel
+								? _black
+								: _white;*/
+							*ptr++ = (((*ptr % 256) + ((*ptr >> 8) % 256) + ((*ptr >> 16) % 256)) / 3) < threshold
+								? _black
+								: _white;
+						}
+					}
+				}
+			}
+
+			return output;
 		}
 
 		private async Task CopyToClipboard()
@@ -202,6 +273,23 @@ namespace PDFtoZPL.WebConverter.Pages
 			{
 				Logger.LogError(ex, "Failed to web share {Model}.", Model);
 			}
+		}
+
+		private async Task SetImage()
+		{
+			if (Model.OutputPreviewImage == null)
+			{
+				await JS.InvokeVoidAsync("resetImage", "outputImage");
+				return;
+			}
+
+			Model.OutputPreviewImage.Position = 0;
+			using var fs = new MemoryStream();
+			await Model.OutputPreviewImage.CopyToAsync(fs);
+			fs.Position = 0;
+
+			using var streamRef = new DotNetStreamReference(fs);
+			await JS.InvokeVoidAsync("setImage", "outputImage", RenderRequest.GetMimeType(Model.Format), streamRef);
 		}
 
 		[JSInvokable]
