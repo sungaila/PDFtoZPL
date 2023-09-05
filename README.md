@@ -15,8 +15,6 @@ This .NET library is built on top of
 * [PdfiumViewer](https://github.com/pvginkel/PdfiumViewer) (wrapper for PDFium)
 * [SkiaSharp](https://github.com/mono/SkiaSharp) (cross-platform 2D graphics API)
 
-You can use [Labelary Online ZPL Viewer](http://labelary.com/viewer.html) to render the resulting ZPL code.
-
 ## Getting started
 Just call one of the following static methods:
 * `PDFtoZPL.Conversion.ConvertPdfPage()`
