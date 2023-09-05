@@ -1,9 +1,10 @@
 ﻿using SkiaSharp;
 using System;
-using System.Runtime.CompilerServices;
 using static PDFtoZPL.Conversion;
 
-[assembly: InternalsVisibleTo("PDFtoZPL.WebConverter")]
+#if NET6_0_OR_GREATER
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("PDFtoZPL.WebConverter")]
+#endif
 
 namespace PDFtoZPL
 {
