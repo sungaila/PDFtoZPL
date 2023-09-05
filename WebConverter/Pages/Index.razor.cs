@@ -120,7 +120,7 @@ namespace PDFtoZPL.WebConverter.Pages
 
 				await Task.Run(async () =>
 				{
-					SKBitmap? inputToConvert;
+					SKBitmap inputToConvert;
 
 					if (Model.File?.ContentType == "application/pdf")
 					{
@@ -146,7 +146,9 @@ namespace PDFtoZPL.WebConverter.Pages
 						inputToConvert = SKBitmap.Decode(memoryStream);
 					}
 
-					Model.Output = PDFtoZPL.Conversion.ConvertBitmap(
+     					using (inputToConvert)
+					{
+						Model.Output = PDFtoZPL.Conversion.ConvertBitmap(
 							inputToConvert,
 							encodingKind: Model.Encoding,
 							graphicFieldOnly: Model.GraphicFieldOnly,
@@ -155,11 +157,12 @@ namespace PDFtoZPL.WebConverter.Pages
 							ditheringKind: Model.Dithering
 						);
 
-					Model.OutputPreviewImage = new MemoryStream();
+						Model.OutputPreviewImage = new MemoryStream();
 
-					using (inputToConvert)
-					{
-						encodeSuccess = inputToConvert.ToMonochrome(Model.Threshold, Model.Dithering).Encode(Model.OutputPreviewImage, SKEncodedImageFormat.Png, 100);
+						using (var monochromeBitmap = inputToConvert.ToMonochrome(Model.Threshold, Model.Dithering))
+      						{
+      							encodeSuccess = monochromeBitmap.Encode(Model.OutputPreviewImage, SKEncodedImageFormat.Png, 100);
+	   					}
 					}
 
 					await SetImage();
