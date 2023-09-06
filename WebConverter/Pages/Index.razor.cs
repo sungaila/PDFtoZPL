@@ -106,8 +106,8 @@ namespace PDFtoZPL.WebConverter.Pages
 				LastException = null;
 
 				Model.Output = null;
+    				Model.OutputPreviewImage?.Dispose();
 				Model.OutputPreviewImage = null;
-				Model.OutputPreviewImage?.Dispose();
 
 				if (Model.Input == null)
 				{
