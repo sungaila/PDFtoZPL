@@ -106,7 +106,7 @@ namespace PDFtoZPL.WebConverter.Pages
 				LastException = null;
 
 				Model.Output = null;
-    				Model.OutputPreviewImage?.Dispose();
+				Model.OutputPreviewImage?.Dispose();
 				Model.OutputPreviewImage = null;
 
 				if (Model.Input == null)
@@ -146,7 +146,7 @@ namespace PDFtoZPL.WebConverter.Pages
 						inputToConvert = SKBitmap.Decode(memoryStream);
 					}
 
-     					using (inputToConvert)
+					using (inputToConvert)
 					{
 						Model.Output = PDFtoZPL.Conversion.ConvertBitmap(
 							inputToConvert,
@@ -160,9 +160,9 @@ namespace PDFtoZPL.WebConverter.Pages
 						Model.OutputPreviewImage = new MemoryStream();
 
 						using (var monochromeBitmap = inputToConvert.ToMonochrome(Model.Threshold, Model.Dithering))
-      						{
-      							encodeSuccess = monochromeBitmap.Encode(Model.OutputPreviewImage, SKEncodedImageFormat.Png, 100);
-	   					}
+						{
+							encodeSuccess = monochromeBitmap.Encode(Model.OutputPreviewImage, SKEncodedImageFormat.Png, 100);
+						}
 					}
 
 					await SetImage();
