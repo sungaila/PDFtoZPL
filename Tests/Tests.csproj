@@ -19,6 +19,12 @@
     <None Remove="Assets\SocialPreview.pdf" />
     <None Remove="Assets\SocialPreview.png" />
     <None Remove="Assets\Wikimedia_Commons_web.pdf" />
+    <Compile Update="ThresholdTests.ExpectedResults.cs">
+      <DependentUpon>ThresholdTests.cs</DependentUpon>
+    </Compile>
+    <Compile Update="DitheringTests.ExpectedResults.cs">
+      <DependentUpon>DitheringTests.cs</DependentUpon>
+    </Compile>
     <Compile Update="PdfRotationTests.ExpectedResults.cs">
       <DependentUpon>PdfRotationTests.cs</DependentUpon>
     </Compile>

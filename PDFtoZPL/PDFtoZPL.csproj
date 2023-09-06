@@ -21,7 +21,8 @@
     <PackageProjectUrl>https://github.com/sungaila/PDFtoZPL</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/sungaila/PDFtoZPL/master/Icon_128.png</PackageIconUrl>
     <Description>A .NET library to convert PDF files (and bitmaps) into Zebra Programming Language code.</Description>
-    <PackageReleaseNotes>- Added support for WebAssembly (e.g. ASP.NET Core Blazor WebAssembly).</PackageReleaseNotes>
+    <PackageReleaseNotes>- Added optional parameter threshold for monochrome conversion.
+- Added optional parameter ditheringKind for monochrome conversion (Floyd-Steinberg and Atkinson supported).</PackageReleaseNotes>
     <PackageTags>PDF ZPL Zebra Bitmap Convert Conversion C# PDFium MAUI WASM WebAssembly</PackageTags>
     <RepositoryUrl>https://github.com/sungaila/PDFtoZPL.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
