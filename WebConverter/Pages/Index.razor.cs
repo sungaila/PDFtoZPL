@@ -46,7 +46,7 @@ namespace PDFtoZPL.WebConverter.Pages
 			await JS.InvokeAsync<string>("setDotNetHelper", _objRef);
 		}
 
-		private async void OnFilesHandled(object? sender, Program.HandledFileArgs args)
+		private async void OnFilesHandled(object? sender, Program.HandledFileEventArgs args)
 		{
 			if (args.File == null)
 				return;
@@ -118,7 +118,7 @@ namespace PDFtoZPL.WebConverter.Pages
 				Model.Input.Position = 0;
 				bool encodeSuccess = false;
 
-				await Task.Run(async () =>
+				await Task.Factory.StartNew(async () =>
 				{
 					SKBitmap inputToConvert;
 
@@ -166,7 +166,7 @@ namespace PDFtoZPL.WebConverter.Pages
 					}
 
 					await SetImage();
-				});
+				}, TaskCreationOptions.LongRunning);
 
 				if (!encodeSuccess)
 				{
