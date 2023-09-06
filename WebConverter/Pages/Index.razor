@@ -78,12 +78,12 @@
 					<h5 class="card-header">Output</h5>
 					<div class="card-body">
 						<div class="form-group row mb-1">
-							<label for="threshold" class="col-sm-3 col-form-label label-nowrap">Threshold</label>
+							<label id="thresholdLabel" for="thresholdRange" class="col-sm-3 col-form-label label-nowrap">Threshold</label>
 							<div class="col-sm">
-								<input type="range" @bind-value="Model.ThresholdAsInt" style="width: inherit; min-height: 34px;" min="0" max="@byte.MaxValue" step="1" />
+								<input type="range" @bind-value="Model.ThresholdAsInt" id="thresholdRange" style="width: inherit; min-height: 34px;" min="0" max="@byte.MaxValue" step="1" />
 							</div>
 							<div class="col-sm">
-								<InputNumber @bind-Value="Model.ThresholdAsInt" id="threshold" class="form-control form-control-sm" min="0" max="@byte.MaxValue" step="1" />
+								<InputNumber @bind-Value="Model.ThresholdAsInt" id="thresholdNumber" class="form-control form-control-sm" min="0" max="@byte.MaxValue" step="1" aria-labelledby='thresholdLabel' />
 							</div>
 						</div>
 
