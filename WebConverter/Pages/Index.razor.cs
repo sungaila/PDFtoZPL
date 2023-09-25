@@ -118,7 +118,7 @@ namespace PDFtoZPL.WebConverter.Pages
 				Model.Input.Position = 0;
 				bool encodeSuccess = false;
 
-				await Task.Factory.StartNew(async () =>
+				await Task.Factory.StartNew(() =>
 				{
 					SKBitmap inputToConvert;
 
@@ -164,11 +164,13 @@ namespace PDFtoZPL.WebConverter.Pages
 							encodeSuccess = monochromeBitmap.Encode(Model.OutputPreviewImage, SKEncodedImageFormat.Png, 100);
 						}
 					}
-
-					await SetImage();
 				}, TaskCreationOptions.LongRunning);
 
-				if (!encodeSuccess)
+				if (encodeSuccess)
+				{
+					await SetImage();
+				}
+				else
 				{
 					Model.OutputPreviewImage?.Dispose();
 					Model.OutputPreviewImage = null;
