@@ -4,9 +4,10 @@
 name: GitHub Pages
 
 on:
-  push:
+  workflow_dispatch:
+  pull_request:
     branches:
-      - 'master'
+      - '**'
       
 concurrency:
   group: "pages"
@@ -90,10 +91,12 @@ jobs:
       id-token: write   # to verify the deployment originates from an appropriate source
       
     environment:
-      name: github-pages
+      name: github-pages-staging
       url: ${{ steps.deployment.outputs.page_url }}
     
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@main
+        with:
+          preview: true
