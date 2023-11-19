@@ -9,7 +9,7 @@
     <StartupObject>PDFtoZPL.WebConverter.Program</StartupObject>
     <AssemblyOriginatorKeyFile>PDFtoZPL.WebConverter.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
-    <Version>3.6.2</Version>
+    <Version>3.6.3</Version>
     <RunAOTCompilation>true</RunAOTCompilation>
     <WasmNativeStrip>true</WasmNativeStrip>
     <PublishTrimmed>true</PublishTrimmed>
@@ -37,12 +37,12 @@
   <ItemGroup>
     <PackageReference Include="ByteSize" Version="2.1.1" />
     <PackageReference Include="Markdig.Signed" Version="0.33.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.12" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="7.0.12" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="7.0.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.0" PrivateAssets="all" />
     <PackageReference Include="SkiaSharp.NativeAssets.WebAssembly" Version="2.88.6" />
     <PackageReference Include="Thinktecture.Blazor.FileHandling" Version="2.0.0" />
     <PackageReference Include="Thinktecture.Blazor.WebShare" Version="2.0.0" />
-    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -54,8 +54,9 @@
 
   <ItemGroup>
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+    <Content Update="wwwroot\404.html" CopyToOutputDirectory="Always" />
     <EmbeddedResource Include="..\README.md" Link="README.md" />
-    <NativeFileReference Include="libpdfium.a" />
+    <NativeFileReference Include="pdfium.a" />
     <NativeFileReference Include="$(SkiaSharpStaticLibraryPath)\3.1.12\st\*.a" />
   </ItemGroup>
 

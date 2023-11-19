@@ -1,0 +1,9 @@
+{
+  "solution": {
+    "path": "PDFtoZPL.sln",
+    "projects": [
+      "PDFtoZPL\\PDFtoZPL.csproj",
+      "Tests\\Tests.csproj"
+    ]
+  }
+}
