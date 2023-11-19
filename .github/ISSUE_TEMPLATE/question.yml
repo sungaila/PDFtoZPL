@@ -1,0 +1,12 @@
+name: Question
+description: Ask a question related to this project
+labels: ["question"]
+assignees: ["sungaila"]
+body:
+  - type: textarea
+    id: request
+    attributes:
+      label: Question
+      description: Please ask us any questions in relation to PDFtoZPL.
+    validations:
+      required: true

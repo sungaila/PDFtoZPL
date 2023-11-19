@@ -22,7 +22,7 @@
     <PackageIconUrl>https://raw.githubusercontent.com/sungaila/PDFtoZPL/master/Icon_128.png</PackageIconUrl>
     <Description>A .NET library to convert PDF files (and bitmaps) into Zebra Programming Language code.</Description>
     <PackageReleaseNotes>- Cleanup of native lib loading for .NET (Core).</PackageReleaseNotes>
-    <PackageTags>PDF ZPL Zebra Bitmap Convert Conversion C# PDFium MAUI WASM WebAssembly</PackageTags>
+    <PackageTags>PDF ZPL Zebra Bitmap Convert Conversion C# PDFium MAUI wasm WebAssembly</PackageTags>
     <RepositoryUrl>https://github.com/sungaila/PDFtoZPL.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <IncludeSymbols>true</IncludeSymbols>

@@ -1,0 +1,16 @@
+name: Feature request
+description: Suggest a new feature or requirement
+labels: ["enhancement"]
+assignees: ["sungaila"]
+body:
+  - type: textarea
+    id: request
+    attributes:
+      label: Detailed feature request
+      description: Please let us know in detail which new feature you would like or which new requirement is to be fulfilled.
+      placeholder: |
+          What feature is missing and why is it important?
+          Would this new feature break existing apps?
+          Can you use this project in your app? Is it supported?
+    validations:
+      required: true

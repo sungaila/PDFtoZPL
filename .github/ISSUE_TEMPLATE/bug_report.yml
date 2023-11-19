@@ -1,0 +1,93 @@
+name: Bug report
+description: Something isn't working as expected
+labels: ["bug"]
+assignees: ["sungaila"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+          Thanks for creating a bug report! If possible, please check if your issue can be reproduced on the official web converter: <https://www.sungaila.de/PDFtoZPL/>
+  - type: input
+    id: version
+    attributes:
+      label: PDFtoZPL version
+      description: Which version of PDFtoZPL is affected?
+      value: 3.6.3
+    validations:
+      required: true
+  - type: dropdown
+    id: os
+    attributes:
+      label: OS
+      description: Which operating system was used?
+      options:
+        - Windows
+        - Linux
+        - macOS
+        - Android
+        - (Other)
+    validations:
+      required: true
+  - type: input
+    id: os-version
+    attributes:
+      label: OS version
+      description: Which operating system version was used?
+      placeholder: e.g. Windows 11 23H2, Ubuntu 23.10, macOS 14.1, Android 14, ...
+    validations:
+      required: false
+  - type: dropdown
+    id: architecture
+    attributes:
+      label: Architecture
+      description: Which CPU architecture was used?
+      options:
+        - x86
+        - x64
+        - arm64
+        - (Other)
+      default: 1
+    validations:
+      required: true
+  - type: dropdown
+    id: framework
+    attributes:
+      label: Framework
+      description: Which framework was used?
+      options:
+        - .NET Framework
+        - .NET (Core)
+        - Xamarin.Android (MonoAndroid)
+        - (Other)
+      default: 1
+    validations:
+      required: true
+  - type: input
+    id: appframework
+    attributes:
+      label: App framework
+      description: Which app framework was used?
+      placeholder: e.g. ASP.NET Core, .NET MAUI, WinUI, ...
+    validations:
+      required: false
+  - type: textarea
+    id: issue
+    attributes:
+      label: Detailed bug report
+      description: Please tell us in detail what happened and what you expected to happen instead.
+      placeholder: |
+          What happened? What should have happened instead?
+          Steps to reproduce this issue.
+          Exception messages including stack traces.
+          Screenshots or example PDF files/images.
+    validations:
+      required: true
+  - type: textarea
+    id: zpl
+    attributes:
+      label: Generated ZPL code
+      description: If you have generated ZPL code you want to share with us, you can insert it here. Make sure that you do not disclose any personal information.
+      placeholder: |
+          ^XA^GFA,813604,813604,451,:Z64:eNrtnU+ytLqZpyGoMD2oaDbQUeol1A ...
+    validations:
+      required: false
