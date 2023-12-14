@@ -579,9 +579,9 @@ namespace PDFtoZPL
 					}
 
 					var base64 = Convert.ToBase64String(bitmapAsBytes);
-					var csc = ComputeBitmapChecksum(base64);
+					ushort csc = ComputeBitmapChecksum(base64);
 
-					bitmapPayload = $":{encodingId}:{base64}:{csc}";
+					bitmapPayload = $":{encodingId}:{base64}:{csc:X4}";
 				}
 				else
 				{

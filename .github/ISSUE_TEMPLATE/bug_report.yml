@@ -12,7 +12,7 @@ body:
     attributes:
       label: PDFtoZPL version
       description: Which version of PDFtoZPL is affected?
-      value: 3.6.3
+      value: 3.6.4
     validations:
       required: true
   - type: dropdown
