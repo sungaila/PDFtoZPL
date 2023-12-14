@@ -89,5 +89,6 @@ body:
       description: If you have generated ZPL code you want to share with us, you can insert it here. Make sure that you do not disclose any personal information.
       placeholder: |
           ^XA^GFA,813604,813604,451,:Z64:eNrtnU+ytLqZpyGoMD2oaDbQUeol1A ...
+      render: Text
     validations:
       required: false
