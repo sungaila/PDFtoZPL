@@ -247,7 +247,7 @@ namespace PDFtoZPL
 		/// </summary>
 		private sealed class Crc16Ccitt
 		{
-			const ushort Poly = 4129;
+			const ushort Poly = 0x8408;
 			private readonly ushort[] _table = new ushort[256];
 			private readonly ushort _initialValue = 0;
 
