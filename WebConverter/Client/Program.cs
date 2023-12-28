@@ -44,14 +44,9 @@ namespace PDFtoZPL.WebConverter
 			await host.RunAsync();
 		}
 
-		public class HandledFileEventArgs : EventArgs
+		public class HandledFileEventArgs(KristofferStrube.Blazor.FileAPI.File file) : EventArgs
 		{
-			public KristofferStrube.Blazor.FileAPI.File File { get; }
-
-			public HandledFileEventArgs(KristofferStrube.Blazor.FileAPI.File file)
-			{
-				File = file;
-			}
-		}
+            public KristofferStrube.Blazor.FileAPI.File File { get; } = file;
+        }
 	}
 }

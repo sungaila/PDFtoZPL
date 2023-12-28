@@ -11,6 +11,9 @@ using static PDFtoZPL.ConversionUtils;
 
 namespace PDFtoZPL
 {
+#if NET8_0_OR_GREATER
+#pragma warning disable CA1510 // Use ArgumentNullException throw helper
+#endif
     /// <summary>
     /// Provides methods to convert PDFs and <see cref="SKBitmap"/>s into ZPL code.
     /// </summary>
@@ -158,10 +161,10 @@ namespace PDFtoZPL
                 throw new ArgumentOutOfRangeException(nameof(page), "The page number must 0 or greater.");
 
             // Stream ->PdfiumViewer.PdfDocument -> Image
-            var pdfBitmap = PDFtoImage.Conversion.ToImage(pdfStream, leaveOpen, password, page, dpi, width, height, withAnnotations, withFormFill, withAspectRatio, rotation);
+            var pdfBitmap = PDFtoImage.Conversion.ToImage(pdfStream, leaveOpen, password, page, dpi, width, height, withAnnotations, withFormFill, withAspectRatio, rotation, antiAliasing, backgroundColor);
 
             // Bitmap -> ZPL code
-            return ConvertBitmap(pdfBitmap, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind, antiAliasing, backgroundColor);
+            return ConvertBitmap(pdfBitmap, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
         }
 
         /// <summary>
@@ -195,7 +198,7 @@ namespace PDFtoZPL
             if (pdfAsBase64String == null)
                 throw new ArgumentNullException(nameof(pdfAsBase64String));
 
-            foreach (var zplCode in ConvertPdf(Convert.FromBase64String(pdfAsBase64String), password, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly, withAspectRatio, setLabelLength, rotation, threshold, ditheringKind))
+            foreach (var zplCode in ConvertPdf(Convert.FromBase64String(pdfAsBase64String), password, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly, withAspectRatio, setLabelLength, rotation, threshold, ditheringKind, antiAliasing, backgroundColor))
             {
                 yield return zplCode;
             }
@@ -235,7 +238,7 @@ namespace PDFtoZPL
             // Base64 string -> byte[] -> MemoryStream
             using var pdfStream = new MemoryStream(pdfAsByteArray, false);
 
-            foreach (var zplCode in ConvertPdf(pdfStream, password, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly, withAspectRatio, setLabelLength, rotation, threshold, ditheringKind))
+            foreach (var zplCode in ConvertPdf(pdfStream, password, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly, withAspectRatio, setLabelLength, rotation, threshold, ditheringKind, antiAliasing, backgroundColor))
             {
                 yield return zplCode;
             }
@@ -305,10 +308,10 @@ namespace PDFtoZPL
                 throw new ArgumentNullException(nameof(pdfStream));
 
             // Stream ->PdfiumViewer.PdfDocument -> Image
-            foreach (var image in PDFtoImage.Conversion.ToImages(pdfStream, leaveOpen, password, dpi, width, height, withAnnotations, withFormFill, withAspectRatio, rotation))
+            foreach (var image in PDFtoImage.Conversion.ToImages(pdfStream, leaveOpen, password, dpi, width, height, withAnnotations, withFormFill, withAspectRatio, rotation, antiAliasing, backgroundColor))
             {
                 // Bitmap -> ZPL code
-                yield return ConvertBitmap(image, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind, antiAliasing, backgroundColor);
+                yield return ConvertBitmap(image, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
             }
         }
 
@@ -481,12 +484,10 @@ namespace PDFtoZPL
         /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
         /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
-        /// <param name="backgroundColor">Specifies the background color. Defaults to <see cref="SKColors.White"/>.</param>
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
-        public static string ConvertBitmap(string bitmapPath, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None, PdfAntiAliasing antiAliasing = PdfAntiAliasing.All, SKColor? backgroundColor = null)
+        public static string ConvertBitmap(string bitmapPath, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None)
         {
-            return ConvertBitmap(SKBitmap.Decode(bitmapPath), encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind, antiAliasing, backgroundColor);
+            return ConvertBitmap(SKBitmap.Decode(bitmapPath), encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
         }
 
         /// <summary>
@@ -498,12 +499,10 @@ namespace PDFtoZPL
         /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
         /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
-        /// <param name="backgroundColor">Specifies the background color. Defaults to <see cref="SKColors.White"/>.</param>
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
-        public static string ConvertBitmap(Stream bitmapAsStream, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None, PdfAntiAliasing antiAliasing = PdfAntiAliasing.All, SKColor? backgroundColor = null)
+        public static string ConvertBitmap(Stream bitmapAsStream, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None)
         {
-            return ConvertBitmap(bitmapAsStream, false, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind, antiAliasing, backgroundColor);
+            return ConvertBitmap(bitmapAsStream, false, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
         }
 
         /// <summary>
@@ -516,10 +515,8 @@ namespace PDFtoZPL
         /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
         /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
-        /// <param name="backgroundColor">Specifies the background color. Defaults to <see cref="SKColors.White"/>.</param>
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
-        public static string ConvertBitmap(Stream bitmapAsStream, bool leaveOpen, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None, PdfAntiAliasing antiAliasing = PdfAntiAliasing.All, SKColor? backgroundColor = null)
+        public static string ConvertBitmap(Stream bitmapAsStream, bool leaveOpen, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None)
         {
             if (bitmapAsStream == null)
                 throw new ArgumentNullException(nameof(bitmapAsStream));
@@ -530,11 +527,11 @@ namespace PDFtoZPL
                 using var memoryStream = new MemoryStream();
                 bitmapAsStream.CopyTo(memoryStream);
                 memoryStream.Position = 0;
-                return ConvertBitmap(SKBitmap.Decode(memoryStream), encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind, antiAliasing, backgroundColor);
+                return ConvertBitmap(SKBitmap.Decode(memoryStream), encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
             }
 
             bitmapAsStream.Position = 0;
-            return ConvertBitmap(SKBitmap.Decode(bitmapAsStream), encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind, antiAliasing, backgroundColor);
+            return ConvertBitmap(SKBitmap.Decode(bitmapAsStream), encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
         }
 
         /// <summary>
@@ -546,12 +543,10 @@ namespace PDFtoZPL
         /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
         /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
-        /// <param name="backgroundColor">Specifies the background color. Defaults to <see cref="SKColors.White"/>.</param>
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
-        public static string ConvertBitmap(byte[] bitmapAsByteArray, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None, PdfAntiAliasing antiAliasing = PdfAntiAliasing.All, SKColor? backgroundColor = null)
+        public static string ConvertBitmap(byte[] bitmapAsByteArray, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None)
         {
-            return ConvertBitmap(SKBitmap.Decode(bitmapAsByteArray), encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind, antiAliasing, backgroundColor);
+            return ConvertBitmap(SKBitmap.Decode(bitmapAsByteArray), encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
         }
 
         /// <summary>
@@ -563,10 +558,8 @@ namespace PDFtoZPL
         /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
         /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
         /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
-        /// <param name="backgroundColor">Specifies the background color. Defaults to <see cref="SKColors.White"/>.</param>
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
-        public static string ConvertBitmap(SKBitmap bitmap, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None, PdfAntiAliasing antiAliasing = PdfAntiAliasing.All, SKColor? backgroundColor = null)
+        public static string ConvertBitmap(SKBitmap bitmap, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None)
         {
             if (bitmap == null)
                 throw new ArgumentNullException(nameof(bitmap));
