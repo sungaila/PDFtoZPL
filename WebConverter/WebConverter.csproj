@@ -9,7 +9,8 @@
     <StartupObject>PDFtoZPL.WebConverter.Program</StartupObject>
     <AssemblyOriginatorKeyFile>PDFtoZPL.WebConverter.snk</AssemblyOriginatorKeyFile>
     <SignAssembly>true</SignAssembly>
-    <Version>3.6.4</Version>
+    <VersionPrefix>4.0.0</VersionPrefix>
+    <VersionSuffix></VersionSuffix>
     <RunAOTCompilation>true</RunAOTCompilation>
     <WasmNativeStrip>true</WasmNativeStrip>
     <PublishTrimmed>true</PublishTrimmed>
@@ -24,6 +25,11 @@
     <WarningsAsErrors>nullable</WarningsAsErrors>
     <NoWarn>CA1416</NoWarn>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+
+  <!-- Debug builds -->
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <VersionSuffix>debug</VersionSuffix>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">

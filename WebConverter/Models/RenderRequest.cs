@@ -78,7 +78,22 @@ namespace PDFtoZPL.WebConverter.Models
 		[Required]
 		public bool WithAspectRatio { get; set; } = true;
 
-		[Required]
+        [Required]
+        public bool AntiAliasingText { get; set; } = true;
+
+        [Required]
+        public bool AntiAliasingImages { get; set; } = true;
+
+        [Required]
+        public bool AntiAliasingPaths { get; set; } = true;
+
+        [Required]
+        public string BackgroundColor { get; set; } = "#FFFFFF";
+
+        [Range(byte.MinValue, byte.MaxValue, ErrorMessage = "Opacity invalid (0-255).")]
+        public int Opacity { get; set; } = 255;
+
+        [Required]
 		public PdfRotation Rotation { get; set; } = PdfRotation.Rotate0;
 
 		public static string GetRotationLocalized(PdfRotation rotation) => rotation switch

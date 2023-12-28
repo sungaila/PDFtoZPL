@@ -43,7 +43,7 @@ jobs:
       - name: Restore
         run: dotnet restore PDFtoZPL.sln
       - name: Publish
-        run: dotnet publish WebConverter/WebConverter.csproj -c Release -p:PublishProfile=WebConverter/Properties/PublishProfiles/PublishSite.pubxml --no-restore
+        run: dotnet publish WebConverter/WebConverter.csproj -c Release -p:PublishProfile=WebConverter/Properties/PublishProfiles/PublishSite.pubxml -p:VersionSuffix=ci --no-restore
       - name: Create .nojekyll file
         run: touch WebConverter/bin/Release/net7.0/publish/wwwroot/.nojekyll
       - name: Update service-worker-assets.js hashes
