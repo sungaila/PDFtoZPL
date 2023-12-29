@@ -7,151 +7,166 @@ using System.IO;
 
 namespace PDFtoZPL.WebConverter.Models
 {
-	public class RenderRequest : IDisposable
-	{
-		public static readonly SKEncodedImageFormat[] FormatWhitelist = new[]
-		{
-			SKEncodedImageFormat.Png,
-			SKEncodedImageFormat.Jpeg,
-			SKEncodedImageFormat.Webp
-		};
+    public class RenderRequest : IDisposable
+    {
+        public static readonly SKEncodedImageFormat[] FormatWhitelist =
+        [
+            SKEncodedImageFormat.Png,
+            SKEncodedImageFormat.Jpeg,
+            SKEncodedImageFormat.Webp
+        ];
 
-		private bool disposedValue;
+        private bool disposedValue;
 
-		[Required(ErrorMessage = "Select a PDF file to convert.")]
-		public IBrowserFile? File { get; set; }
+        [Required(ErrorMessage = "Select a PDF file to convert.")]
+        public IBrowserFile? File { get; set; }
 
-		public string? Password { get; set; }
+        public string? Password { get; set; }
 
-		[Required]
-		public SKEncodedImageFormat Format { get; set; } = SKEncodedImageFormat.Png;
+        [Required]
+        public SKEncodedImageFormat Format { get; set; } = SKEncodedImageFormat.Png;
 
-		[Required]
-		public Conversion.BitmapEncodingKind Encoding { get; set; } = Conversion.BitmapEncodingKind.Base64Compressed;
+        [Required]
+        public Conversion.BitmapEncodingKind Encoding { get; set; } = Conversion.BitmapEncodingKind.Base64Compressed;
 
-		public static string GetEncodingLocalized(Conversion.BitmapEncodingKind encoding) => encoding switch
-		{
-			Conversion.BitmapEncodingKind.Hexadecimal => "Hexadecimal [not recommended]",
-			Conversion.BitmapEncodingKind.HexadecimalCompressed => "Hexadecimal with compression",
-			Conversion.BitmapEncodingKind.Base64 => "Base64 [not recommended]",
-			Conversion.BitmapEncodingKind.Base64Compressed => "Base64 with compression",
-			_ => throw new ArgumentOutOfRangeException(nameof(encoding))
-		};
+        public static string GetEncodingLocalized(Conversion.BitmapEncodingKind encoding) => encoding switch
+        {
+            Conversion.BitmapEncodingKind.Hexadecimal => "Hexadecimal [not recommended]",
+            Conversion.BitmapEncodingKind.HexadecimalCompressed => "Hexadecimal with compression",
+            Conversion.BitmapEncodingKind.Base64 => "Base64 [not recommended]",
+            Conversion.BitmapEncodingKind.Base64Compressed => "Base64 with compression",
+            _ => throw new ArgumentOutOfRangeException(nameof(encoding))
+        };
 
-		[Required]
-		public bool WithAnnotations { get; set; } = true;
+        [Required]
+        public bool WithAnnotations { get; set; } = true;
 
-		[Required]
-		[Range(0, 100, ErrorMessage = "Quality invalid (1-100).")]
-		public int Quality { get; set; } = 100;
+        [Required]
+        [Range(0, 100, ErrorMessage = "Quality invalid (1-100).")]
+        public int Quality { get; set; } = 100;
 
-		[Range(1, int.MaxValue, ErrorMessage = "Width invalid (≥0).")]
-		public int? Width { get; set; } = null;
+        [Range(1, int.MaxValue, ErrorMessage = "Width invalid (≥0).")]
+        public int? Width { get; set; } = null;
 
-		[Range(1, int.MaxValue, ErrorMessage = "Height invalid (≥0).")]
-		public int? Height { get; set; } = null;
+        [Range(1, int.MaxValue, ErrorMessage = "Height invalid (≥0).")]
+        public int? Height { get; set; } = null;
 
-		[Required]
-		[Range(1, int.MaxValue, ErrorMessage = "DPI invalid (≥0).")]
-		public int Dpi { get; set; } = 300;
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "DPI invalid (≥0).")]
+        public int Dpi { get; set; } = 300;
 
-		[Required]
-		[Range(0, int.MaxValue, ErrorMessage = "Page number invalid (≥0).")]
-		public int Page { get; set; } = 0;
+        [Required]
+        [Range(0, int.MaxValue, ErrorMessage = "Page number invalid (≥0).")]
+        public int Page { get; set; } = 0;
 
-		[Required]
-		public bool GraphicFieldOnly { get; set; } = false;
+        [Required]
+        public bool GraphicFieldOnly { get; set; } = false;
 
-		[Required]
-		public bool IncludeStartFormat
-		{
-			get => !GraphicFieldOnly;
-			set => GraphicFieldOnly = !value;
-		}
+        [Required]
+        public bool IncludeStartFormat
+        {
+            get => !GraphicFieldOnly;
+            set => GraphicFieldOnly = !value;
+        }
 
-		[Required]
-		public bool SetLabelLength { get; set; } = true;
+        [Required]
+        public bool SetLabelLength { get; set; } = true;
 
-		[Required]
-		public bool WithFormFill { get; set; } = true;
+        [Required]
+        public bool WithFormFill { get; set; } = true;
 
-		[Required]
-		public bool WithAspectRatio { get; set; } = true;
+        [Required]
+        public bool WithAspectRatio { get; set; } = true;
 
-		[Required]
-		public PdfRotation Rotation { get; set; } = PdfRotation.Rotate0;
+        [Required]
+        public bool AntiAliasingText { get; set; } = true;
 
-		public static string GetRotationLocalized(PdfRotation rotation) => rotation switch
-		{
-			PdfRotation.Rotate0 => "0°",
-			PdfRotation.Rotate90 => "90°",
-			PdfRotation.Rotate180 => "180°",
-			PdfRotation.Rotate270 => "270°",
-			_ => throw new ArgumentOutOfRangeException(nameof(rotation))
-		};
+        [Required]
+        public bool AntiAliasingImages { get; set; } = true;
 
-		public byte Threshold { get; set; } = 128;
+        [Required]
+        public bool AntiAliasingPaths { get; set; } = true;
 
-		[Required]
-		[Range(0, byte.MaxValue, ErrorMessage = "Threshold number invalid (must be between 0 and 255).")]
-		public int ThresholdAsInt
-		{
-			get => Threshold;
-			set => Threshold = (byte)value;
-		}
+        [Required]
+        public string BackgroundColor { get; set; } = "#FFFFFF";
 
-		[Required]
-		public Conversion.DitheringKind Dithering { get; set; } = Conversion.DitheringKind.None;
+        [Range(byte.MinValue, byte.MaxValue, ErrorMessage = "Opacity invalid (0-255).")]
+        public int Opacity { get; set; } = 255;
 
-		public static string GetDitheringLocalized(Conversion.DitheringKind dithering) => dithering switch
-		{
-			Conversion.DitheringKind.None => "None",
-			Conversion.DitheringKind.FloydSteinberg => "Floyd–Steinberg",
-			Conversion.DitheringKind.Atkinson => "Atkinson",
-			_ => throw new ArgumentOutOfRangeException(nameof(dithering))
-		};
+        [Required]
+        public PdfRotation Rotation { get; set; } = PdfRotation.Rotate0;
 
-		public static string GetMimeType(SKEncodedImageFormat format) => format switch
-		{
-			SKEncodedImageFormat.Png => "image/png",
-			SKEncodedImageFormat.Jpeg => "image/jpeg",
-			SKEncodedImageFormat.Webp => "image/webp",
-			_ => throw new ArgumentOutOfRangeException(nameof(format))
-		};
+        public static string GetRotationLocalized(PdfRotation rotation) => rotation switch
+        {
+            PdfRotation.Rotate0 => "0°",
+            PdfRotation.Rotate90 => "90°",
+            PdfRotation.Rotate180 => "180°",
+            PdfRotation.Rotate270 => "270°",
+            _ => throw new ArgumentOutOfRangeException(nameof(rotation))
+        };
 
-		public static string GetOutputFileName(RenderRequest model) => $"{model.File!.Name}.txt";
+        public byte Threshold { get; set; } = 128;
 
-		public Stream? Input { get; set; }
+        [Required]
+        [Range(0, byte.MaxValue, ErrorMessage = "Threshold number invalid (must be between 0 and 255).")]
+        public int ThresholdAsInt
+        {
+            get => Threshold;
+            set => Threshold = (byte)value;
+        }
 
-		public string? Output { get; set; }
+        [Required]
+        public Conversion.DitheringKind Dithering { get; set; } = Conversion.DitheringKind.None;
 
-		public Stream? OutputPreviewImage { get; set; }
+        public static string GetDitheringLocalized(Conversion.DitheringKind dithering) => dithering switch
+        {
+            Conversion.DitheringKind.None => "None",
+            Conversion.DitheringKind.FloydSteinberg => "Floyd–Steinberg",
+            Conversion.DitheringKind.Atkinson => "Atkinson",
+            _ => throw new ArgumentOutOfRangeException(nameof(dithering))
+        };
 
-		public override string ToString()
-		{
-			return $"{nameof(RenderRequest)} {nameof(File)}={File?.Name ?? "<null>"}, {nameof(Password)}={(!string.IsNullOrEmpty(Password) ? "<password>" : "<null>")}, {nameof(Page)}={Page}, {nameof(Format)}={Format}, {nameof(Quality)}={Quality}, {nameof(Width)}={(Width != null ? Width.Value : "<null>")}, {nameof(Height)}={(Height != null ? Height.Value : "<null>")}, {nameof(Dpi)}={Dpi}, {nameof(Rotation)}={Rotation}, {nameof(WithAspectRatio)}={WithAspectRatio}, {nameof(WithAnnotations)}={WithAnnotations}, {nameof(WithFormFill)}={WithFormFill}";
-		}
+        public static string GetMimeType(SKEncodedImageFormat format) => format switch
+        {
+            SKEncodedImageFormat.Png => "image/png",
+            SKEncodedImageFormat.Jpeg => "image/jpeg",
+            SKEncodedImageFormat.Webp => "image/webp",
+            _ => throw new ArgumentOutOfRangeException(nameof(format))
+        };
 
-		protected virtual void Dispose(bool disposing)
-		{
-			if (!disposedValue)
-			{
-				if (disposing)
-				{
-					Input?.Dispose();
-					Input = null;
-					OutputPreviewImage?.Dispose();
-					OutputPreviewImage = null;
-				}
+        public static string GetOutputFileName(RenderRequest model) => $"{model.File!.Name}.txt";
 
-				disposedValue = true;
-			}
-		}
+        public Stream? Input { get; set; }
 
-		public void Dispose()
-		{
-			Dispose(disposing: true);
-			GC.SuppressFinalize(this);
-		}
-	}
+        public string? Output { get; set; }
+
+        public Stream? OutputPreviewImage { get; set; }
+
+        public override string ToString()
+        {
+            return $"{nameof(RenderRequest)} {nameof(File)}={File?.Name ?? "<null>"}, {nameof(Password)}={(!string.IsNullOrEmpty(Password) ? "<password>" : "<null>")}, {nameof(Page)}={Page}, {nameof(Format)}={Format}, {nameof(Quality)}={Quality}, {nameof(Width)}={(Width != null ? Width.Value : "<null>")}, {nameof(Height)}={(Height != null ? Height.Value : "<null>")}, {nameof(Dpi)}={Dpi}, {nameof(Rotation)}={Rotation}, {nameof(WithAspectRatio)}={WithAspectRatio}, {nameof(WithAnnotations)}={WithAnnotations}, {nameof(WithFormFill)}={WithFormFill}";
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    Input?.Dispose();
+                    Input = null;
+                    OutputPreviewImage?.Dispose();
+                    OutputPreviewImage = null;
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+    }
 }

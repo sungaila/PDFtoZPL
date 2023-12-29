@@ -19,6 +19,9 @@
     <None Remove="Assets\SocialPreview.pdf" />
     <None Remove="Assets\SocialPreview.png" />
     <None Remove="Assets\Wikimedia_Commons_web.pdf" />
+    <Compile Update="AntiAliasingTests.ExpectedResults.cs">
+      <DependentUpon>AntiAliasingTests.cs</DependentUpon>
+    </Compile>
     <Compile Update="ThresholdTests.ExpectedResults.cs">
       <DependentUpon>ThresholdTests.cs</DependentUpon>
     </Compile>
@@ -33,6 +36,9 @@
     </Compile>
     <Compile Update="EncodingTests.ExpectedResults.cs">
       <DependentUpon>EncodingTests.cs</DependentUpon>
+    </Compile>
+    <Compile Update="BackgroundColorTests.ExpectedResults.cs">
+      <DependentUpon>BackgroundColorTests.cs</DependentUpon>
     </Compile>
   </ItemGroup>
 

@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
+using PDFtoImage;
 using PDFtoZPL.WebConverter.Models;
 using SkiaSharp;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -12,296 +14,313 @@ using Thinktecture.Blazor.WebShare.Models;
 
 namespace PDFtoZPL.WebConverter.Pages
 {
-	public partial class Index : IDisposable
-	{
-		private DotNetObjectReference<Index>? _objRef;
+    public partial class Index : IDisposable
+    {
+        private DotNetObjectReference<Index>? _objRef;
 
-		public RenderRequest Model { get; set; } = new();
+        public RenderRequest Model { get; set; } = new();
 
-		public bool IsWebShareSupported { get; private set; } = false;
+        public bool IsWebShareSupported { get; private set; } = false;
 
-		public bool IsLoading { get; private set; }
+        public bool IsLoading { get; private set; }
 
-		public Exception? LastException { get; private set; }
+        public Exception? LastException { get; private set; }
 
-		protected override async Task OnAfterRenderAsync(bool firstRender)
-		{
-			await SetupDotNetHelper();
-			await base.OnAfterRenderAsync(firstRender);
-		}
+        protected override async Task OnAfterRenderAsync(bool firstRender)
+        {
+            await SetupDotNetHelper();
+            await base.OnAfterRenderAsync(firstRender);
+        }
 
-		protected override async Task OnInitializedAsync()
-		{
-			Program.FilesHandled -= OnFilesHandled;
-			Program.FilesHandled += OnFilesHandled;
+        protected override async Task OnInitializedAsync()
+        {
+            Program.FilesHandled -= OnFilesHandled;
+            Program.FilesHandled += OnFilesHandled;
 
-			IsWebShareSupported = await WebShareService.IsSupportedAsync();
+            IsWebShareSupported = await WebShareService.IsSupportedAsync();
 
-			await base.OnInitializedAsync();
-		}
+            await base.OnInitializedAsync();
+        }
 
-		private async Task SetupDotNetHelper()
-		{
-			_objRef = DotNetObjectReference.Create(this);
-			await JS.InvokeAsync<string>("setDotNetHelper", _objRef);
-		}
+        private async Task SetupDotNetHelper()
+        {
+            _objRef = DotNetObjectReference.Create(this);
+            await JS.InvokeAsync<string>("setDotNetHelper", _objRef);
+        }
 
-		private async void OnFilesHandled(object? sender, Program.HandledFileEventArgs args)
-		{
-			if (args.File == null)
-				return;
+        private async void OnFilesHandled(object? sender, Program.HandledFileEventArgs args)
+        {
+            if (args.File == null)
+                return;
 
-			SetFile(
-				new DummyFile(
-					await args.File.GetNameAsync(),
-					await args.File.GetLastModifiedAsync(),
-					(long)await args.File.GetSizeAsync(),
-					await args.File.GetTypeAsync()
-				),
-				new MemoryStream(await args.File.ArrayBufferAsync())
-			);
-		}
+            SetFile(
+                new DummyFile(
+                    await args.File.GetNameAsync(),
+                    await args.File.GetLastModifiedAsync(),
+                    (long)await args.File.GetSizeAsync(),
+                    await args.File.GetTypeAsync()
+                ),
+                new MemoryStream(await args.File.ArrayBufferAsync())
+            );
+        }
 
-		private void SetFile(IBrowserFile file, Stream stream)
-		{
-			if (file == null)
-				return;
+        private void SetFile(IBrowserFile file, Stream stream)
+        {
+            if (file == null)
+                return;
 
-			Logger.LogInformation("Handle file {FileName}.", file.Name);
+            Logger.LogInformation("Handle file {FileName}.", file.Name);
 
-			Model.File = file;
-			Model.Input = stream;
+            Model.File = file;
+            Model.Input = stream;
 
-			StateHasChanged();
-		}
+            StateHasChanged();
+        }
 
-		private void OnInputFileChange(InputFileChangeEventArgs e)
-		{
-			Model.File = e.File;
-			Model.Input?.Dispose();
-			Model.Input = null;
-			Model.Output = null;
-			Model.OutputPreviewImage?.Dispose();
-			Model.OutputPreviewImage = null;
-			StateHasChanged();
-		}
+        private void OnInputFileChange(InputFileChangeEventArgs e)
+        {
+            Model.File = e.File;
+            Model.Input?.Dispose();
+            Model.Input = null;
+            Model.Output = null;
+            Model.OutputPreviewImage?.Dispose();
+            Model.OutputPreviewImage = null;
+            StateHasChanged();
+        }
 
-		private async Task Reset()
-		{
-			Model.Dispose();
-			Model = new();
-			LastException = null;
-			await JS.InvokeVoidAsync("resetImage", "outputImage");
-		}
+        private async Task Reset()
+        {
+            Model.Dispose();
+            Model = new();
+            LastException = null;
+            await JS.InvokeVoidAsync("resetImage", "outputImage");
+        }
 
-		private const long MaxAllowedSize = 250 * 1000 * 1000;
+        private const long MaxAllowedSize = 250 * 1000 * 1000;
 
-		private async Task Submit()
-		{
-			Logger.LogInformation("Converting {Model}.", Model);
+        private async Task Submit()
+        {
+            Logger.LogInformation("Converting {Model}.", Model);
 
-			try
-			{
-				IsLoading = true;
-				LastException = null;
+            try
+            {
+                IsLoading = true;
+                LastException = null;
 
-				Model.Output = null;
-				Model.OutputPreviewImage?.Dispose();
-				Model.OutputPreviewImage = null;
+                Model.Output = null;
+                Model.OutputPreviewImage?.Dispose();
+                Model.OutputPreviewImage = null;
 
-				if (Model.Input == null)
-				{
-					Model.Input = new MemoryStream();
-					await Model.File!.OpenReadStream(MaxAllowedSize).CopyToAsync(Model.Input);
-				}
+                if (Model.Input == null)
+                {
+                    Model.Input = new MemoryStream();
+                    await Model.File!.OpenReadStream(MaxAllowedSize).CopyToAsync(Model.Input);
+                }
 
-				Model.Input.Position = 0;
-				bool encodeSuccess = false;
+                Model.Input.Position = 0;
+                bool encodeSuccess = false;
+                PdfAntiAliasing antiAliasing = default;
+                var backgroundColor = SKColors.White;
 
-				await Task.Factory.StartNew(() =>
-				{
-					SKBitmap inputToConvert;
+                if (Model.AntiAliasingText)
+                    antiAliasing |= PdfAntiAliasing.Text;
+                if (Model.AntiAliasingImages)
+                    antiAliasing |= PdfAntiAliasing.Images;
+                if (Model.AntiAliasingPaths)
+                    antiAliasing |= PdfAntiAliasing.Paths;
 
-					if (Model.File?.ContentType == "application/pdf")
-					{
-						inputToConvert = PDFtoImage.Conversion.ToImage(
-							Model.Input,
-							leaveOpen: true,
-							password: !string.IsNullOrEmpty(Model.Password) ? Model.Password : null,
-							page: Model.Page,
-							dpi: Model.Dpi,
-							width: Model.Width,
-							height: Model.Height,
-							withAnnotations: Model.WithAnnotations,
-							withFormFill: Model.WithFormFill,
-							withAspectRatio: Model.WithAspectRatio,
-							rotation: Model.Rotation
-							);
-					}
-					else
-					{
-						using var memoryStream = new MemoryStream();
-						Model.Input.CopyTo(memoryStream);
-						memoryStream.Position = 0;
-						inputToConvert = SKBitmap.Decode(memoryStream);
-					}
+                if (Model.BackgroundColor != null && Model.BackgroundColor.StartsWith('#') && uint.TryParse(Model.BackgroundColor[1..], NumberStyles.HexNumber, null, out var parsed))
+                {
+                    parsed += (uint)(Model.Opacity << 24);
+                    backgroundColor = (SKColor)parsed;
+                }
 
-					using (inputToConvert)
-					{
-						Model.Output = PDFtoZPL.Conversion.ConvertBitmap(
-							inputToConvert,
-							encodingKind: Model.Encoding,
-							graphicFieldOnly: Model.GraphicFieldOnly,
-							setLabelLength: Model.SetLabelLength,
-							threshold: Model.Threshold,
-							ditheringKind: Model.Dithering
-						);
+                await Task.Factory.StartNew(() =>
+                {
+                    SKBitmap inputToConvert;
 
-						Model.OutputPreviewImage = new MemoryStream();
+                    if (Model.File?.ContentType == "application/pdf")
+                    {
+                        inputToConvert = PDFtoImage.Conversion.ToImage(
+                            Model.Input,
+                            leaveOpen: true,
+                            password: !string.IsNullOrEmpty(Model.Password) ? Model.Password : null,
+                            page: Model.Page,
+                            dpi: Model.Dpi,
+                            width: Model.Width,
+                            height: Model.Height,
+                            withAnnotations: Model.WithAnnotations,
+                            withFormFill: Model.WithFormFill,
+                            withAspectRatio: Model.WithAspectRatio,
+                            rotation: Model.Rotation,
+                            antiAliasing: antiAliasing,
+                            backgroundColor: backgroundColor
+                            );
+                    }
+                    else
+                    {
+                        using var memoryStream = new MemoryStream();
+                        Model.Input.CopyTo(memoryStream);
+                        memoryStream.Position = 0;
+                        inputToConvert = SKBitmap.Decode(memoryStream);
+                    }
 
-						using (var monochromeBitmap = inputToConvert.ToMonochrome(Model.Threshold, Model.Dithering))
-						{
-							encodeSuccess = monochromeBitmap.Encode(Model.OutputPreviewImage, SKEncodedImageFormat.Png, 100);
-						}
-					}
-				}, TaskCreationOptions.LongRunning);
+                    using (inputToConvert)
+                    {
+                        Model.Output = PDFtoZPL.Conversion.ConvertBitmap(
+                            inputToConvert,
+                            encodingKind: Model.Encoding,
+                            graphicFieldOnly: Model.GraphicFieldOnly,
+                            setLabelLength: Model.SetLabelLength,
+                            threshold: Model.Threshold,
+                            ditheringKind: Model.Dithering
+                        );
 
-				if (encodeSuccess)
-				{
-					await SetImage();
-				}
-				else
-				{
-					Model.OutputPreviewImage?.Dispose();
-					Model.OutputPreviewImage = null;
-				}
-			}
-			catch (Exception ex)
-			{
-				Logger.LogError(ex, "Failed to convert {Model}.", Model);
-				LastException = ex;
-			}
-			finally
-			{
-				IsLoading = false;
-			}
-		}
+                        Model.OutputPreviewImage = new MemoryStream();
 
-		private async Task CopyToClipboard()
-		{
-			if (Model.Output == null)
-				return;
+                        using (var monochromeBitmap = inputToConvert.ToMonochrome(Model.Threshold, Model.Dithering))
+                        {
+                            encodeSuccess = monochromeBitmap.Encode(Model.OutputPreviewImage, SKEncodedImageFormat.Png, 100);
+                        }
+                    }
+                }, TaskCreationOptions.LongRunning);
 
-			await JS.InvokeVoidAsync("navigator.clipboard.writeText", Model.Output);
-		}
+                if (encodeSuccess)
+                {
+                    await SetImage();
+                }
+                else
+                {
+                    Model.OutputPreviewImage?.Dispose();
+                    Model.OutputPreviewImage = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to convert {Model}.", Model);
+                LastException = ex;
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
 
-		private async Task Download()
-		{
-			if (Model.Output == null)
-				return;
+        private async Task CopyToClipboard()
+        {
+            if (Model.Output == null)
+                return;
 
-			try
-			{
-				await JS.InvokeVoidAsync("downloadFileFromText", RenderRequest.GetOutputFileName(Model), Model.Output);
-			}
-			catch (Exception ex)
-			{
-				Logger.LogError(ex, "Failed to download {Model}.", Model);
-			}
-		}
+            await JS.InvokeVoidAsync("navigator.clipboard.writeText", Model.Output);
+        }
 
-		private async Task Share()
-		{
-			if (Model.Output == null)
-				return;
+        private async Task Download()
+        {
+            if (Model.Output == null)
+                return;
 
-			try
-			{
-				var data = new WebShareDataModel
-				{
-					Text = Model.Output
-				};
+            try
+            {
+                await JS.InvokeVoidAsync("downloadFileFromText", RenderRequest.GetOutputFileName(Model), Model.Output);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to download {Model}.", Model);
+            }
+        }
 
-				if (!await WebShareService.CanShareAsync(data))
-				{
-					Logger.LogWarning("Cannot web share {Model}.", Model);
-					return;
-				}
+        private async Task Share()
+        {
+            if (Model.Output == null)
+                return;
 
-				await WebShareService.ShareAsync(data);
-			}
-			catch (Exception ex)
-			{
-				Logger.LogError(ex, "Failed to web share {Model}.", Model);
-			}
-		}
+            try
+            {
+                var data = new WebShareDataModel
+                {
+                    Text = Model.Output
+                };
 
-		private async Task SetImage()
-		{
-			if (Model.OutputPreviewImage == null)
-			{
-				await JS.InvokeVoidAsync("resetImage", "outputImage");
-				return;
-			}
+                if (!await WebShareService.CanShareAsync(data))
+                {
+                    Logger.LogWarning("Cannot web share {Model}.", Model);
+                    return;
+                }
 
-			Model.OutputPreviewImage.Position = 0;
-			using var fs = new MemoryStream();
-			await Model.OutputPreviewImage.CopyToAsync(fs);
-			fs.Position = 0;
+                await WebShareService.ShareAsync(data);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to web share {Model}.", Model);
+            }
+        }
 
-			using var streamRef = new DotNetStreamReference(fs);
-			await JS.InvokeVoidAsync("setImage", "outputImage", RenderRequest.GetMimeType(Model.Format), streamRef);
-		}
+        private async Task SetImage()
+        {
+            if (Model.OutputPreviewImage == null)
+            {
+                await JS.InvokeVoidAsync("resetImage", "outputImage");
+                return;
+            }
 
-		[JSInvokable]
-		public async Task ReceiveWebShareTargetAsync(string filesStringyfied)
-		{
-			try
-			{
-				var converted = JsonSerializer.Deserialize<FilesStringyfied>(filesStringyfied);
-				var file = converted?.Files?.FirstOrDefault();
+            Model.OutputPreviewImage.Position = 0;
+            using var fs = new MemoryStream();
+            await Model.OutputPreviewImage.CopyToAsync(fs);
+            fs.Position = 0;
 
-				if (file == null)
-					return;
+            using var streamRef = new DotNetStreamReference(fs);
+            await JS.InvokeVoidAsync("setImage", "outputImage", RenderRequest.GetMimeType(Model.Format), streamRef);
+        }
 
-				var data = Convert.FromBase64String(file.GetData());
-				var ms = new MemoryStream(data.Length);
-				await ms.WriteAsync(data);
+        [JSInvokable]
+        public async Task ReceiveWebShareTargetAsync(string filesStringyfied)
+        {
+            try
+            {
+                var converted = JsonSerializer.Deserialize<FilesStringyfied>(filesStringyfied);
+                var file = converted?.Files?.FirstOrDefault();
 
-				SetFile(
-					new DummyFile(
-						file.Name,
-						file.LastModified,
-						file.Size,
-						file.Type
-					), ms);
-			}
-			catch (Exception ex)
-			{
-				Logger.LogError(ex, "Failed to receive web share {FilesStringyfied}.", filesStringyfied);
-			}
-		}
+                if (file == null)
+                    return;
 
-		private bool disposedValue;
+                var data = Convert.FromBase64String(file.GetData());
+                var ms = new MemoryStream(data.Length);
+                await ms.WriteAsync(data);
 
-		protected virtual void Dispose(bool disposing)
-		{
-			if (!disposedValue)
-			{
-				if (disposing)
-				{
-					_objRef?.Dispose();
-					_objRef = null;
-				}
+                SetFile(
+                    new DummyFile(
+                        file.Name,
+                        file.LastModified,
+                        file.Size,
+                        file.Type
+                    ), ms);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogError(ex, "Failed to receive web share {FilesStringyfied}.", filesStringyfied);
+            }
+        }
 
-				disposedValue = true;
-			}
-		}
+        private bool disposedValue;
 
-		public void Dispose()
-		{
-			Dispose(disposing: true);
-			GC.SuppressFinalize(this);
-		}
-	}
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    _objRef?.Dispose();
+                    _objRef = null;
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(disposing: true);
+            GC.SuppressFinalize(this);
+        }
+    }
 }
