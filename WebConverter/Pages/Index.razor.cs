@@ -137,36 +137,37 @@ namespace PDFtoZPL.WebConverter.Pages
 
                 await Task.Factory.StartNew(() =>
                 {
-                    SKBitmap inputToConvert;
+                    SKBitmap? inputToConvert = null;
 
-                    if (Model.File?.ContentType == "application/pdf")
+                    try
                     {
-                        inputToConvert = PDFtoImage.Conversion.ToImage(
-                            Model.Input,
-                            leaveOpen: true,
-                            password: !string.IsNullOrEmpty(Model.Password) ? Model.Password : null,
-                            page: Model.Page,
-                            dpi: Model.Dpi,
-                            width: Model.Width,
-                            height: Model.Height,
-                            withAnnotations: Model.WithAnnotations,
-                            withFormFill: Model.WithFormFill,
-                            withAspectRatio: Model.WithAspectRatio,
-                            rotation: Model.Rotation,
-                            antiAliasing: antiAliasing,
-                            backgroundColor: backgroundColor
-                            );
-                    }
-                    else
-                    {
-                        using var memoryStream = new MemoryStream();
-                        Model.Input.CopyTo(memoryStream);
-                        memoryStream.Position = 0;
-                        inputToConvert = SKBitmap.Decode(memoryStream);
-                    }
+                        if (Model.File?.ContentType == "application/pdf")
+                        {
+                            inputToConvert = PDFtoImage.Conversion.ToImage(
+                                Model.Input,
+                                leaveOpen: true,
+                                password: !string.IsNullOrEmpty(Model.Password) ? Model.Password : null,
+                                page: Model.Page,
+                                dpi: Model.Dpi,
+                                width: Model.Width,
+                                height: Model.Height,
+                                withAnnotations: Model.WithAnnotations,
+                                withFormFill: Model.WithFormFill,
+                                withAspectRatio: Model.WithAspectRatio,
+                                rotation: Model.Rotation,
+                                antiAliasing: antiAliasing,
+                                backgroundColor: backgroundColor
+                                );
+                        }
+                        else
+                        {
+                            using var memoryStream = new MemoryStream();
+                            Model.Input.CopyTo(memoryStream);
+                            memoryStream.Position = 0;
+                            inputToConvert = SKBitmap.Decode(memoryStream);
+                        }
 
-                    using (inputToConvert)
-                    {
+
                         Model.Output = PDFtoZPL.Conversion.ConvertBitmap(
                             inputToConvert,
                             encodingKind: Model.Encoding,
@@ -178,10 +179,12 @@ namespace PDFtoZPL.WebConverter.Pages
 
                         Model.OutputPreviewImage = new MemoryStream();
 
-                        using (var monochromeBitmap = inputToConvert.ToMonochrome(Model.Threshold, Model.Dithering))
-                        {
-                            encodeSuccess = monochromeBitmap.Encode(Model.OutputPreviewImage, SKEncodedImageFormat.Png, 100);
-                        }
+                        using var monochromeBitmap = inputToConvert.ToMonochrome(Model.Threshold, Model.Dithering);
+                        encodeSuccess = monochromeBitmap.Encode(Model.OutputPreviewImage, SKEncodedImageFormat.Png, 100);
+                    }
+                    finally
+                    {
+                        inputToConvert?.Dispose();
                     }
                 }, TaskCreationOptions.LongRunning);
 

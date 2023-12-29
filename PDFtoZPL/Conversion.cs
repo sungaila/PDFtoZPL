@@ -487,7 +487,8 @@ namespace PDFtoZPL
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
         public static string ConvertBitmap(string bitmapPath, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None)
         {
-            return ConvertBitmap(SKBitmap.Decode(bitmapPath), encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
+            using var bitmap = SKBitmap.Decode(bitmapPath);
+            return ConvertBitmap(bitmap, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
         }
 
         /// <summary>
@@ -527,11 +528,13 @@ namespace PDFtoZPL
                 using var memoryStream = new MemoryStream();
                 bitmapAsStream.CopyTo(memoryStream);
                 memoryStream.Position = 0;
-                return ConvertBitmap(SKBitmap.Decode(memoryStream), encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
+                using var bitmap = SKBitmap.Decode(memoryStream);
+                return ConvertBitmap(bitmap, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
             }
 
             bitmapAsStream.Position = 0;
-            return ConvertBitmap(SKBitmap.Decode(bitmapAsStream), encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
+            using var bitmap2 = SKBitmap.Decode(bitmapAsStream);
+            return ConvertBitmap(bitmap2, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
         }
 
         /// <summary>
@@ -546,7 +549,8 @@ namespace PDFtoZPL
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
         public static string ConvertBitmap(byte[] bitmapAsByteArray, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None)
         {
-            return ConvertBitmap(SKBitmap.Decode(bitmapAsByteArray), encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
+            using var bitmap = SKBitmap.Decode(bitmapAsByteArray);
+            return ConvertBitmap(bitmap, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
         }
 
         /// <summary>
@@ -572,14 +576,14 @@ namespace PDFtoZPL
             SKBitmap inputBitmap = pdfBitmap;
             SKBitmap? bitmapReplacement = null;
 
-            if (ditheringKind != DitheringKind.None)
-            {
-                bitmapReplacement = pdfBitmap.ToMonochrome(threshold, ditheringKind);
-                inputBitmap = bitmapReplacement;
-            }
-
             try
             {
+                if (ditheringKind != DitheringKind.None)
+                {
+                    bitmapReplacement = pdfBitmap.ToMonochrome(threshold, ditheringKind);
+                    inputBitmap = bitmapReplacement;
+                }
+
                 // first convert the bitmap into ZPL hex values (representing the bitmap)
                 string bitmapAsHex = ConvertBitmapToHex(inputBitmap, threshold, out int binaryByteCount, out int bytesPerRow);
                 string bitmapPayload;
