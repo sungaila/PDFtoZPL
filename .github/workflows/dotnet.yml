@@ -77,6 +77,12 @@ jobs:
           java-version: 17
           java-package: jdk
           distribution: 'zulu'
+      - name: Setup Android SDK 29
+        run: C:\Android\android-sdk\cmdline-tools\latest\bin\sdkmanager "platforms;android-29"
+      - name: Setup Windows 11 SDK (10.0.22621.0)
+        uses: GuillaumeFalourd/setup-windows10-sdk-action@main
+        with:
+            sdk-version: 22621
       - name: Restore
         run: msbuild PDFtoZPL.Build.slnf /t:restore
       - name: Build
