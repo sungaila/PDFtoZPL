@@ -77,14 +77,20 @@ jobs:
           java-version: 17
           java-package: jdk
           distribution: 'zulu'
+      - name: Setup Android SDK 29
+        run: C:\Android\android-sdk\cmdline-tools\latest\bin\sdkmanager "platforms;android-29"
+      - name: Setup Windows 11 SDK (10.0.22621.0)
+        uses: GuillaumeFalourd/setup-windows10-sdk-action@main
+        with:
+            sdk-version: 22621
       - name: Restore
-        run: dotnet restore PDFtoZPL.sln
+        run: msbuild PDFtoZPL.Build.slnf /t:restore
       - name: Build
-        run: msbuild PDFtoZPL.sln /p:Configuration=${{ github.event_name != 'workflow_dispatch' && 'Debug' || inputs.build_configuration }} /p:VersionSuffix=ci /p:RestorePackages=false
+        run: msbuild PDFtoZPL.Build.slnf /p:Configuration=${{ github.event_name != 'workflow_dispatch' && 'Debug' || inputs.build_configuration }} /p:VersionSuffix=ci /p:RestorePackages=false
       - name: Pack
         run: msbuild PDFtoZPL/PDFtoZPL.csproj /t:pack /p:Configuration=${{ github.event_name != 'workflow_dispatch' && 'Debug' || inputs.build_configuration }} /p:VersionSuffix=ci /p:RestorePackages=false
       - name: Publish libraries
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@v4
         with:
           name: Library assemblies
           path: |
@@ -93,7 +99,7 @@ jobs:
             !**/*.snupkg
           if-no-files-found: error
       - name: Publish NuGet packages
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@v4
         with:
           name: NuGet packages
           path: |
@@ -101,7 +107,7 @@ jobs:
             PDFtoZPL/bin/${{ github.event_name != 'workflow_dispatch' && 'Debug' || inputs.build_configuration }}/*.snupkg
           if-no-files-found: error
       - name: Publish tests
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@v4
         if: success() && (github.event_name != 'workflow_dispatch' && true || inputs.run_tests) == true
         with:
           name: Test assemblies
@@ -131,12 +137,15 @@ jobs:
         with:
           dotnet-version: 8.x
       - name: Download test assemblies
-        uses: actions/download-artifact@main
+        uses: actions/download-artifact@v4
         with:
           name: Test assemblies
       - name: .NET Framework 4.6.2
         if: runner.os == 'Windows' && success()
         run: dotnet test net462/*.Tests.dll --logger trx --verbosity detailed
+      - name: .NET Framework 4.7.1
+        if: runner.os == 'Windows' && (success() || failure())
+        run: dotnet test net471/*.Tests.dll --logger trx --verbosity detailed
       - name: .NET Framework 4.8.1
         if: runner.os == 'Windows' && (success() || failure())
         run: dotnet test net481/*.Tests.dll --logger trx --verbosity detailed
@@ -151,10 +160,11 @@ jobs:
         run: dotnet test net8.0/*.Tests.dll --logger trx --verbosity detailed
       - name: Upload test results
         if: success() || failure()
-        uses: actions/upload-artifact@main
+        uses: actions/upload-artifact@v4
         with:
           name: Test results (${{ matrix.os }})
           path: ./**/*.trx
+          if-no-files-found: error
           retention-days: 1
   publish-test-results:
     name: Publish tests results
@@ -169,8 +179,10 @@ jobs:
     if: (success() || failure()) && (github.event_name != 'workflow_dispatch' && true || inputs.publish_testresults) == true
     steps:
       - name: Download Artifacts
-        uses: actions/download-artifact@main
+        uses: actions/download-artifact@v4
         with:
+          pattern: Test results (*)
+          merge-multiple: true
           path: artifacts
       - name: Publish test results
         uses: EnricoMi/publish-unit-test-result-action@master

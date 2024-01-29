@@ -1,0 +1,11 @@
+{
+  "solution": {
+    "path": "PDFtoZPL.sln",
+    "projects": [
+      "Console\\Console.csproj",
+      "PDFtoZPL\\PDFtoZPL.csproj",
+      "Tests\\Tests.csproj",
+      "WebConverter\\WebConverter.csproj"
+    ]
+  }
+}
