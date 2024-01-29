@@ -12,7 +12,6 @@ A .NET library to convert [PDF files](https://en.wikipedia.org/wiki/PDF) (and bi
 
 This .NET library is built on top of
 * [PDFium](https://pdfium.googlesource.com/pdfium/) (native PDF renderer)
-* [PdfiumViewer](https://github.com/pvginkel/PdfiumViewer) (wrapper for PDFium)
 * [SkiaSharp](https://github.com/mono/SkiaSharp) (cross-platform 2D graphics API)
 
 ## Getting started

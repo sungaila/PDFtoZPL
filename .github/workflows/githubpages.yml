@@ -34,7 +34,7 @@ jobs:
             sed -i 's/"action": "\/"/"action": "\/${{github.event.repository.name}}\/"/g' manifest.webmanifest
             sed -i 's/"action": "\/receive-webshare"/"action": "\/${{github.event.repository.name}}\/receive-webshare"/g' manifest.webmanifest
       - name: Restore
-        run: dotnet restore PDFtoZPL.sln
+        run: dotnet restore WebConverter/WebConverter.csproj
       - name: Publish
         run: dotnet publish WebConverter/WebConverter.csproj -c Release -p:PublishProfile=WebConverter/Properties/PublishProfiles/PublishSite.pubxml -p:VersionSuffix=ci --no-restore
       - name: Create .nojekyll file
@@ -78,6 +78,10 @@ jobs:
     needs: publish
     runs-on: ubuntu-latest
 
+    concurrency:
+      group: "pages"
+      cancel-in-progress: true
+
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
       pages: write      # to deploy to Pages
@@ -87,10 +91,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     
-    concurrency:
-      group: "pages"
-      cancel-in-progress: false
-
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
