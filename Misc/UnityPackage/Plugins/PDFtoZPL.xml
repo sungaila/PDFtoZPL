@@ -1,0 +1,310 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>PDFtoZPL</name>
+    </assembly>
+    <members>
+        <member name="T:PDFtoZPL.Conversion">
+            <summary>
+            Provides methods to convert PDFs and <see cref="T:SkiaSharp.SKBitmap"/>s into ZPL code.
+            </summary>
+        </member>
+        <member name="M:PDFtoZPL.Conversion.ConvertPdfPage(System.String,System.String,System.Int32,System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,PDFtoZPL.Conversion.BitmapEncodingKind,System.Boolean,System.Boolean,System.Boolean,PDFtoImage.PdfRotation,System.Byte,PDFtoZPL.Conversion.DitheringKind,PDFtoImage.PdfAntiAliasing,System.Nullable{SkiaSharp.SKColor})">
+            <summary>
+            Converts a single page of a given PDF into ZPL code.
+            </summary>
+            <param name="pdfAsBase64String">The PDF encoded as Base64.</param>
+            <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+            <param name="page">The specific page to be converted.</param>
+            <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+            <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
+            <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
+            <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+            <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+            <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+            <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
+            <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
+            <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
+            <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+            <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
+            <param name="backgroundColor">Specifies the background color. Defaults to <see cref="F:SkiaSharp.SKColors.White"/>.</param>
+            <returns>The converted PDF page as ZPL code.</returns>
+        </member>
+        <member name="M:PDFtoZPL.Conversion.ConvertPdfPage(System.Byte[],System.String,System.Int32,System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,PDFtoZPL.Conversion.BitmapEncodingKind,System.Boolean,System.Boolean,System.Boolean,PDFtoImage.PdfRotation,System.Byte,PDFtoZPL.Conversion.DitheringKind,PDFtoImage.PdfAntiAliasing,System.Nullable{SkiaSharp.SKColor})">
+            <summary>
+            Converts a single page of a given PDF into ZPL code.
+            </summary>
+            <param name="pdfAsByteArray">The PDF as a byte array.</param>
+            <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+            <param name="page">The specific page to be converted.</param>
+            <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+            <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
+            <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
+            <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+            <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+            <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+            <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
+            <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
+            <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
+            <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+            <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
+            <param name="backgroundColor">Specifies the background color. Defaults to <see cref="F:SkiaSharp.SKColors.White"/>.</param>
+            <returns>The converted PDF page as ZPL code.</returns>
+        </member>
+        <member name="M:PDFtoZPL.Conversion.ConvertPdfPage(System.IO.Stream,System.String,System.Int32,System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,PDFtoZPL.Conversion.BitmapEncodingKind,System.Boolean,System.Boolean,System.Boolean,PDFtoImage.PdfRotation,System.Byte,PDFtoZPL.Conversion.DitheringKind,PDFtoImage.PdfAntiAliasing,System.Nullable{SkiaSharp.SKColor})">
+            <summary>
+            Converts a single page of a given PDF into ZPL code.
+            </summary>
+            <param name="pdfStream">The PDF as a stream.</param>
+            <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+            <param name="page">The specific page to be converted.</param>
+            <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+            <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
+            <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
+            <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+            <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+            <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+            <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
+            <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
+            <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
+            <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+            <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
+            <param name="backgroundColor">Specifies the background color. Defaults to <see cref="F:SkiaSharp.SKColors.White"/>.</param>
+            <returns>The converted PDF page as ZPL code.</returns>
+        </member>
+        <member name="M:PDFtoZPL.Conversion.ConvertPdfPage(System.IO.Stream,System.Boolean,System.String,System.Int32,System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,PDFtoZPL.Conversion.BitmapEncodingKind,System.Boolean,System.Boolean,System.Boolean,PDFtoImage.PdfRotation,System.Byte,PDFtoZPL.Conversion.DitheringKind,PDFtoImage.PdfAntiAliasing,System.Nullable{SkiaSharp.SKColor})">
+            <summary>
+            Converts a single page of a given PDF into ZPL code.
+            </summary>
+            <param name="pdfStream">The PDF as a stream.</param>
+            <param name="leaveOpen"><see langword="true"/> to leave the <paramref name="pdfStream"/> open after the PDF document is loaded; otherwise, <see langword="false"/>.</param>
+            <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+            <param name="page">The specific page to be converted.</param>
+            <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+            <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
+            <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
+            <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+            <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+            <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+            <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
+            <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
+            <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
+            <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+            <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
+            <param name="backgroundColor">Specifies the background color. Defaults to <see cref="F:SkiaSharp.SKColors.White"/>.</param>
+            <returns>The converted PDF page as ZPL code.</returns>
+        </member>
+        <member name="M:PDFtoZPL.Conversion.ConvertPdf(System.String,System.String,System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,PDFtoZPL.Conversion.BitmapEncodingKind,System.Boolean,System.Boolean,System.Boolean,PDFtoImage.PdfRotation,System.Byte,PDFtoZPL.Conversion.DitheringKind,PDFtoImage.PdfAntiAliasing,System.Nullable{SkiaSharp.SKColor})">
+            <summary>
+            Converts all pages of a given PDF into ZPL code.
+            </summary>
+            <param name="pdfAsBase64String">The PDF encoded as Base64.</param>
+            <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+            <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+            <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
+            <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
+            <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+            <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+            <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+            <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
+            <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
+            <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
+            <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+            <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
+            <param name="backgroundColor">Specifies the background color. Defaults to <see cref="F:SkiaSharp.SKColors.White"/>.</param>
+            <returns>The converted PDF pages as ZPL code.</returns>
+        </member>
+        <member name="M:PDFtoZPL.Conversion.ConvertPdf(System.Byte[],System.String,System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,PDFtoZPL.Conversion.BitmapEncodingKind,System.Boolean,System.Boolean,System.Boolean,PDFtoImage.PdfRotation,System.Byte,PDFtoZPL.Conversion.DitheringKind,PDFtoImage.PdfAntiAliasing,System.Nullable{SkiaSharp.SKColor})">
+            <summary>
+            Converts all pages of a given PDF into ZPL code.
+            </summary>
+            <param name="pdfAsByteArray">The PDF as a byte array.</param>
+            <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+            <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+            <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
+            <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
+            <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+            <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+            <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+            <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
+            <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
+            <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
+            <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+            <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
+            <param name="backgroundColor">Specifies the background color. Defaults to <see cref="F:SkiaSharp.SKColors.White"/>.</param>
+            <returns>The converted PDF pages as ZPL code.</returns>
+        </member>
+        <member name="M:PDFtoZPL.Conversion.ConvertPdf(System.IO.Stream,System.String,System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,PDFtoZPL.Conversion.BitmapEncodingKind,System.Boolean,System.Boolean,System.Boolean,PDFtoImage.PdfRotation,System.Byte,PDFtoZPL.Conversion.DitheringKind,PDFtoImage.PdfAntiAliasing,System.Nullable{SkiaSharp.SKColor})">
+            <summary>
+            Converts all pages of a given PDF into ZPL code.
+            </summary>
+            <param name="pdfStream">The PDF as a stream.</param>
+            <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+            <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+            <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
+            <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
+            <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+            <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+            <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+            <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
+            <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
+            <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
+            <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+            <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
+            <param name="backgroundColor">Specifies the background color. Defaults to <see cref="F:SkiaSharp.SKColors.White"/>.</param>
+            <returns>The converted PDF pages as ZPL code.</returns>
+        </member>
+        <member name="M:PDFtoZPL.Conversion.ConvertPdf(System.IO.Stream,System.Boolean,System.String,System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,PDFtoZPL.Conversion.BitmapEncodingKind,System.Boolean,System.Boolean,System.Boolean,PDFtoImage.PdfRotation,System.Byte,PDFtoZPL.Conversion.DitheringKind,PDFtoImage.PdfAntiAliasing,System.Nullable{SkiaSharp.SKColor})">
+            <summary>
+            Converts all pages of a given PDF into ZPL code.
+            </summary>
+            <param name="pdfStream">The PDF as a stream.</param>
+            <param name="leaveOpen"><see langword="true"/> to leave the <paramref name="pdfStream"/> open after the PDF document is loaded; otherwise, <see langword="false"/>.</param>
+            <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
+            <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
+            <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
+            <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
+            <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
+            <param name="withFormFill">Specifies whether form filling will be rendered.</param>
+            <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+            <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
+            <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
+            <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
+            <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+            <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
+            <param name="backgroundColor">Specifies the background color. Defaults to <see cref="F:SkiaSharp.SKColors.White"/>.</param>
+            <returns>The converted PDF pages as ZPL code.</returns>
+        </member>
+        <member name="M:PDFtoZPL.Conversion.ConvertBitmap(System.String,PDFtoZPL.Conversion.BitmapEncodingKind,System.Boolean,System.Boolean,System.Byte,PDFtoZPL.Conversion.DitheringKind)">
+            <summary>
+            Converts a given image into ZPL code.
+            </summary>
+            <param name="bitmapPath">The file path of the image to convert.</param>
+            <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+            <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
+            <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+            <returns>The converted <see cref="T:SkiaSharp.SKBitmap"/> as ZPL code.</returns>
+        </member>
+        <member name="M:PDFtoZPL.Conversion.ConvertBitmap(System.IO.Stream,PDFtoZPL.Conversion.BitmapEncodingKind,System.Boolean,System.Boolean,System.Byte,PDFtoZPL.Conversion.DitheringKind)">
+            <summary>
+            Converts a given <see cref="T:SkiaSharp.SKBitmap"/> into ZPL code.
+            </summary>
+            <param name="bitmapAsStream">The <see cref="T:SkiaSharp.SKBitmap"/> to convert.</param>
+            <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+            <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
+            <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+            <returns>The converted <see cref="T:SkiaSharp.SKBitmap"/> as ZPL code.</returns>
+        </member>
+        <member name="M:PDFtoZPL.Conversion.ConvertBitmap(System.IO.Stream,System.Boolean,PDFtoZPL.Conversion.BitmapEncodingKind,System.Boolean,System.Boolean,System.Byte,PDFtoZPL.Conversion.DitheringKind)">
+            <summary>
+            Converts a given <see cref="T:SkiaSharp.SKBitmap"/> into ZPL code.
+            </summary>
+            <param name="bitmapAsStream">The <see cref="T:SkiaSharp.SKBitmap"/> to convert.</param>
+            <param name="leaveOpen"><see langword="true"/> to leave the <paramref name="bitmapAsStream"/> open after the PDF document is loaded; otherwise, <see langword="false"/>.</param>
+            <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+            <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
+            <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+            <returns>The converted <see cref="T:SkiaSharp.SKBitmap"/> as ZPL code.</returns>
+        </member>
+        <member name="M:PDFtoZPL.Conversion.ConvertBitmap(System.Byte[],PDFtoZPL.Conversion.BitmapEncodingKind,System.Boolean,System.Boolean,System.Byte,PDFtoZPL.Conversion.DitheringKind)">
+            <summary>
+            Converts a given image into ZPL code.
+            </summary>
+            <param name="bitmapAsByteArray">The image as byte array to convert.</param>
+            <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+            <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
+            <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+            <returns>The converted <see cref="T:SkiaSharp.SKBitmap"/> as ZPL code.</returns>
+        </member>
+        <member name="M:PDFtoZPL.Conversion.ConvertBitmap(SkiaSharp.SKBitmap,PDFtoZPL.Conversion.BitmapEncodingKind,System.Boolean,System.Boolean,System.Byte,PDFtoZPL.Conversion.DitheringKind)">
+            <summary>
+            Converts a given <see cref="T:SkiaSharp.SKBitmap"/> into ZPL code.
+            </summary>
+            <param name="bitmap">The <see cref="T:SkiaSharp.SKBitmap"/> to convert.</param>
+            <param name="encodingKind">The encoding used for embedding the bitmap.</param>
+            <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
+            <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
+            <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+            <returns>The converted <see cref="T:SkiaSharp.SKBitmap"/> as ZPL code.</returns>
+        </member>
+        <member name="T:PDFtoZPL.Conversion.BitmapEncodingKind">
+            <summary>
+            The supported encoding options for the bitmap within the generated ZPL code.
+            </summary>
+        </member>
+        <member name="F:PDFtoZPL.Conversion.BitmapEncodingKind.Hexadecimal">
+            <summary>
+            <b>Not recommended.</b> The bitmap is encoded as hexadecimals.<br/>
+            Its output might be to large for the printer's bitmap storage area.
+            </summary>
+        </member>
+        <member name="F:PDFtoZPL.Conversion.BitmapEncodingKind.HexadecimalCompressed">
+            <summary>
+            The bitmap is encoded as hexadecimals and then compressed (via ZPL ASCII compression).<br/>
+            It's significantly more space-saving than <see cref="F:PDFtoZPL.Conversion.BitmapEncodingKind.Hexadecimal"/>.
+            </summary>
+        </member>
+        <member name="F:PDFtoZPL.Conversion.BitmapEncodingKind.Base64">
+            <summary>
+            <b>Not recommended.</b> The bitmap is encoded as Base64 (MIME). This encoding is referred to as <b>B64</b> in the ZPL II programming guide.<br/>
+            Its output might be to large for the printer's bitmap storage area. Still more space-saving than <see cref="F:PDFtoZPL.Conversion.BitmapEncodingKind.Hexadecimal"/> though.
+            </summary>
+        </member>
+        <member name="F:PDFtoZPL.Conversion.BitmapEncodingKind.Base64Compressed">
+            <summary>
+            Recommended. The bitmap is compressed with Deflate (RFC 1951) and then encoded as Base64 (MIME). This encoding is referred to as <b>Z64</b> in the ZPL II programming guide.
+            </summary>
+        </member>
+        <member name="T:PDFtoZPL.Conversion.DitheringKind">
+            <summary>
+            The used dithering algorithem after downsampling to 1 bit monochrome.
+            </summary>
+        </member>
+        <member name="F:PDFtoZPL.Conversion.DitheringKind.None">
+            <summary>
+            No dithering.
+            </summary>
+        </member>
+        <member name="F:PDFtoZPL.Conversion.DitheringKind.FloydSteinberg">
+            <summary>
+            Use the Robert W. Floyd and Louis Steinberg dithering algorithm.
+            </summary>
+        </member>
+        <member name="F:PDFtoZPL.Conversion.DitheringKind.Atkinson">
+            <summary>
+            Use the Bill Atkinson dithering algorithm.
+            </summary>
+        </member>
+        <member name="F:PDFtoZPL.ConversionUtils.CompressionCountMapping">
+            <summary>
+            The mapping table used for compression.
+            Each character count (the key) is represented by a certain char (the value).
+            </summary>
+        </member>
+    </members>
+</doc>
