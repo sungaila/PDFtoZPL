@@ -2,6 +2,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PDFtoImage;
 using System;
 using System.IO;
+using PDFtoZPL;
 using static PDFtoZPL.Conversion;
 
 namespace Tests
@@ -48,7 +49,7 @@ namespace Tests
             using var fileStream = new FileStream(Path.Combine("Assets", fileName), FileMode.Open, FileAccess.Read);
 
             var zplResult
-                = antiAliasing != null ? ConvertPdfPage(fileStream, encodingKind: BitmapEncodingKind.Base64Compressed, antiAliasing: antiAliasing.Value) : ConvertPdfPage(fileStream, encodingKind: BitmapEncodingKind.Base64Compressed);
+                = antiAliasing != null ? ConvertPdfPage(fileStream, pdfOptions: new(Dpi:203, AntiAliasing: antiAliasing.Value), zplOptions: new(EncodingKind: BitmapEncodingKind.Base64Compressed)) : ConvertPdfPage(fileStream, pdfOptions: new(Dpi: 203), zplOptions: new(EncodingKind: BitmapEncodingKind.Base64Compressed));
 
             Assert.AreEqual(expectedResult, zplResult.Replace("\n", string.Empty));
         }

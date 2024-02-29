@@ -20,228 +20,270 @@
 <PageTitle>Conversion</PageTitle>
 
 <div class="mb-3">
-	<div class="row">
-		<div class="col-sm">
-			<EditForm Model=@Model OnValidSubmit="@Submit" @onreset="Reset">
-				<DataAnnotationsValidator />
+    <div class="row">
+        <div class="col-sm">
+            <EditForm Model=@Model OnValidSubmit="@Submit" @onreset="Reset">
+                <DataAnnotationsValidator />
 
-				<div class="btn-group" role="group">
-					<button type="submit" class="btn btn-primary" disabled="@(IsLoading || Model.File == null)">
-						<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" hidden="@(!IsLoading)"></span> Convert
-					</button>
-					<input type="reset" class="btn btn-outline-secondary" value="Reset" disabled="@IsLoading" />
-				</div>
+                <div class="btn-group" role="group">
+                    <button type="submit" class="btn btn-primary" disabled="@(IsLoading || Model.File == null)">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" hidden="@(!IsLoading)"></span> Convert
+                    </button>
+                    <input type="reset" class="btn btn-outline-secondary" value="Reset" disabled="@IsLoading" />
+                </div>
 
-				<div class="mt-3 mx-auto">
-					<ValidationSummary class="validation-errors alert alert-warning" role="list" />
-				</div>
+                <div class="mt-3 mx-auto">
+                    <ValidationSummary class="validation-errors alert alert-warning" role="list" />
+                </div>
 
-				<div class="alert alert-danger mx-auto" role="alert" hidden="@(LastException == null)">
-					@LastException?.Message
-				</div>
+                <div class="alert alert-danger mx-auto" role="alert" hidden="@(LastException == null)">
+                    @LastException?.Message
+                </div>
 
-				<div class="alert alert-info mx-auto" role="alert" hidden="@(Model.File == null || Model.Output != null)">
-					@(Model.File != null ? $"{Model.File.Name} ({ByteSize.FromBytes(Model.File.Size).ToString()}, {Model.File.ContentType})" : null)
-				</div>
+                <div class="alert alert-info mx-auto" role="alert" hidden="@(Model.File == null || Model.Output != null)">
+                    @(Model.File != null ? $"{Model.File.Name} ({ByteSize.FromBytes(Model.File.Size).ToString()}, {Model.File.ContentType})" : null)
+                </div>
 
-				<div class="card mt-3 mb-3">
-					<h5 class="card-header">Input</h5>
-					<div class="card-body">
-						<div class="form-group row mb-1">
-							<label for="fileUpload" class="col-sm-3 col-form-label label-nowrap">File</label>
-							<div class="col-sm">
-								<InputFile OnChange="OnInputFileChange" id="fileUpload" single class="custom-file-input form-control-file" accept="application/pdf,image/bmp,image/x-bmp,image/x-ms-bmp,image/gif,image/x-icon,image/jpeg,image/png,image/vnd.wap.wbmp,image/webp,image/ktx,image/dng" />
-							</div>
-						</div>
+                <div class="card mt-3 mb-3">
+                    <h5 class="card-header">Input</h5>
+                    <div class="card-body">
+                        <div class="form-group row mb-1">
+                            <label for="fileUpload" class="col-sm-3 col-form-label label-nowrap">File</label>
+                            <div class="col-sm">
+                                <InputFile OnChange="OnInputFileChange" id="fileUpload" single class="custom-file-input form-control-file" accept="application/pdf,image/bmp,image/x-bmp,image/x-ms-bmp,image/gif,image/x-icon,image/jpeg,image/png,image/vnd.wap.wbmp,image/webp,image/ktx,image/dng" />
+                            </div>
+                        </div>
 
-						<div class="form-group row mb-1" hidden="@(Model.File?.ContentType != "application/pdf")">
-							<label for="fileUploadPassword" class="col-sm-3 col-form-label label-nowrap">Password</label>
-							<div class="col-sm">
-								<InputText @bind-Value="Model.Password" type="password" autocomplete="current-password" id="fileUploadPassword" class="form-control form-control-sm" placeholder="if needed" />
-							</div>
-						</div>
+                        <div class="form-group row mb-1" hidden="@(Model.File?.ContentType != "application/pdf")">
+                            <label for="fileUploadPassword" class="col-sm-3 col-form-label label-nowrap">Password</label>
+                            <div class="col-sm">
+                                <InputText @bind-Value="Model.Password" type="password" autocomplete="current-password" id="fileUploadPassword" class="form-control form-control-sm" placeholder="if needed" />
+                            </div>
+                        </div>
 
-						<div class="form-group row" hidden="@(Model.File?.ContentType != "application/pdf")">
-							<label for="page" class="col-sm-3 col-form-label label-nowrap">Page</label>
-							<div class="col-sm">
-								<InputNumber @bind-Value="Model.Page" id="page" class="form-control form-control-sm" min="0" max="@int.MaxValue" step="1" />
-							</div>
+                        <div class="form-group row" hidden="@(Model.File?.ContentType != "application/pdf")">
+                            <label for="page" class="col-sm-3 col-form-label label-nowrap">Page</label>
+                            <div class="col-sm">
+                                <InputNumber @bind-Value="Model.Page" id="page" class="form-control form-control-sm" min="0" max="@int.MaxValue" step="1" />
+                            </div>
 
-							<div class="col-sm" />
-							<div class="col-sm" />
-						</div>
-					</div>
-				</div>
+                            <div class="col-sm" />
+                            <div class="col-sm" />
+                        </div>
+                    </div>
+                </div>
 
-				<div class="card mb-3">
-					<h5 class="card-header">Output</h5>
-					<div class="card-body">
-						<div class="form-group row mb-1">
-							<label id="thresholdLabel" for="thresholdRange" class="col-sm-3 col-form-label label-nowrap">Threshold</label>
-							<div class="col-sm">
-								<input type="range" @bind-value="Model.ThresholdAsInt" id="thresholdRange" style="width: inherit; min-height: 34px;" min="0" max="@byte.MaxValue" step="1" />
-							</div>
-							<div class="col-sm">
-								<InputNumber @bind-Value="Model.ThresholdAsInt" id="thresholdNumber" class="form-control form-control-sm" min="0" max="@byte.MaxValue" step="1" aria-labelledby='thresholdLabel' />
-							</div>
-						</div>
+                <div class="card mb-3">
+                    <h5 class="card-header">Output</h5>
+                    <div class="card-body">
+                        <div class="form-group row mb-1">
+                            <label id="thresholdLabel" for="thresholdRange" class="col-sm-3 col-form-label label-nowrap">Threshold</label>
+                            <div class="col-sm">
+                                <input type="range" @bind-value="Model.ThresholdAsInt" id="thresholdRange" style="width: inherit; min-height: 34px;" min="0" max="@byte.MaxValue" step="1" />
+                            </div>
+                            <div class="col-sm">
+                                <InputNumber @bind-Value="Model.ThresholdAsInt" id="thresholdNumber" class="form-control form-control-sm" min="0" max="@byte.MaxValue" step="1" aria-labelledby='thresholdLabel' />
+                            </div>
+                        </div>
 
-						<div class="form-group row mb-1">
-							<label for="ditheringType" class="col-sm-3 col-form-label label-nowrap">Dithering</label>
-							<div class="col-sm">
-								<InputSelect @bind-Value="Model.Dithering" id="ditheringType" class="form-control form-control-sm">
-									@foreach (var dithering in Enum.GetValues<PDFtoZPL.Conversion.DitheringKind>())
-									{
-										<option value="@dithering">@(RenderRequest.GetDitheringLocalized(dithering))</option>
-									}
-								</InputSelect>
-							</div>
-						</div>
+                        <div class="form-group row mb-1">
+                            <label for="ditheringType" class="col-sm-3 col-form-label label-nowrap">Dithering</label>
+                            <div class="col-sm">
+                                <InputSelect @bind-Value="Model.Dithering" id="ditheringType" class="form-control form-control-sm">
+                                    @foreach (var dithering in Enum.GetValues<PDFtoZPL.DitheringKind>())
+                                    {
+                                        <option value="@dithering">@(RenderRequest.GetDitheringLocalized(dithering))</option>
+                                    }
+                                </InputSelect>
+                            </div>
+                        </div>
 
-						<div class="form-group row mb-1">
-							<label for="encodingType" class="col-sm-3 col-form-label label-nowrap">Encoding</label>
-							<div class="col-sm">
-								<InputSelect @bind-Value="Model.Encoding" id="encodingType" class="form-control form-control-sm">
-									@foreach (var encoding in Enum.GetValues<PDFtoZPL.Conversion.BitmapEncodingKind>())
-									{
-										<option value="@encoding">@(RenderRequest.GetEncodingLocalized(encoding))</option>
-									}
-								</InputSelect>
-							</div>
-						</div>
+                        <div class="form-group row mb-1">
+                            <label for="encodingType" class="col-sm-3 col-form-label label-nowrap">Encoding</label>
+                            <div class="col-sm">
+                                <InputSelect @bind-Value="Model.Encoding" id="encodingType" class="form-control form-control-sm">
+                                    @foreach (var encoding in Enum.GetValues<PDFtoZPL.BitmapEncodingKind>())
+                                    {
+                                        <option value="@encoding">@(RenderRequest.GetEncodingLocalized(encoding))</option>
+                                    }
+                                </InputSelect>
+                            </div>
+                        </div>
 
-						<div class="form-group row mb-1">
-							<div>
-								<InputCheckbox @bind-Value="Model.IncludeStartFormat" id="graphicFieldOnly" class="form-check-input" />
-								<label for="graphicFieldOnly">Include Start Format (^XA)</label>
-							</div>
-						</div>
+                        <div class="form-group row mb-1">
+                            <div>
+                                <InputCheckbox @bind-Value="Model.IncludeStartFormat" id="graphicFieldOnly" class="form-check-input" />
+                                <label for="graphicFieldOnly">Include Start Format (^XA)</label>
+                            </div>
+                        </div>
 
-						<div class="form-group row">
-							<div>
-								<InputCheckbox @bind-Value="Model.SetLabelLength" id="setLabelLength" class="form-check-input" disabled="@(!Model.IncludeStartFormat)" />
-								<label for="setLabelLength">Include Label Length (^LL)</label>
-							</div>
-						</div>
-					</div>
-				</div>
+                        <div class="form-group row">
+                            <div>
+                                <InputCheckbox @bind-Value="Model.SetLabelLength" id="setLabelLength" class="form-check-input" disabled="@(!Model.IncludeStartFormat)" />
+                                <label for="setLabelLength">Include Label Length (^LL)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="card mb-3" hidden="@(Model.File?.ContentType != "application/pdf")">
-					<h5 class="card-header">Sizing &amp; rotation</h5>
-					<div class="card-body">
-						<div class="form-group row mb-1">
-							<label for="width" class="col-sm-3 col-form-label label-nowrap">Width</label>
-							<div class="col-sm">
-								<InputNumber @bind-Value="Model.Width" id="width" class="form-control form-control-sm" min="1" max="@int.MaxValue" step="1" />
-							</div>
+                <div class="card mb-3" hidden="@(Model.File?.ContentType != "application/pdf")">
+                    <h5 class="card-header">Sizing &amp; rotation</h5>
+                    <div class="card-body">
+                        <div class="form-group row mb-1">
+                            <label for="width" class="col-sm-3 col-form-label label-nowrap">Width</label>
+                            <div class="col-sm">
+                                <InputNumber @bind-Value="Model.Width" id="width" class="form-control form-control-sm" min="1" max="@int.MaxValue" step="1" />
+                            </div>
 
-							<label for="height" class="col-sm-3 col-form-label label-nowrap">Height</label>
-							<div class="col-sm">
-								<InputNumber @bind-Value="Model.Height" id="height" class="form-control form-control-sm" min="1" max="@int.MaxValue" step="1" />
-							</div>
-						</div>
+                            <label for="height" class="col-sm-3 col-form-label label-nowrap">Height</label>
+                            <div class="col-sm">
+                                <InputNumber @bind-Value="Model.Height" id="height" class="form-control form-control-sm" min="1" max="@int.MaxValue" step="1" />
+                            </div>
+                        </div>
 
-						<div class="form-group row mb-1">
-							<label for="dpi" class="col-sm-3 col-form-label label-nowrap" max="@int.MaxValue" step="1">DPI</label>
-							<div class="col-sm">
-								<InputNumber @bind-Value="Model.Dpi" id="dpi" class="form-control form-control-sm" min="1" max="@int.MaxValue" step="1" aria-describedby="dpiHint" disabled="@(Model.Width != null || Model.Height != null)" />
-								<small id="dpiHint" class="form-text text-muted">If width &amp; height unset</small>
-							</div>
+                        <div class="form-group row mb-1">
+                            <label for="dpi" class="col-sm-3 col-form-label label-nowrap" max="@int.MaxValue" step="1">DPI</label>
+                            <div class="col-sm">
+                                <InputNumber @bind-Value="Model.Dpi" id="dpi" class="form-control form-control-sm" min="1" max="@int.MaxValue" step="1" aria-describedby="dpiHint" disabled="@(Model.Width != null || Model.Height != null)" />
+                                <small id="dpiHint" class="form-text text-muted">If width &amp; height unset</small>
+                            </div>
 
-							<label for="rotation" class="col-sm-3 col-form-label label-nowrap">Rotation</label>
-							<div class="col-sm">
-								<InputSelect @bind-Value="Model.Rotation" id="rotation" class="form-control form-control-sm" aria-describedby="rotationHint">
-									@foreach (var rotation in Enum.GetValues<PdfRotation>())
-									{
-										<option value="@rotation">@(RenderRequest.GetRotationLocalized(rotation))</option>
-									}
-								</InputSelect>
-								<small id="rotationHint" class="form-text text-muted">Degrees are clockwise</small>
-							</div>
-						</div>
+                            <label for="rotation" class="col-sm-3 col-form-label label-nowrap">Rotation</label>
+                            <div class="col-sm">
+                                <InputSelect @bind-Value="Model.Rotation" id="rotation" class="form-control form-control-sm" aria-describedby="rotationHint">
+                                    @foreach (var rotation in Enum.GetValues<PdfRotation>())
+                                    {
+                                        <option value="@rotation">@(RenderRequest.GetRotationLocalized(rotation))</option>
+                                    }
+                                </InputSelect>
+                                <small id="rotationHint" class="form-text text-muted">Degrees are clockwise</small>
+                            </div>
+                        </div>
 
-						<div class="form-group row">
-							<div class="col-sm">
-								<InputCheckbox @bind-Value="Model.WithAspectRatio" id="withAspectRatio" class="form-check-input" disabled="@((Model.Width == null && Model.Height == null) || (Model.Width != null && Model.Height != null))" />
-								<label for="withAspectRatio">Keep aspect ratio</label>
-							</div>
-						</div>
-					</div>
-				</div>
+                        <div class="form-group row">
+                            <div class="col-sm">
+                                <InputCheckbox @bind-Value="Model.WithAspectRatio" id="withAspectRatio" class="form-check-input" disabled="@((Model.Width == null && Model.Height == null) || (Model.Width != null && Model.Height != null))" />
+                                <label for="withAspectRatio">Keep aspect ratio</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-				<div class="card mb-3" hidden="@(Model.File?.ContentType != "application/pdf")">
-					<h5 class="card-header">Render options</h5>
-					<div class="card-body">
-						<div class="form-group row mb-1">
-							<div>
-								<InputCheckbox @bind-Value="Model.WithAnnotations" id="withAnnotations" class="form-check-input" />
-								<label for="withAnnotations">Annotations</label>
-							</div>
-						</div>
+                <div class="card mb-3" hidden="@(Model.File?.ContentType != "application/pdf")">
+                    <h5 class="card-header">Render options</h5>
+                    <div class="card-body">
+                        <div class="form-group row mb-1">
+                            <div>
+                                <InputCheckbox @bind-Value="Model.UseTiling" id="useTiling" class="form-check-input" />
+                                <label for="useTiling">
+                                    Tiled rendering <span class="oi oi-puzzle-piece" aria-hidden="true" title="Render the PDF document as several segments and merge them into the final image.
+This option can help with rendering problems (e.g. missing text) at very high resolutions." />
+                                </label>
+                            </div>
+                        </div>
 
-						<div class="form-group row mb-1">
-							<div>
-								<InputCheckbox @bind-Value="Model.WithFormFill" id="withFormFill" class="form-check-input" />
-								<label for="withFormFill">Form fill</label>
-							</div>
-						</div>
+                        <div class="form-group row mb-1">
+                            <div>
+                                <InputCheckbox @bind-Value="Model.WithAnnotations" id="withAnnotations" class="form-check-input" />
+                                <label for="withAnnotations">Annotations</label>
+                            </div>
+                        </div>
 
-						<div class="form-group row mb-1">
-							<div>
-								<InputCheckbox @bind-Value="Model.AntiAliasingText" id="antiAliasingText" class="form-check-input" />
-								<label for="antiAliasingText">Anti-aliasing for text</label>
-							</div>
+                        <div class="form-group row mb-1">
+                            <div>
+                                <InputCheckbox @bind-Value="Model.WithFormFill" id="withFormFill" class="form-check-input" />
+                                <label for="withFormFill">Form fill</label>
+                            </div>
+                        </div>
 
-							<div>
-								<InputCheckbox @bind-Value="Model.AntiAliasingImages" id="antiAliasingImages" class="form-check-input" />
-								<label for="antiAliasingImages">Anti-aliasing for images</label>
-							</div>
+                        <div class="form-group row mb-1">
+                            <div>
+                                <InputCheckbox @bind-Value="Model.AntiAliasingText" id="antiAliasingText" class="form-check-input" />
+                                <label for="antiAliasingText">Anti-aliasing for text</label>
+                            </div>
 
-							<div>
-								<InputCheckbox @bind-Value="Model.AntiAliasingPaths" id="antiAliasingPaths" class="form-check-input" />
-								<label for="antiAliasingPaths">Anti-aliasing for paths</label>
-							</div>
-						</div>
+                            <div>
+                                <InputCheckbox @bind-Value="Model.AntiAliasingImages" id="antiAliasingImages" class="form-check-input" />
+                                <label for="antiAliasingImages">Anti-aliasing for images</label>
+                            </div>
 
-						<div class="form-group row">
-							<label for="backgroundColor" class="col-sm-3 col-form-label label-nowrap">Background</label>
-							<div class="col-sm">
-								<input @bind="Model.BackgroundColor" type="color" id="backgroundColor" />
-							</div>
+                            <div>
+                                <InputCheckbox @bind-Value="Model.AntiAliasingPaths" id="antiAliasingPaths" class="form-check-input" />
+                                <label for="antiAliasingPaths">Anti-aliasing for paths</label>
+                            </div>
+                        </div>
 
-							<label for="opacity" class="col-sm-3 col-form-label label-nowrap">Opacity</label>
-							<div class="col-sm">
-								<InputNumber @bind-Value="Model.Opacity" id="opacity" class="form-control form-control-sm" min="@byte.MinValue" max="@byte.MaxValue" step="1" />
-							</div>
-						</div>
-					</div>
-				</div>
-			</EditForm>
-		</div>
+                        <div class="form-group row mb-1">
+                            <label for="backgroundColor" class="col-sm-3 col-form-label label-nowrap">Background</label>
+                            <div class="col-sm">
+                                <input @bind="Model.BackgroundColor" type="color" id="backgroundColor" />
+                            </div>
 
-		<div class="col-sm">
-			<div class="row" hidden="@(IsLoading || Model.Output == null || LastException != null)">
-				<div class="btn-group" role="group">
-					<button type="button" class="btn btn-success" @onclick="CopyToClipboard">
-						<span class="oi oi-clipboard" aria-hidden="true" /> Copy to clipboard
-					</button>
-					<button type="button" class="btn btn-outline-success" @onclick="Download">
-						<span class="oi oi-data-transfer-download" aria-hidden="true" /> Download
-					</button>
-					@if (IsWebShareSupported)
-					{
-						<button type="button" class="btn btn-outline-success" @onclick="Share">
-							<span class="oi oi-share-boxed" aria-hidden="true" /> Share
-						</button>
-					}
-				</div>
-				<InputTextArea @bind-Value="Model.Output" type="text" class="form-control mt-3" title="Generated ZPL code" style="min-height: 12rem; overflow-x: hidden;" readonly />
-			</div>
+                            <label for="opacity" class="col-sm-3 col-form-label label-nowrap">Opacity</label>
+                            <div class="col-sm">
+                                <InputNumber @bind-Value="Model.Opacity" id="opacity" class="form-control form-control-sm" min="@byte.MinValue" max="@byte.MaxValue" step="1" />
+                            </div>
+                        </div>
 
-			<div class="row mt-3" hidden="@(IsLoading || Model.Output == null || LastException != null)">
-				<img id="outputImage" alt="Preview of the generated ZPL code as an Image" hidden="@(Model.OutputPreviewImage == null)" aria-describedby="previewHint" style="max-width: 100%; width: auto; height: auto; border-radius: 8px; padding: 0;border-style: solid; border-width: thin; border-color: var(--bs-border-color-translucent);" />
-				<small id="previewHint" class="form-text text-muted">This preview image is a mockup. Results on a Zebra printer may vary.</small>
-			</div>
-		</div>
-	</div>
+                        <div class="card">
+                            <div class="card-header">
+                                <InputCheckbox @bind-Value="Model.UseBounds" id="boundsText" class="form-check-input" />
+                                <label for="boundsText">Bounds</label>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group row mb-1">
+                                    <label for="boundsX" class="col-sm-3 col-form-label label-nowrap">X</label>
+                                    <div class="col-sm">
+                                        <InputNumber @bind-Value="Model.BoundsX" id="boundsX" class="form-control form-control-sm" min="@float.MinValue" max="@float.MaxValue" step="0.000001" disabled="@(!Model.UseBounds)" />
+                                    </div>
+
+                                    <label for="boundsY" class="col-sm-3 col-form-label label-nowrap">Y</label>
+                                    <div class="col-sm">
+                                        <InputNumber @bind-Value="Model.BoundsY" id="boundsY" class="form-control form-control-sm" min="@float.MinValue" max="@float.MaxValue" step="0.000001" disabled="@(!Model.UseBounds)" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label for="boundsWidth" class="col-sm-3 col-form-label label-nowrap">Width</label>
+                                    <div class="col-sm">
+                                        <InputNumber @bind-Value="Model.BoundsWidth" id="boundsWidth" class="form-control form-control-sm" min="@float.MinValue" max="@float.MaxValue" step="0.000001" disabled="@(!Model.UseBounds)" />
+                                    </div>
+
+                                    <label for="boundsHeight" class="col-sm-3 col-form-label label-nowrap">Height</label>
+                                    <div class="col-sm">
+                                        <InputNumber @bind-Value="Model.BoundsHeight" id="boundsHeight" class="form-control form-control-sm" min="@float.MinValue" max="@float.MaxValue" step="0.000001" disabled="@(!Model.UseBounds)" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </EditForm>
+        </div>
+
+        <div class="col-sm">
+            <div class="row" hidden="@(IsLoading || Model.Output == null || LastException != null)">
+                <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-success" @onclick="CopyToClipboard">
+                        <span class="oi oi-clipboard" aria-hidden="true" /> Copy to clipboard
+                    </button>
+                    <button type="button" class="btn btn-outline-success" @onclick="Download">
+                        <span class="oi oi-data-transfer-download" aria-hidden="true" /> Download
+                    </button>
+                    @if (IsWebShareSupported)
+                    {
+                        <button type="button" class="btn btn-outline-success" @onclick="Share">
+                            <span class="oi oi-share-boxed" aria-hidden="true" /> Share
+                        </button>
+                    }
+                </div>
+                <InputTextArea @bind-Value="Model.Output" type="text" class="form-control mt-3" title="Generated ZPL code" style="min-height: 12rem; overflow-x: hidden;" readonly />
+            </div>
+
+            <div class="row mt-3" hidden="@(IsLoading || Model.Output == null || LastException != null)">
+                <img id="outputImage" alt="Preview of the generated ZPL code as an Image" hidden="@(Model.OutputPreviewImage == null)" aria-describedby="previewHint" style="max-width: 100%; width: auto; height: auto; border-radius: 8px; padding: 0;border-style: solid; border-width: thin; border-color: var(--bs-border-color-translucent);" />
+                <small id="previewHint" class="form-text text-muted">This preview image is a mockup. Results on a Zebra printer may vary.</small>
+            </div>
+        </div>
+    </div>
 </div>

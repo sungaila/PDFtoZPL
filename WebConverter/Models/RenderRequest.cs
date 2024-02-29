@@ -27,14 +27,14 @@ namespace PDFtoZPL.WebConverter.Models
         public SKEncodedImageFormat Format { get; set; } = SKEncodedImageFormat.Png;
 
         [Required]
-        public Conversion.BitmapEncodingKind Encoding { get; set; } = Conversion.BitmapEncodingKind.Base64Compressed;
+        public BitmapEncodingKind Encoding { get; set; } = BitmapEncodingKind.Base64Compressed;
 
-        public static string GetEncodingLocalized(Conversion.BitmapEncodingKind encoding) => encoding switch
+        public static string GetEncodingLocalized(BitmapEncodingKind encoding) => encoding switch
         {
-            Conversion.BitmapEncodingKind.Hexadecimal => "Hexadecimal [not recommended]",
-            Conversion.BitmapEncodingKind.HexadecimalCompressed => "Hexadecimal with compression",
-            Conversion.BitmapEncodingKind.Base64 => "Base64 [not recommended]",
-            Conversion.BitmapEncodingKind.Base64Compressed => "Base64 with compression",
+            BitmapEncodingKind.Hexadecimal => "Hexadecimal [not recommended]",
+            BitmapEncodingKind.HexadecimalCompressed => "Hexadecimal with compression",
+            BitmapEncodingKind.Base64 => "Base64 [not recommended]",
+            BitmapEncodingKind.Base64Compressed => "Base64 with compression",
             _ => throw new ArgumentOutOfRangeException(nameof(encoding))
         };
 
@@ -116,13 +116,35 @@ namespace PDFtoZPL.WebConverter.Models
         }
 
         [Required]
-        public Conversion.DitheringKind Dithering { get; set; } = Conversion.DitheringKind.None;
+        public DitheringKind Dithering { get; set; } = DitheringKind.None;
 
-        public static string GetDitheringLocalized(Conversion.DitheringKind dithering) => dithering switch
+        [Required]
+        public bool UseBounds { get; set; } = false;
+
+        [Required]
+        [Range(float.MinValue, float.MaxValue)]
+        public float BoundsX { get; set; } = 0f;
+
+        [Required]
+        [Range(float.MinValue, float.MaxValue)]
+        public float BoundsY { get; set; } = 0f;
+
+        [Required]
+        [Range(float.MinValue, float.MaxValue)]
+        public float BoundsWidth { get; set; } = 1000f;
+
+        [Required]
+        [Range(float.MinValue, float.MaxValue)]
+        public float BoundsHeight { get; set; } = 1000f;
+
+        [Required]
+        public bool UseTiling { get; set; } = true;
+
+        public static string GetDitheringLocalized(DitheringKind dithering) => dithering switch
         {
-            Conversion.DitheringKind.None => "None",
-            Conversion.DitheringKind.FloydSteinberg => "Floyd–Steinberg",
-            Conversion.DitheringKind.Atkinson => "Atkinson",
+            DitheringKind.None => "None",
+            DitheringKind.FloydSteinberg => "Floyd–Steinberg",
+            DitheringKind.Atkinson => "Atkinson",
             _ => throw new ArgumentOutOfRangeException(nameof(dithering))
         };
 

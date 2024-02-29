@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
+using PDFtoZPL;
 using static PDFtoZPL.Conversion;
 
 namespace Tests
@@ -45,8 +46,8 @@ namespace Tests
 			using var fileStream = new FileStream(Path.Combine("Assets", fileName), FileMode.Open, FileAccess.Read);
 
 			var zplResult = fileName.EndsWith(".pdf")
-				? threshold != null ? ConvertPdfPage(fileStream, encodingKind: BitmapEncodingKind.Base64Compressed, threshold: threshold.Value) : ConvertPdfPage(fileStream, encodingKind: BitmapEncodingKind.Base64Compressed)
-				: threshold != null ? ConvertBitmap(fileStream, encodingKind: BitmapEncodingKind.Base64Compressed, threshold: threshold.Value) : ConvertBitmap(fileStream, encodingKind: BitmapEncodingKind.Base64Compressed);
+				? threshold != null ? ConvertPdfPage(fileStream, pdfOptions: new(Dpi: 203), zplOptions: new(EncodingKind: BitmapEncodingKind.Base64Compressed, Threshold: threshold.Value)) : ConvertPdfPage(fileStream, zplOptions: new(EncodingKind: BitmapEncodingKind.Base64Compressed))
+				: threshold != null ? ConvertBitmap(fileStream, zplOptions: new(EncodingKind: BitmapEncodingKind.Base64Compressed, Threshold: threshold.Value)) : ConvertBitmap(fileStream, zplOptions: new(EncodingKind: BitmapEncodingKind.Base64Compressed));
 
 			Assert.AreEqual(expectedResult, zplResult.Replace("\n", string.Empty));
 		}
