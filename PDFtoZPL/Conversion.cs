@@ -11,12 +11,12 @@ using static PDFtoZPL.ConversionUtils;
 
 namespace PDFtoZPL
 {
-#if NET8_0_OR_GREATER
-#pragma warning disable CA1510 // Use ArgumentNullException throw helper
-#endif
     /// <summary>
     /// Provides methods to convert PDFs and <see cref="SKBitmap"/>s into ZPL code.
     /// </summary>
+#if NET8_0_OR_GREATER
+#pragma warning disable CA1510 // Use ArgumentNullException throw helper
+#endif
     public static class Conversion
     {
         /// <summary>
@@ -25,20 +25,8 @@ namespace PDFtoZPL
         /// <param name="pdfAsBase64String">The PDF encoded as Base64.</param>
         /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
         /// <param name="page">The specific page to be converted.</param>
-        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
-        /// <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
-        /// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
-        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
-        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
-        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
-        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
-        /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
-        /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
-        /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
-        /// <param name="backgroundColor">Specifies the background color. Defaults to <see cref="SKColors.White"/>.</param>
+        /// <param name="pdfOptions">Additional options for PDF rendering.</param>
+        /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <returns>The converted PDF page as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
@@ -46,12 +34,12 @@ namespace PDFtoZPL
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
 #endif
-        public static string ConvertPdfPage(string pdfAsBase64String, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool withAspectRatio = false, bool setLabelLength = false, PdfRotation rotation = PdfRotation.Rotate0, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None, PdfAntiAliasing antiAliasing = PdfAntiAliasing.All, SKColor? backgroundColor = null)
+        public static string ConvertPdfPage(string pdfAsBase64String, string? password = null, int page = 0, RenderOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfAsBase64String == null)
                 throw new ArgumentNullException(nameof(pdfAsBase64String));
 
-            return ConvertPdfPage(Convert.FromBase64String(pdfAsBase64String), password, page, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly, withAspectRatio, setLabelLength, rotation, threshold, ditheringKind, antiAliasing, backgroundColor);
+            return ConvertPdfPage(Convert.FromBase64String(pdfAsBase64String), password, page, pdfOptions, zplOptions);
         }
 
         /// <summary>
@@ -60,20 +48,8 @@ namespace PDFtoZPL
         /// <param name="pdfAsByteArray">The PDF as a byte array.</param>
         /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
         /// <param name="page">The specific page to be converted.</param>
-        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
-        /// <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
-        /// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
-        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
-        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
-        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
-        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
-        /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
-        /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
-        /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
-        /// <param name="backgroundColor">Specifies the background color. Defaults to <see cref="SKColors.White"/>.</param>
+        /// <param name="pdfOptions">Additional options for PDF rendering.</param>
+        /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <returns>The converted PDF page as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
@@ -81,7 +57,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
 #endif
-        public static string ConvertPdfPage(byte[] pdfAsByteArray, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool withAspectRatio = false, bool setLabelLength = false, PdfRotation rotation = PdfRotation.Rotate0, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None, PdfAntiAliasing antiAliasing = PdfAntiAliasing.All, SKColor? backgroundColor = null)
+        public static string ConvertPdfPage(byte[] pdfAsByteArray, string? password = null, int page = 0, RenderOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfAsByteArray == null)
                 throw new ArgumentNullException(nameof(pdfAsByteArray));
@@ -89,39 +65,7 @@ namespace PDFtoZPL
             // Base64 string -> byte[] -> MemoryStream
             using var pdfStream = new MemoryStream(pdfAsByteArray, false);
 
-            return ConvertPdfPage(pdfStream, password, page, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly, withAspectRatio, setLabelLength, rotation, threshold, ditheringKind, antiAliasing, backgroundColor);
-        }
-
-        /// <summary>
-        /// Converts a single page of a given PDF into ZPL code.
-        /// </summary>
-        /// <param name="pdfStream">The PDF as a stream.</param>
-        /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
-        /// <param name="page">The specific page to be converted.</param>
-        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
-        /// <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
-        /// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
-        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
-        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
-        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
-        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
-        /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
-        /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
-        /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
-        /// <param name="backgroundColor">Specifies the background color. Defaults to <see cref="SKColors.White"/>.</param>
-        /// <returns>The converted PDF page as ZPL code.</returns>
-#if NET6_0_OR_GREATER
-        [SupportedOSPlatform("Windows")]
-        [SupportedOSPlatform("Linux")]
-        [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("Android31.0")]
-#endif
-        public static string ConvertPdfPage(Stream pdfStream, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool withAspectRatio = false, bool setLabelLength = false, PdfRotation rotation = PdfRotation.Rotate0, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None, PdfAntiAliasing antiAliasing = PdfAntiAliasing.All, SKColor? backgroundColor = null)
-        {
-            return ConvertPdfPage(pdfStream, false, password, page, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly, withAspectRatio, setLabelLength, rotation, threshold, ditheringKind, antiAliasing, backgroundColor);
+            return ConvertPdfPage(pdfStream, false, password, page, pdfOptions, zplOptions);
         }
 
         /// <summary>
@@ -131,20 +75,8 @@ namespace PDFtoZPL
         /// <param name="leaveOpen"><see langword="true"/> to leave the <paramref name="pdfStream"/> open after the PDF document is loaded; otherwise, <see langword="false"/>.</param>
         /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
         /// <param name="page">The specific page to be converted.</param>
-        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
-        /// <param name="width">The width of the desired <paramref name="page"/>. Use <see langword="null"/> if the original width should be used.</param>
-        /// <param name="height">The height of the desired <paramref name="page"/>. Use <see langword="null"/> if the original height should be used.</param>
-        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
-        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
-        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
-        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
-        /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
-        /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
-        /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
-        /// <param name="backgroundColor">Specifies the background color. Defaults to <see cref="SKColors.White"/>.</param>
+        /// <param name="pdfOptions">Additional options for PDF rendering.</param>
+        /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <returns>The converted PDF page as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
@@ -152,19 +84,16 @@ namespace PDFtoZPL
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
 #endif
-        public static string ConvertPdfPage(Stream pdfStream, bool leaveOpen, string? password = null, int page = 0, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool withAspectRatio = false, bool setLabelLength = false, PdfRotation rotation = PdfRotation.Rotate0, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None, PdfAntiAliasing antiAliasing = PdfAntiAliasing.All, SKColor? backgroundColor = null)
+        public static string ConvertPdfPage(Stream pdfStream, bool leaveOpen = false, string? password = null, int page = 0, RenderOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfStream == null)
                 throw new ArgumentNullException(nameof(pdfStream));
 
-            if (page < 0)
-                throw new ArgumentOutOfRangeException(nameof(page), "The page number must 0 or greater.");
-
             // Stream ->PdfiumViewer.PdfDocument -> Image
-            var pdfBitmap = PDFtoImage.Conversion.ToImage(pdfStream, leaveOpen, password, page, dpi, width, height, withAnnotations, withFormFill, withAspectRatio, rotation, antiAliasing, backgroundColor);
+            var pdfBitmap = PDFtoImage.Conversion.ToImage(pdfStream, leaveOpen, password, page, pdfOptions);
 
             // Bitmap -> ZPL code
-            return ConvertBitmap(pdfBitmap, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
+            return ConvertBitmap(pdfBitmap, zplOptions);
         }
 
         /// <summary>
@@ -172,20 +101,8 @@ namespace PDFtoZPL
         /// </summary>
         /// <param name="pdfAsBase64String">The PDF encoded as Base64.</param>
         /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
-        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
-        /// <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
-        /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
-        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
-        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
-        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
-        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
-        /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
-        /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
-        /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
-        /// <param name="backgroundColor">Specifies the background color. Defaults to <see cref="SKColors.White"/>.</param>
+        /// <param name="pdfOptions">Additional options for PDF rendering.</param>
+        /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
@@ -193,12 +110,12 @@ namespace PDFtoZPL
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
 #endif
-        public static IEnumerable<string> ConvertPdf(string pdfAsBase64String, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool withAspectRatio = false, bool setLabelLength = false, PdfRotation rotation = PdfRotation.Rotate0, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None, PdfAntiAliasing antiAliasing = PdfAntiAliasing.All, SKColor? backgroundColor = null)
+        public static IEnumerable<string> ConvertPdf(string pdfAsBase64String, string? password = null, RenderOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfAsBase64String == null)
                 throw new ArgumentNullException(nameof(pdfAsBase64String));
 
-            foreach (var zplCode in ConvertPdf(Convert.FromBase64String(pdfAsBase64String), password, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly, withAspectRatio, setLabelLength, rotation, threshold, ditheringKind, antiAliasing, backgroundColor))
+            foreach (var zplCode in ConvertPdf(Convert.FromBase64String(pdfAsBase64String), password, pdfOptions, zplOptions))
             {
                 yield return zplCode;
             }
@@ -209,20 +126,8 @@ namespace PDFtoZPL
         /// </summary>
         /// <param name="pdfAsByteArray">The PDF as a byte array.</param>
         /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
-        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
-        /// <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
-        /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
-        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
-        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
-        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
-        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
-        /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
-        /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
-        /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
-        /// <param name="backgroundColor">Specifies the background color. Defaults to <see cref="SKColors.White"/>.</param>
+        /// <param name="pdfOptions">Additional options for PDF rendering.</param>
+        /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
@@ -230,7 +135,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
 #endif
-        public static IEnumerable<string> ConvertPdf(byte[] pdfAsByteArray, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool withAspectRatio = false, bool setLabelLength = false, PdfRotation rotation = PdfRotation.Rotate0, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None, PdfAntiAliasing antiAliasing = PdfAntiAliasing.All, SKColor? backgroundColor = null)
+        public static IEnumerable<string> ConvertPdf(byte[] pdfAsByteArray, string? password = null, RenderOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfAsByteArray == null)
                 throw new ArgumentNullException(nameof(pdfAsByteArray));
@@ -238,7 +143,7 @@ namespace PDFtoZPL
             // Base64 string -> byte[] -> MemoryStream
             using var pdfStream = new MemoryStream(pdfAsByteArray, false);
 
-            foreach (var zplCode in ConvertPdf(pdfStream, password, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly, withAspectRatio, setLabelLength, rotation, threshold, ditheringKind, antiAliasing, backgroundColor))
+            foreach (var zplCode in ConvertPdf(pdfStream, false, password, pdfOptions, zplOptions))
             {
                 yield return zplCode;
             }
@@ -248,53 +153,10 @@ namespace PDFtoZPL
         /// Converts all pages of a given PDF into ZPL code.
         /// </summary>
         /// <param name="pdfStream">The PDF as a stream.</param>
-        /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
-        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
-        /// <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
-        /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
-        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
-        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
-        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
-        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
-        /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
-        /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
-        /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
-        /// <param name="backgroundColor">Specifies the background color. Defaults to <see cref="SKColors.White"/>.</param>
-        /// <returns>The converted PDF pages as ZPL code.</returns>
-#if NET6_0_OR_GREATER
-        [SupportedOSPlatform("Windows")]
-        [SupportedOSPlatform("Linux")]
-        [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("Android31.0")]
-#endif
-        public static IEnumerable<string> ConvertPdf(Stream pdfStream, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool withAspectRatio = false, bool setLabelLength = false, PdfRotation rotation = PdfRotation.Rotate0, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None, PdfAntiAliasing antiAliasing = PdfAntiAliasing.All, SKColor? backgroundColor = null)
-        {
-            return ConvertPdf(pdfStream, false, password, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly, withAspectRatio, setLabelLength, rotation, threshold, ditheringKind, antiAliasing, backgroundColor);
-        }
-
-        /// <summary>
-        /// Converts all pages of a given PDF into ZPL code.
-        /// </summary>
-        /// <param name="pdfStream">The PDF as a stream.</param>
         /// <param name="leaveOpen"><see langword="true"/> to leave the <paramref name="pdfStream"/> open after the PDF document is loaded; otherwise, <see langword="false"/>.</param>
         /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
-        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
-        /// <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
-        /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
-        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
-        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
-        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
-        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
-        /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
-        /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
-        /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
-        /// <param name="backgroundColor">Specifies the background color. Defaults to <see cref="SKColors.White"/>.</param>
+        /// <param name="pdfOptions">Additional options for PDF rendering.</param>
+        /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
@@ -302,16 +164,16 @@ namespace PDFtoZPL
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
 #endif
-        public static IEnumerable<string> ConvertPdf(Stream pdfStream, bool leaveOpen, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool withAspectRatio = false, bool setLabelLength = false, PdfRotation rotation = PdfRotation.Rotate0, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None, PdfAntiAliasing antiAliasing = PdfAntiAliasing.All, SKColor? backgroundColor = null)
+        public static IEnumerable<string> ConvertPdf(Stream pdfStream, bool leaveOpen = false, string? password = null, RenderOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfStream == null)
                 throw new ArgumentNullException(nameof(pdfStream));
 
             // Stream ->PdfiumViewer.PdfDocument -> Image
-            foreach (var image in PDFtoImage.Conversion.ToImages(pdfStream, leaveOpen, password, dpi, width, height, withAnnotations, withFormFill, withAspectRatio, rotation, antiAliasing, backgroundColor))
+            foreach (var image in PDFtoImage.Conversion.ToImages(pdfStream, leaveOpen, password, pdfOptions))
             {
                 // Bitmap -> ZPL code
-                yield return ConvertBitmap(image, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
+                yield return ConvertBitmap(image, zplOptions);
             }
         }
 
@@ -321,33 +183,22 @@ namespace PDFtoZPL
         /// </summary>
         /// <param name="pdfAsBase64String">The PDF encoded as Base64.</param>
         /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
-        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
-        /// <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
-        /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
-        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
-        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
-        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
-        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
-        /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
-        /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
-        /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
-        /// <param name="backgroundColor">Specifies the background color. Defaults to <see cref="SKColors.White"/>.</param>
+        /// <param name="pdfOptions">Additional options for PDF rendering.</param>
+        /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
-
         /// <returns>The converted PDF pages as ZPL code.</returns>
+#if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
-        public static async IAsyncEnumerable<string> ConvertPdfAsync(string pdfAsBase64String, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool withAspectRatio = false, bool setLabelLength = false, PdfRotation rotation = PdfRotation.Rotate0, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None, PdfAntiAliasing antiAliasing = PdfAntiAliasing.All, SKColor? backgroundColor = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+#endif
+        public static async IAsyncEnumerable<string> ConvertPdfAsync(string pdfAsBase64String, string? password = null, RenderOptions pdfOptions = default, ZplOptions zplOptions = default, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (pdfAsBase64String == null)
                 throw new ArgumentNullException(nameof(pdfAsBase64String));
 
-            await foreach (var zplCode in ConvertPdfAsync(Convert.FromBase64String(pdfAsBase64String), password, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly, withAspectRatio, setLabelLength, rotation, threshold, ditheringKind, antiAliasing, backgroundColor, cancellationToken))
+            await foreach (var zplCode in ConvertPdfAsync(Convert.FromBase64String(pdfAsBase64String), password, pdfOptions, zplOptions, cancellationToken))
             {
                 yield return zplCode;
             }
@@ -358,22 +209,9 @@ namespace PDFtoZPL
         /// </summary>
         /// <param name="pdfAsByteArray">The PDF as a byte array.</param>
         /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
-        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
-        /// <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
-        /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
-        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
-        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
-        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
-        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
-        /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
-        /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
-        /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
-        /// <param name="backgroundColor">Specifies the background color. Defaults to <see cref="SKColors.White"/>.</param>
+        /// <param name="pdfOptions">Additional options for PDF rendering.</param>
+        /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
-
         /// <returns>The converted PDF pages as ZPL code.</returns>
 #if NET6_0_OR_GREATER
         [SupportedOSPlatform("Windows")]
@@ -381,7 +219,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
 #endif
-        public static async IAsyncEnumerable<string> ConvertPdfAsync(byte[] pdfAsByteArray, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool withAspectRatio = false, bool setLabelLength = false, PdfRotation rotation = PdfRotation.Rotate0, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None, PdfAntiAliasing antiAliasing = PdfAntiAliasing.All, SKColor? backgroundColor = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public static async IAsyncEnumerable<string> ConvertPdfAsync(byte[] pdfAsByteArray, string? password = null, RenderOptions pdfOptions = default, ZplOptions zplOptions = default, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (pdfAsByteArray == null)
                 throw new ArgumentNullException(nameof(pdfAsByteArray));
@@ -389,43 +227,7 @@ namespace PDFtoZPL
             // Base64 string -> byte[] -> MemoryStream
             using var pdfStream = new MemoryStream(pdfAsByteArray, false);
 
-            await foreach (var zplCode in ConvertPdfAsync(pdfStream, password, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly, withAspectRatio, setLabelLength, rotation, threshold, ditheringKind, antiAliasing, backgroundColor, cancellationToken))
-            {
-                yield return zplCode;
-            }
-        }
-
-        /// <summary>
-        /// Converts all pages of a given PDF into ZPL code.
-        /// </summary>
-        /// <param name="pdfStream">The PDF as a stream.</param>
-        /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
-        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
-        /// <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
-        /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
-        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
-        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
-        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
-        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
-        /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
-        /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
-        /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
-        /// <param name="backgroundColor">Specifies the background color. Defaults to <see cref="SKColors.White"/>.</param>
-        /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
-
-        /// <returns>The converted PDF pages as ZPL code.</returns>
-#if NET6_0_OR_GREATER
-        [SupportedOSPlatform("Windows")]
-        [SupportedOSPlatform("Linux")]
-        [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("Android31.0")]
-#endif
-        public static async IAsyncEnumerable<string> ConvertPdfAsync(Stream pdfStream, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool withAspectRatio = false, bool setLabelLength = false, PdfRotation rotation = PdfRotation.Rotate0, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None, PdfAntiAliasing antiAliasing = PdfAntiAliasing.All, SKColor? backgroundColor = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
-        {
-            await foreach (var zplCode in ConvertPdfAsync(pdfStream, false, password, dpi, width, height, withAnnotations, withFormFill, encodingKind, graphicFieldOnly, withAspectRatio, setLabelLength, rotation, threshold, ditheringKind, antiAliasing, backgroundColor, cancellationToken))
+            await foreach (var zplCode in ConvertPdfAsync(pdfStream, false, password, pdfOptions, zplOptions, cancellationToken))
             {
                 yield return zplCode;
             }
@@ -437,20 +239,8 @@ namespace PDFtoZPL
         /// <param name="pdfStream">The PDF as a stream.</param>
         /// <param name="leaveOpen"><see langword="true"/> to leave the <paramref name="pdfStream"/> open after the PDF document is loaded; otherwise, <see langword="false"/>.</param>
         /// <param name="password">The password for opening the PDF. Use <see langword="null"/> if no password is needed.</param>
-        /// <param name="dpi">The DPI scaling to use for rasterization of the PDF.</param>
-        /// <param name="width">The width of the all pages. Use <see langword="null"/> if the original width (per page) should be used.</param>
-        /// <param name="height">The height of all pages. Use <see langword="null"/> if the original height (per page) should be used.</param>
-        /// <param name="withAnnotations">Specifies whether annotations will be rendered.</param>
-        /// <param name="withFormFill">Specifies whether form filling will be rendered.</param>
-        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
-        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="withAspectRatio">Specifies that width and height should be adjusted for aspect ratio if either is <see langword="null"/>.</param>
-        /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="rotation">Specifies the rotation at 90 degree intervals.</param>
-        /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
-        /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <param name="antiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
-        /// <param name="backgroundColor">Specifies the background color. Defaults to <see cref="SKColors.White"/>.</param>
+        /// <param name="pdfOptions">Additional options for PDF rendering.</param>
+        /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
 #if NET6_0_OR_GREATER
@@ -459,18 +249,18 @@ namespace PDFtoZPL
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
 #endif
-        public static async IAsyncEnumerable<string> ConvertPdfAsync(Stream pdfStream, bool leaveOpen, string? password = null, int dpi = 203, int? width = null, int? height = null, bool withAnnotations = false, bool withFormFill = false, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool withAspectRatio = false, bool setLabelLength = false, PdfRotation rotation = PdfRotation.Rotate0, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None, PdfAntiAliasing antiAliasing = PdfAntiAliasing.All, SKColor? backgroundColor = null, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public static async IAsyncEnumerable<string> ConvertPdfAsync(Stream pdfStream, bool leaveOpen = false, string? password = null, RenderOptions pdfOptions = default, ZplOptions zplOptions = default, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (pdfStream == null)
                 throw new ArgumentNullException(nameof(pdfStream));
 
             // Stream -> PdfiumViewer.PdfDocument -> Image
-            await foreach (var image in PDFtoImage.Conversion.ToImagesAsync(pdfStream, leaveOpen, password, dpi, width, height, withAnnotations, withFormFill, withAspectRatio, rotation, antiAliasing, backgroundColor, cancellationToken))
+            await foreach (var image in PDFtoImage.Conversion.ToImagesAsync(pdfStream, leaveOpen, password, pdfOptions, cancellationToken))
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
                 // Bitmap -> ZPL code
-                yield return await Task.Run(() => ConvertBitmap(image, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind), cancellationToken);
+                yield return await Task.Run(() => ConvertBitmap(image, zplOptions), cancellationToken);
             }
         }
 #endif
@@ -479,31 +269,12 @@ namespace PDFtoZPL
         /// Converts a given image into ZPL code.
         /// </summary>
         /// <param name="bitmapPath">The file path of the image to convert.</param>
-        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
-        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
-        /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+        /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
-        public static string ConvertBitmap(string bitmapPath, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None)
+        public static string ConvertBitmap(string bitmapPath, ZplOptions zplOptions = default)
         {
             using var bitmap = SKBitmap.Decode(bitmapPath);
-            return ConvertBitmap(bitmap, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
-        }
-
-        /// <summary>
-        /// Converts a given <see cref="SKBitmap"/> into ZPL code.
-        /// </summary>
-        /// <param name="bitmapAsStream">The <see cref="SKBitmap"/> to convert.</param>
-        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
-        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
-        /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
-        /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
-        public static string ConvertBitmap(Stream bitmapAsStream, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None)
-        {
-            return ConvertBitmap(bitmapAsStream, false, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
+            return ConvertBitmap(bitmap, zplOptions);
         }
 
         /// <summary>
@@ -511,13 +282,9 @@ namespace PDFtoZPL
         /// </summary>
         /// <param name="bitmapAsStream">The <see cref="SKBitmap"/> to convert.</param>
         /// <param name="leaveOpen"><see langword="true"/> to leave the <paramref name="bitmapAsStream"/> open after the PDF document is loaded; otherwise, <see langword="false"/>.</param>
-        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
-        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
-        /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+        /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
-        public static string ConvertBitmap(Stream bitmapAsStream, bool leaveOpen, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None)
+        public static string ConvertBitmap(Stream bitmapAsStream, bool leaveOpen = false, ZplOptions zplOptions = default)
         {
             if (bitmapAsStream == null)
                 throw new ArgumentNullException(nameof(bitmapAsStream));
@@ -529,81 +296,76 @@ namespace PDFtoZPL
                 bitmapAsStream.CopyTo(memoryStream);
                 memoryStream.Position = 0;
                 using var bitmap = SKBitmap.Decode(memoryStream);
-                return ConvertBitmap(bitmap, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
+                return ConvertBitmap(bitmap, zplOptions);
             }
 
             bitmapAsStream.Position = 0;
             using var bitmap2 = SKBitmap.Decode(bitmapAsStream);
-            return ConvertBitmap(bitmap2, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
+            return ConvertBitmap(bitmap2, zplOptions);
         }
 
         /// <summary>
         /// Converts a given image into ZPL code.
         /// </summary>
         /// <param name="bitmapAsByteArray">The image as byte array to convert.</param>
-        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
-        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
-        /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+        /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
-        public static string ConvertBitmap(byte[] bitmapAsByteArray, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None)
+        public static string ConvertBitmap(byte[] bitmapAsByteArray, ZplOptions zplOptions = default)
         {
             using var bitmap = SKBitmap.Decode(bitmapAsByteArray);
-            return ConvertBitmap(bitmap, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
+            return ConvertBitmap(bitmap, zplOptions);
         }
 
         /// <summary>
         /// Converts a given <see cref="SKBitmap"/> into ZPL code.
         /// </summary>
         /// <param name="bitmap">The <see cref="SKBitmap"/> to convert.</param>
-        /// <param name="encodingKind">The encoding used for embedding the bitmap.</param>
-        /// <param name="graphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="setLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
-        /// <param name="threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
-        /// <param name="ditheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+        /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <returns>The converted <see cref="SKBitmap"/> as ZPL code.</returns>
-        public static string ConvertBitmap(SKBitmap bitmap, BitmapEncodingKind encodingKind = BitmapEncodingKind.HexadecimalCompressed, bool graphicFieldOnly = false, bool setLabelLength = false, byte threshold = 128, DitheringKind ditheringKind = DitheringKind.None)
+        public static string ConvertBitmap(SKBitmap bitmap, ZplOptions zplOptions = default)
         {
             if (bitmap == null)
                 throw new ArgumentNullException(nameof(bitmap));
 
-            return ConvertBitmapImpl(bitmap, encodingKind, graphicFieldOnly, setLabelLength, threshold, ditheringKind);
+            return ConvertBitmapImpl(bitmap, zplOptions);
         }
 
-        private static string ConvertBitmapImpl(SKBitmap pdfBitmap, BitmapEncodingKind encodingKind, bool graphicFieldOnly, bool setLabelLength, byte threshold, DitheringKind ditheringKind)
+        private static string ConvertBitmapImpl(SKBitmap pdfBitmap, ZplOptions zplOptions)
         {
             SKBitmap inputBitmap = pdfBitmap;
             SKBitmap? bitmapReplacement = null;
 
+            if (zplOptions == default)
+                zplOptions = new();
+
             try
             {
-                if (ditheringKind != DitheringKind.None)
+                if (zplOptions.DitheringKind != DitheringKind.None)
                 {
-                    bitmapReplacement = pdfBitmap.ToMonochrome(threshold, ditheringKind);
+                    bitmapReplacement = pdfBitmap.ToMonochrome(zplOptions.Threshold, zplOptions.DitheringKind);
                     inputBitmap = bitmapReplacement;
                 }
 
                 // first convert the bitmap into ZPL hex values (representing the bitmap)
-                string bitmapAsHex = ConvertBitmapToHex(inputBitmap, threshold, out int binaryByteCount, out int bytesPerRow);
+                string bitmapAsHex = ConvertBitmapToHex(inputBitmap, zplOptions.Threshold, out int binaryByteCount, out int bytesPerRow);
                 string bitmapPayload;
 
-                if (encodingKind == BitmapEncodingKind.Hexadecimal)
+                if (zplOptions.EncodingKind == BitmapEncodingKind.Hexadecimal)
                 {
                     bitmapPayload = bitmapAsHex;
                 }
-                else if (encodingKind == BitmapEncodingKind.HexadecimalCompressed)
+                else if (zplOptions.EncodingKind == BitmapEncodingKind.HexadecimalCompressed)
                 {
                     bitmapPayload = CompressHex(bitmapAsHex, bytesPerRow);
                 }
-                else if (encodingKind == BitmapEncodingKind.Base64 || encodingKind == BitmapEncodingKind.Base64Compressed)
+                else if (zplOptions.EncodingKind == BitmapEncodingKind.Base64 || zplOptions.EncodingKind == BitmapEncodingKind.Base64Compressed)
                 {
                     bitmapPayload = bitmapAsHex.Replace("\n", string.Empty);
 
                     string encodingId = "B64";
                     byte[] bitmapAsBytes = HexToByteArray(bitmapPayload);
 
-                    if (encodingKind == BitmapEncodingKind.Base64Compressed)
+                    if (zplOptions.EncodingKind == BitmapEncodingKind.Base64Compressed)
                     {
                         encodingId = "Z64";
                         bitmapAsBytes = Deflate(bitmapAsBytes);
@@ -616,16 +378,16 @@ namespace PDFtoZPL
                 }
                 else
                 {
-                    throw new ArgumentOutOfRangeException(nameof(encodingKind), $"Unknown {nameof(BitmapEncodingKind)} '{encodingKind}'.");
+                    throw new ArgumentOutOfRangeException(nameof(zplOptions), $"Unknown {nameof(BitmapEncodingKind)} '{zplOptions.EncodingKind}'.");
                 }
 
                 // build the Graphic Field (^GFA) command
                 string graphicField = $"^GFA,{binaryByteCount},{binaryByteCount},{bytesPerRow},{bitmapPayload}";
 
-                if (graphicFieldOnly)
+                if (zplOptions.GraphicFieldOnly)
                     return graphicField;
 
-                if (setLabelLength)
+                if (zplOptions.SetLabelLength)
                     return $"^XA^LL{inputBitmap.Height}{graphicField}^FS^XZ";
 
                 // finally return the complete ZPL code
@@ -635,56 +397,6 @@ namespace PDFtoZPL
             {
                 bitmapReplacement?.Dispose();
             }
-        }
-
-        /// <summary>
-        /// The supported encoding options for the bitmap within the generated ZPL code.
-        /// </summary>
-        public enum BitmapEncodingKind
-        {
-            /// <summary>
-            /// <b>Not recommended.</b> The bitmap is encoded as hexadecimals.<br/>
-            /// Its output might be to large for the printer's bitmap storage area.
-            /// </summary>
-            Hexadecimal,
-
-            /// <summary>
-            /// The bitmap is encoded as hexadecimals and then compressed (via ZPL ASCII compression).<br/>
-            /// It's significantly more space-saving than <see cref="Hexadecimal"/>.
-            /// </summary>
-            HexadecimalCompressed,
-
-            /// <summary>
-            /// <b>Not recommended.</b> The bitmap is encoded as Base64 (MIME). This encoding is referred to as <b>B64</b> in the ZPL II programming guide.<br/>
-            /// Its output might be to large for the printer's bitmap storage area. Still more space-saving than <see cref="Hexadecimal"/> though.
-            /// </summary>
-            Base64,
-
-            /// <summary>
-            /// Recommended. The bitmap is compressed with Deflate (RFC 1951) and then encoded as Base64 (MIME). This encoding is referred to as <b>Z64</b> in the ZPL II programming guide.
-            /// </summary>
-            Base64Compressed
-        }
-
-        /// <summary>
-        /// The used dithering algorithem after downsampling to 1 bit monochrome.
-        /// </summary>
-        public enum DitheringKind
-        {
-            /// <summary>
-            /// No dithering.
-            /// </summary>
-            None,
-
-            /// <summary>
-            /// Use the Robert W. Floyd and Louis Steinberg dithering algorithm.
-            /// </summary>
-            FloydSteinberg,
-
-            /// <summary>
-            /// Use the Bill Atkinson dithering algorithm.
-            /// </summary>
-            Atkinson
         }
     }
 }

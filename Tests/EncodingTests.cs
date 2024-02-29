@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
+using PDFtoZPL;
 using static PDFtoZPL.Conversion;
 
 namespace Tests
@@ -42,8 +43,8 @@ namespace Tests
 			using var fileStream = new FileStream(Path.Combine("Assets", fileName), FileMode.Open, FileAccess.Read);
 
 			var zplResult = fileName.EndsWith(".pdf")
-				? ConvertPdfPage(fileStream, encodingKind: encodingKind ?? BitmapEncodingKind.HexadecimalCompressed)
-				: ConvertBitmap(fileStream, encodingKind: encodingKind ?? BitmapEncodingKind.HexadecimalCompressed);
+				? ConvertPdfPage(fileStream, pdfOptions: new(Dpi: 203), zplOptions: new (EncodingKind: encodingKind ?? BitmapEncodingKind.HexadecimalCompressed))
+				: ConvertBitmap(fileStream, zplOptions: new(EncodingKind: encodingKind ?? BitmapEncodingKind.HexadecimalCompressed));
 
 			Assert.AreEqual(expectedResult, zplResult.Replace("\n", string.Empty));
 		}
@@ -71,8 +72,8 @@ namespace Tests
 			using var fileStream = new FileStream(Path.Combine("Assets", fileName), FileMode.Open, FileAccess.Read);
 
 			var zplResult = fileName.EndsWith(".pdf")
-				? ConvertPdfPage(fileStream, encodingKind: encodingKind ?? BitmapEncodingKind.HexadecimalCompressed, graphicFieldOnly: true)
-				: ConvertBitmap(fileStream, encodingKind: encodingKind ?? BitmapEncodingKind.HexadecimalCompressed, graphicFieldOnly: true);
+				? ConvertPdfPage(fileStream, pdfOptions: new(Dpi: 203), zplOptions: new(EncodingKind: encodingKind ?? BitmapEncodingKind.HexadecimalCompressed, GraphicFieldOnly: true))
+				: ConvertBitmap(fileStream, zplOptions: new(EncodingKind: encodingKind ?? BitmapEncodingKind.HexadecimalCompressed, GraphicFieldOnly: true));
 
 			var trimmedExpected = expectedResult.Remove(0, "^XA".Length);
 

@@ -1,5 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PDFtoImage;
+using PDFtoZPL;
 using System;
 using System.IO;
 using static PDFtoZPL.Conversion;
@@ -64,7 +64,7 @@ namespace Tests
             using var fileStream = new FileStream(Path.Combine("Assets", fileName), FileMode.Open, FileAccess.Read);
 
             var zplResult
-                = backgroundColor != null ? ConvertPdfPage(fileStream, encodingKind: BitmapEncodingKind.Base64Compressed, backgroundColor: backgroundColor.Value) : ConvertPdfPage(fileStream, encodingKind: BitmapEncodingKind.Base64Compressed);
+                = backgroundColor != null ? ConvertPdfPage(fileStream, pdfOptions: new(Dpi: 203, BackgroundColor: backgroundColor.Value), zplOptions: new(EncodingKind: BitmapEncodingKind.Base64Compressed)) : ConvertPdfPage(fileStream, pdfOptions: new(Dpi: 203), zplOptions: new(EncodingKind: BitmapEncodingKind.Base64Compressed));
 
             Assert.AreEqual(expectedResult, zplResult.Replace("\n", string.Empty));
         }

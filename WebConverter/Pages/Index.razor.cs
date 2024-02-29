@@ -5,6 +5,7 @@ using PDFtoImage;
 using PDFtoZPL.WebConverter.Models;
 using SkiaSharp;
 using System;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -143,20 +144,30 @@ namespace PDFtoZPL.WebConverter.Pages
                     {
                         if (Model.File?.ContentType == "application/pdf")
                         {
+                            if (!Model.UseBounds)
+                            {
+                                var pageSize = PDFtoImage.Conversion.GetPageSize(Model.Input, true, Model.Page, !string.IsNullOrEmpty(Model.Password) ? Model.Password : null);
+                                Model.BoundsWidth = pageSize.Width;
+                                Model.BoundsHeight = pageSize.Height;
+                            }
+
                             inputToConvert = PDFtoImage.Conversion.ToImage(
                                 Model.Input,
                                 leaveOpen: true,
                                 password: !string.IsNullOrEmpty(Model.Password) ? Model.Password : null,
                                 page: Model.Page,
-                                dpi: Model.Dpi,
-                                width: Model.Width,
-                                height: Model.Height,
-                                withAnnotations: Model.WithAnnotations,
-                                withFormFill: Model.WithFormFill,
-                                withAspectRatio: Model.WithAspectRatio,
-                                rotation: Model.Rotation,
-                                antiAliasing: antiAliasing,
-                                backgroundColor: backgroundColor
+                                options: new(
+                                    Dpi: Model.Dpi,
+                                    Width: Model.Width,
+                                    Height: Model.Height,
+                                    WithAnnotations: Model.WithAnnotations,
+                                    WithFormFill: Model.WithFormFill,
+                                    WithAspectRatio: Model.WithAspectRatio,
+                                    Rotation: Model.Rotation,
+                                    AntiAliasing: antiAliasing,
+                                    BackgroundColor: backgroundColor,
+                                    Bounds: Model.UseBounds ? new RectangleF(Model.BoundsX, Model.BoundsY, Model.BoundsWidth, Model.BoundsHeight) : null,
+                                    UseTiling: Model.UseTiling)
                                 );
                         }
                         else
@@ -170,11 +181,12 @@ namespace PDFtoZPL.WebConverter.Pages
 
                         Model.Output = PDFtoZPL.Conversion.ConvertBitmap(
                             inputToConvert,
-                            encodingKind: Model.Encoding,
-                            graphicFieldOnly: Model.GraphicFieldOnly,
-                            setLabelLength: Model.SetLabelLength,
-                            threshold: Model.Threshold,
-                            ditheringKind: Model.Dithering
+                            zplOptions: new(
+                                EncodingKind: Model.Encoding,
+                                GraphicFieldOnly: Model.GraphicFieldOnly,
+                                SetLabelLength: Model.SetLabelLength,
+                                Threshold: Model.Threshold,
+                                DitheringKind: Model.Dithering)
                         );
 
                         Model.OutputPreviewImage = new MemoryStream();
