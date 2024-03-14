@@ -37,7 +37,7 @@
             Provides methods to convert PDFs and <see cref="T:SkiaSharp.SKBitmap"/>s into ZPL code.
             </summary>
         </member>
-        <member name="M:PDFtoZPL.Conversion.ConvertPdfPage(System.String,System.String,System.Int32,PDFtoImage.RenderOptions,PDFtoZPL.ZplOptions)">
+        <member name="M:PDFtoZPL.Conversion.ConvertPdfPage(System.String,System.String,System.Int32,PDFtoZPL.PdfOptions,PDFtoZPL.ZplOptions)">
             <summary>
             Converts a single page of a given PDF into ZPL code.
             </summary>
@@ -48,7 +48,7 @@
             <param name="zplOptions">Additional options for the ZPL output.</param>
             <returns>The converted PDF page as ZPL code.</returns>
         </member>
-        <member name="M:PDFtoZPL.Conversion.ConvertPdfPage(System.Byte[],System.String,System.Int32,PDFtoImage.RenderOptions,PDFtoZPL.ZplOptions)">
+        <member name="M:PDFtoZPL.Conversion.ConvertPdfPage(System.Byte[],System.String,System.Int32,PDFtoZPL.PdfOptions,PDFtoZPL.ZplOptions)">
             <summary>
             Converts a single page of a given PDF into ZPL code.
             </summary>
@@ -59,7 +59,7 @@
             <param name="zplOptions">Additional options for the ZPL output.</param>
             <returns>The converted PDF page as ZPL code.</returns>
         </member>
-        <member name="M:PDFtoZPL.Conversion.ConvertPdfPage(System.IO.Stream,System.Boolean,System.String,System.Int32,PDFtoImage.RenderOptions,PDFtoZPL.ZplOptions)">
+        <member name="M:PDFtoZPL.Conversion.ConvertPdfPage(System.IO.Stream,System.Boolean,System.String,System.Int32,PDFtoZPL.PdfOptions,PDFtoZPL.ZplOptions)">
             <summary>
             Converts a single page of a given PDF into ZPL code.
             </summary>
@@ -71,7 +71,7 @@
             <param name="zplOptions">Additional options for the ZPL output.</param>
             <returns>The converted PDF page as ZPL code.</returns>
         </member>
-        <member name="M:PDFtoZPL.Conversion.ConvertPdf(System.String,System.String,PDFtoImage.RenderOptions,PDFtoZPL.ZplOptions)">
+        <member name="M:PDFtoZPL.Conversion.ConvertPdf(System.String,System.String,PDFtoZPL.PdfOptions,PDFtoZPL.ZplOptions)">
             <summary>
             Converts all pages of a given PDF into ZPL code.
             </summary>
@@ -81,7 +81,7 @@
             <param name="zplOptions">Additional options for the ZPL output.</param>
             <returns>The converted PDF pages as ZPL code.</returns>
         </member>
-        <member name="M:PDFtoZPL.Conversion.ConvertPdf(System.Byte[],System.String,PDFtoImage.RenderOptions,PDFtoZPL.ZplOptions)">
+        <member name="M:PDFtoZPL.Conversion.ConvertPdf(System.Byte[],System.String,PDFtoZPL.PdfOptions,PDFtoZPL.ZplOptions)">
             <summary>
             Converts all pages of a given PDF into ZPL code.
             </summary>
@@ -91,7 +91,7 @@
             <param name="zplOptions">Additional options for the ZPL output.</param>
             <returns>The converted PDF pages as ZPL code.</returns>
         </member>
-        <member name="M:PDFtoZPL.Conversion.ConvertPdf(System.IO.Stream,System.Boolean,System.String,PDFtoImage.RenderOptions,PDFtoZPL.ZplOptions)">
+        <member name="M:PDFtoZPL.Conversion.ConvertPdf(System.IO.Stream,System.Boolean,System.String,PDFtoZPL.PdfOptions,PDFtoZPL.ZplOptions)">
             <summary>
             Converts all pages of a given PDF into ZPL code.
             </summary>
@@ -160,6 +160,112 @@
             <summary>
             Use the Bill Atkinson dithering algorithm.
             </summary>
+        </member>
+        <member name="T:PDFtoZPL.IZplOptions">
+            <summary>
+            Contains all relevant information to render a PDF page into an image.
+            </summary>
+        </member>
+        <member name="P:PDFtoZPL.IZplOptions.EncodingKind">
+            <summary>
+            The encoding used for embedding the bitmap.
+            </summary>
+        </member>
+        <member name="P:PDFtoZPL.IZplOptions.GraphicFieldOnly">
+            <summary>
+            If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.
+            </summary>
+        </member>
+        <member name="P:PDFtoZPL.IZplOptions.SetLabelLength">
+            <summary>
+            If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.
+            </summary>
+        </member>
+        <member name="P:PDFtoZPL.IZplOptions.Threshold">
+            <summary>
+            The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.
+            </summary>
+        </member>
+        <member name="P:PDFtoZPL.IZplOptions.DitheringKind">
+            <summary>
+            The dithering algorithm used when downsampling to a 1-bit monochrome image.
+            </summary>
+        </member>
+        <member name="T:PDFtoZPL.PdfOptions">
+            <summary>
+            Contains all relevant information to render a PDF page into an image.
+            </summary>
+            <param name="Dpi">The DPI scaling to use for rasterization of the PDF.</param>
+            <param name="Width">The width of the desired page. Use <see langword="null"/> if the original width should be used.</param>
+            <param name="Height">The height of the desired page. Use <see langword="null"/> if the original height should be used.</param>
+            <param name="WithAnnotations">Specifies whether annotations be rendered.</param>
+            <param name="WithFormFill">Specifies whether form filling will be rendered.</param>
+            <param name="WithAspectRatio">Specifies that <paramref name="Width"/> or <paramref name="Height"/> should be adjusted for aspect ratio (either one must be <see langword="null"/>).</param>
+            <param name="Rotation">Specifies the rotation at 90 degree intervals.</param>
+            <param name="AntiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
+            <param name="BackgroundColor">Specifies the background color. Defaults to <see cref="F:SkiaSharp.SKColors.White"/>.</param>
+            <param name="Bounds">Specifies the bounds for the page relative to <see cref="M:PDFtoImage.Conversion.GetPageSizes(System.String,System.String)"/>. This can be used for clipping (bounds inside of page) or additional margins (bounds outside of page).</param>
+            <param name="UseTiling">Specifies that the PDF should be rendered as several segments and merged into the final image. This can help in cases where the output image is too large, causing corrupted images (e.g. missing text) or crashes.</param>
+        </member>
+        <member name="M:PDFtoZPL.PdfOptions.#ctor(System.Int32,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Boolean,System.Boolean,System.Boolean,PDFtoImage.PdfRotation,PDFtoImage.PdfAntiAliasing,System.Nullable{SkiaSharp.SKColor},System.Nullable{System.Drawing.RectangleF},System.Boolean)">
+            <summary>
+            Contains all relevant information to render a PDF page into an image.
+            </summary>
+            <param name="Dpi">The DPI scaling to use for rasterization of the PDF.</param>
+            <param name="Width">The width of the desired page. Use <see langword="null"/> if the original width should be used.</param>
+            <param name="Height">The height of the desired page. Use <see langword="null"/> if the original height should be used.</param>
+            <param name="WithAnnotations">Specifies whether annotations be rendered.</param>
+            <param name="WithFormFill">Specifies whether form filling will be rendered.</param>
+            <param name="WithAspectRatio">Specifies that <paramref name="Width"/> or <paramref name="Height"/> should be adjusted for aspect ratio (either one must be <see langword="null"/>).</param>
+            <param name="Rotation">Specifies the rotation at 90 degree intervals.</param>
+            <param name="AntiAliasing">Specifies which parts of the PDF should be anti-aliasing for rendering.</param>
+            <param name="BackgroundColor">Specifies the background color. Defaults to <see cref="F:SkiaSharp.SKColors.White"/>.</param>
+            <param name="Bounds">Specifies the bounds for the page relative to <see cref="M:PDFtoImage.Conversion.GetPageSizes(System.String,System.String)"/>. This can be used for clipping (bounds inside of page) or additional margins (bounds outside of page).</param>
+            <param name="UseTiling">Specifies that the PDF should be rendered as several segments and merged into the final image. This can help in cases where the output image is too large, causing corrupted images (e.g. missing text) or crashes.</param>
+        </member>
+        <member name="P:PDFtoZPL.PdfOptions.Dpi">
+            <summary>The DPI scaling to use for rasterization of the PDF.</summary>
+        </member>
+        <member name="P:PDFtoZPL.PdfOptions.Width">
+            <summary>The width of the desired page. Use <see langword="null"/> if the original width should be used.</summary>
+        </member>
+        <member name="P:PDFtoZPL.PdfOptions.Height">
+            <summary>The height of the desired page. Use <see langword="null"/> if the original height should be used.</summary>
+        </member>
+        <member name="P:PDFtoZPL.PdfOptions.WithAnnotations">
+            <summary>Specifies whether annotations be rendered.</summary>
+        </member>
+        <member name="P:PDFtoZPL.PdfOptions.WithFormFill">
+            <summary>Specifies whether form filling will be rendered.</summary>
+        </member>
+        <member name="P:PDFtoZPL.PdfOptions.WithAspectRatio">
+            <summary>Specifies that <paramref name="Width"/> or <paramref name="Height"/> should be adjusted for aspect ratio (either one must be <see langword="null"/>).</summary>
+        </member>
+        <member name="P:PDFtoZPL.PdfOptions.Rotation">
+            <summary>Specifies the rotation at 90 degree intervals.</summary>
+        </member>
+        <member name="P:PDFtoZPL.PdfOptions.AntiAliasing">
+            <summary>Specifies which parts of the PDF should be anti-aliasing for rendering.</summary>
+        </member>
+        <member name="P:PDFtoZPL.PdfOptions.BackgroundColor">
+            <summary>Specifies the background color. Defaults to <see cref="F:SkiaSharp.SKColors.White"/>.</summary>
+        </member>
+        <member name="P:PDFtoZPL.PdfOptions.Bounds">
+            <summary>Specifies the bounds for the page relative to <see cref="M:PDFtoImage.Conversion.GetPageSizes(System.String,System.String)"/>. This can be used for clipping (bounds inside of page) or additional margins (bounds outside of page).</summary>
+        </member>
+        <member name="P:PDFtoZPL.PdfOptions.UseTiling">
+            <summary>Specifies that the PDF should be rendered as several segments and merged into the final image. This can help in cases where the output image is too large, causing corrupted images (e.g. missing text) or crashes.</summary>
+        </member>
+        <member name="M:PDFtoZPL.PdfOptions.#ctor">
+            <summary>
+            Constructs <see cref="T:PDFtoZPL.PdfOptions"/> with default values.
+            </summary>
+        </member>
+        <member name="M:PDFtoZPL.PdfOptions.op_Implicit(PDFtoZPL.PdfOptions)~PDFtoImage.RenderOptions">
+            <summary>
+            Implicit conversion to <see cref="T:PDFtoImage.RenderOptions"/>.
+            </summary>
+            <param name="pdfOptions">The options to convert.</param>
         </member>
         <member name="T:PDFtoZPL.ZplOptions">
             <summary>
