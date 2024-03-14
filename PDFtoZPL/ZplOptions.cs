@@ -13,7 +13,7 @@
         bool GraphicFieldOnly = false,
         bool SetLabelLength = false,
         byte Threshold = 128,
-        DitheringKind DitheringKind = DitheringKind.None)
+        DitheringKind DitheringKind = DitheringKind.None) : IZplOptions
     {
         /// <summary>
         /// Constructs <see cref="ZplOptions"/> with default values.
