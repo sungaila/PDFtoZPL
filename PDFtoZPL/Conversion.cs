@@ -1,5 +1,4 @@
-﻿using PDFtoImage;
-using SkiaSharp;
+﻿using SkiaSharp;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,7 +33,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
 #endif
-        public static string ConvertPdfPage(string pdfAsBase64String, string? password = null, int page = 0, RenderOptions pdfOptions = default, ZplOptions zplOptions = default)
+        public static string ConvertPdfPage(string pdfAsBase64String, string? password = null, int page = 0, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfAsBase64String == null)
                 throw new ArgumentNullException(nameof(pdfAsBase64String));
@@ -57,7 +56,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
 #endif
-        public static string ConvertPdfPage(byte[] pdfAsByteArray, string? password = null, int page = 0, RenderOptions pdfOptions = default, ZplOptions zplOptions = default)
+        public static string ConvertPdfPage(byte[] pdfAsByteArray, string? password = null, int page = 0, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfAsByteArray == null)
                 throw new ArgumentNullException(nameof(pdfAsByteArray));
@@ -84,7 +83,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
 #endif
-        public static string ConvertPdfPage(Stream pdfStream, bool leaveOpen = false, string? password = null, int page = 0, RenderOptions pdfOptions = default, ZplOptions zplOptions = default)
+        public static string ConvertPdfPage(Stream pdfStream, bool leaveOpen = false, string? password = null, int page = 0, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfStream == null)
                 throw new ArgumentNullException(nameof(pdfStream));
@@ -110,7 +109,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
 #endif
-        public static IEnumerable<string> ConvertPdf(string pdfAsBase64String, string? password = null, RenderOptions pdfOptions = default, ZplOptions zplOptions = default)
+        public static IEnumerable<string> ConvertPdf(string pdfAsBase64String, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfAsBase64String == null)
                 throw new ArgumentNullException(nameof(pdfAsBase64String));
@@ -135,7 +134,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
 #endif
-        public static IEnumerable<string> ConvertPdf(byte[] pdfAsByteArray, string? password = null, RenderOptions pdfOptions = default, ZplOptions zplOptions = default)
+        public static IEnumerable<string> ConvertPdf(byte[] pdfAsByteArray, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfAsByteArray == null)
                 throw new ArgumentNullException(nameof(pdfAsByteArray));
@@ -164,7 +163,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
 #endif
-        public static IEnumerable<string> ConvertPdf(Stream pdfStream, bool leaveOpen = false, string? password = null, RenderOptions pdfOptions = default, ZplOptions zplOptions = default)
+        public static IEnumerable<string> ConvertPdf(Stream pdfStream, bool leaveOpen = false, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfStream == null)
                 throw new ArgumentNullException(nameof(pdfStream));
@@ -193,7 +192,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
 #endif
-        public static async IAsyncEnumerable<string> ConvertPdfAsync(string pdfAsBase64String, string? password = null, RenderOptions pdfOptions = default, ZplOptions zplOptions = default, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public static async IAsyncEnumerable<string> ConvertPdfAsync(string pdfAsBase64String, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (pdfAsBase64String == null)
                 throw new ArgumentNullException(nameof(pdfAsBase64String));
@@ -219,7 +218,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
 #endif
-        public static async IAsyncEnumerable<string> ConvertPdfAsync(byte[] pdfAsByteArray, string? password = null, RenderOptions pdfOptions = default, ZplOptions zplOptions = default, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public static async IAsyncEnumerable<string> ConvertPdfAsync(byte[] pdfAsByteArray, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (pdfAsByteArray == null)
                 throw new ArgumentNullException(nameof(pdfAsByteArray));
@@ -249,7 +248,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("macOS")]
         [SupportedOSPlatform("Android31.0")]
 #endif
-        public static async IAsyncEnumerable<string> ConvertPdfAsync(Stream pdfStream, bool leaveOpen = false, string? password = null, RenderOptions pdfOptions = default, ZplOptions zplOptions = default, [EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public static async IAsyncEnumerable<string> ConvertPdfAsync(Stream pdfStream, bool leaveOpen = false, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (pdfStream == null)
                 throw new ArgumentNullException(nameof(pdfStream));
