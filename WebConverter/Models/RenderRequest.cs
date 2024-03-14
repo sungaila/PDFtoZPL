@@ -53,7 +53,7 @@ namespace PDFtoZPL.WebConverter.Models
 
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "DPI invalid (≥0).")]
-        public int Dpi { get; set; } = 300;
+        public int Dpi { get; set; } = 203;
 
         [Required]
         [Range(0, int.MaxValue, ErrorMessage = "Page number invalid (≥0).")]
