@@ -88,6 +88,9 @@ namespace PDFtoZPL
             if (pdfStream == null)
                 throw new ArgumentNullException(nameof(pdfStream));
 
+            if (pdfOptions == default)
+                pdfOptions = new PdfOptions();
+
             // Stream ->PdfiumViewer.PdfDocument -> Image
             var pdfBitmap = PDFtoImage.Conversion.ToImage(pdfStream, leaveOpen, password, page, pdfOptions);
 
@@ -167,6 +170,9 @@ namespace PDFtoZPL
         {
             if (pdfStream == null)
                 throw new ArgumentNullException(nameof(pdfStream));
+
+            if (pdfOptions == default)
+                pdfOptions = new PdfOptions();
 
             // Stream ->PdfiumViewer.PdfDocument -> Image
             foreach (var image in PDFtoImage.Conversion.ToImages(pdfStream, leaveOpen, password, pdfOptions))
@@ -252,6 +258,9 @@ namespace PDFtoZPL
         {
             if (pdfStream == null)
                 throw new ArgumentNullException(nameof(pdfStream));
+
+            if (pdfOptions == default)
+                pdfOptions = new PdfOptions();
 
             // Stream -> PdfiumViewer.PdfDocument -> Image
             await foreach (var image in PDFtoImage.Conversion.ToImagesAsync(pdfStream, leaveOpen, password, pdfOptions, cancellationToken))
