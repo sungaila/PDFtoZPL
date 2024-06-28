@@ -28,7 +28,7 @@ namespace PDFtoZPL
             for (int i = 0; i < input.Length; i += 2)
                 result.Add(_hexLookupTable[input.Substring(i, 2)]);
 
-            return result.ToArray();
+            return [.. result];
         }
 
         public static string ConvertBitmapToHex(SKBitmap pdfBitmap, byte threshold, out int binaryByteCount, out int bytesPerRow)

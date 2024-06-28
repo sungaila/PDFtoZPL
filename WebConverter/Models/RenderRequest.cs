@@ -140,6 +140,7 @@ namespace PDFtoZPL.WebConverter.Models
         [Required]
         public bool UseTiling { get; set; } = true;
 
+        public bool DpiRelativeToBounds { get; set; } = false;
         public static string GetDitheringLocalized(DitheringKind dithering) => dithering switch
         {
             DitheringKind.None => "None",
