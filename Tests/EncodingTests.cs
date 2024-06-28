@@ -18,9 +18,11 @@ namespace Tests
 #endif
 		}
 
+#if NET6_0_OR_GREATER
 #pragma warning disable CA1416
+#endif
 
-		[TestMethod]
+        [TestMethod]
 		[DataRow("SocialPreview.pdf", null)]
 		[DataRow("SocialPreview.pdf", BitmapEncodingKind.Hexadecimal)]
 		[DataRow("SocialPreview.pdf", BitmapEncodingKind.HexadecimalCompressed)]

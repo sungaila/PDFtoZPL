@@ -5,6 +5,10 @@ using static PDFtoZPL.Conversion;
 
 namespace PDFtoZPL.Console
 {
+#if NET6_0_OR_GREATER
+#pragma warning disable CA1416
+#endif
+
 #if NET8_0_OR_GREATER
 #pragma warning disable CA1510 // Use ArgumentNullException throw helper
 #endif
@@ -36,9 +40,7 @@ namespace PDFtoZPL.Console
 #else
                     true
 #endif
-#pragma warning disable CA1416
-                        ? Conversion.ConvertPdfPage(inputStream, page: page - 1, pdfOptions: new (Dpi: dpi, WithAnnotations: withAnnotations, WithFormFill: withFormFill), zplOptions: new (EncodingKind: encodingKind))
-#pragma warning restore CA1416
+                        ? Conversion.ConvertPdfPage(inputStream, page: page - 1, pdfOptions: new(Dpi: dpi, WithAnnotations: withAnnotations, WithFormFill: withFormFill), zplOptions: new(EncodingKind: encodingKind))
                         : throw new NotSupportedException("Only win-x86, win-x64, win-arm64, linux-x64, linux-arm, linux-arm64, osx-x64 and osx-arm64 are supported for PDF file conversion."),
                     _ => throw new InvalidOperationException("The given input file path must have pdf as file extension."),
                 };

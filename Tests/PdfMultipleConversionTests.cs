@@ -19,7 +19,9 @@ namespace Tests
 #endif
         }
 
+#if NET6_0_OR_GREATER
 #pragma warning disable CA1416
+#endif
 
         private static readonly string[] _expectedZplResults =
         [

@@ -1,1 +1,4 @@
 ﻿#nullable enable
+PDFtoZPL.Resource
+PDFtoZPL.Resource.Attribute
+PDFtoZPL.Resource.Resource() -> void
