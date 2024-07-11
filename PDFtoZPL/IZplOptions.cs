@@ -29,5 +29,10 @@
         /// The dithering algorithm used when downsampling to a 1-bit monochrome image.
         /// </summary>
         DitheringKind DitheringKind { get; init; }
+
+        /// <summary>
+        /// Adds the ^PQ command to set the total quantity of labels to print. Accepted values are 1 to 99,999,999. Ignored if set to 0.
+        /// </summary>
+        uint PrintQuantity { get; init; }
     }
 }

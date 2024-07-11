@@ -392,14 +392,23 @@ namespace PDFtoZPL
                 // build the Graphic Field (^GFA) command
                 string graphicField = $"^GFA,{binaryByteCount},{binaryByteCount},{bytesPerRow},{bitmapPayload}";
 
+                // return the ^GF and nothing else
                 if (zplOptions.GraphicFieldOnly)
                     return graphicField;
 
+                var zpl = $"^XA{graphicField}^FS^XZ";
+
+                // set ^LL for continuous media (labels without gaps, spaces, notches, etc)
                 if (zplOptions.SetLabelLength)
-                    return $"^XA^LL{inputBitmap.Height}{graphicField}^FS^XZ";
+                    zpl = zpl.Replace("^XA", $"^XA^LL{inputBitmap.Height}");
+
+                // set the ^PQ to control the number of labels to print
+                // no print pausing and one replicate per serial number
+                if (zplOptions.PrintQuantity > 0)
+                    zpl = $"^PQ{Math.Min(zplOptions.PrintQuantity, 99999999)},0,1,Y" + zpl;
 
                 // finally return the complete ZPL code
-                return $"^XA{graphicField}^FS^XZ";
+                return zpl;
             }
             finally
             {

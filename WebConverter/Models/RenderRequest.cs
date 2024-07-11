@@ -4,6 +4,7 @@ using SkiaSharp;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.IO;
+using System.Runtime.InteropServices.Marshalling;
 
 namespace PDFtoZPL.WebConverter.Models
 {
@@ -141,6 +142,14 @@ namespace PDFtoZPL.WebConverter.Models
         public bool UseTiling { get; set; } = true;
 
         public bool DpiRelativeToBounds { get; set; } = false;
+
+        [Required]
+        public bool UsePrintQuantity { get; set; } = false;
+
+        [Required]
+        [Range(1, 99999999)]
+        public int PrintQuantity { get; set; } = 1;
+
         public static string GetDitheringLocalized(DitheringKind dithering) => dithering switch
         {
             DitheringKind.None => "None",
