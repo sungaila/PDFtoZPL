@@ -22,6 +22,9 @@
     <Compile Update="AntiAliasingTests.ExpectedResults.cs">
       <DependentUpon>AntiAliasingTests.cs</DependentUpon>
     </Compile>
+    <Compile Update="PrintQuantityTests.ExpectedResults.cs">
+      <DependentUpon>PrintQuantityTests.cs</DependentUpon>
+    </Compile>
     <Compile Update="ThresholdTests.ExpectedResults.cs">
       <DependentUpon>ThresholdTests.cs</DependentUpon>
     </Compile>
