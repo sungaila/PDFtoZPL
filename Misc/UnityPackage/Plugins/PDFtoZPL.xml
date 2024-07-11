@@ -191,6 +191,11 @@
             The dithering algorithm used when downsampling to a 1-bit monochrome image.
             </summary>
         </member>
+        <member name="P:PDFtoZPL.IZplOptions.PrintQuantity">
+            <summary>
+            Adds the ^PQ command to set the total quantity of labels to print. Accepted values are 1 to 99,999,999. Ignored if set to 0.
+            </summary>
+        </member>
         <member name="T:PDFtoZPL.PdfOptions">
             <summary>
             Contains all relevant information to render a PDF page into an image.
@@ -281,8 +286,9 @@
             <param name="SetLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
             <param name="Threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
             <param name="DitheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+            <param name="PrintQuantity">Adds the ^PQ command to set the total quantity of labels to print. Accepted values are 1 to 99,999,999. Ignored if set to 0.</param>
         </member>
-        <member name="M:PDFtoZPL.ZplOptions.#ctor(PDFtoZPL.BitmapEncodingKind,System.Boolean,System.Boolean,System.Byte,PDFtoZPL.DitheringKind)">
+        <member name="M:PDFtoZPL.ZplOptions.#ctor(PDFtoZPL.BitmapEncodingKind,System.Boolean,System.Boolean,System.Byte,PDFtoZPL.DitheringKind,System.UInt32)">
             <summary>
             Contains all relevant information to render a PDF page into an image.
             </summary>
@@ -291,6 +297,7 @@
             <param name="SetLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
             <param name="Threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
             <param name="DitheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
+            <param name="PrintQuantity">Adds the ^PQ command to set the total quantity of labels to print. Accepted values are 1 to 99,999,999. Ignored if set to 0.</param>
         </member>
         <member name="P:PDFtoZPL.ZplOptions.EncodingKind">
             <summary>The encoding used for embedding the bitmap.</summary>
@@ -306,6 +313,9 @@
         </member>
         <member name="P:PDFtoZPL.ZplOptions.DitheringKind">
             <summary>The dithering algorithm used when downsampling to a 1-bit monochrome image.</summary>
+        </member>
+        <member name="P:PDFtoZPL.ZplOptions.PrintQuantity">
+            <summary>Adds the ^PQ command to set the total quantity of labels to print. Accepted values are 1 to 99,999,999. Ignored if set to 0.</summary>
         </member>
         <member name="M:PDFtoZPL.ZplOptions.#ctor">
             <summary>
