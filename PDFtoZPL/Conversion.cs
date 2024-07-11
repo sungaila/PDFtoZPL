@@ -403,9 +403,8 @@ namespace PDFtoZPL
                     zpl = zpl.Replace("^XA", $"^XA^LL{inputBitmap.Height}");
 
                 // set the ^PQ to control the number of labels to print
-                // no print pausing and one replicate per serial number
                 if (zplOptions.PrintQuantity > 0)
-                    zpl = $"^PQ{Math.Min(zplOptions.PrintQuantity, 99999999)},0,1,Y" + zpl;
+                    zpl = zpl.Replace("^XZ", $"^PQ{Math.Min(zplOptions.PrintQuantity, 99999999)}^XZ");
 
                 // finally return the complete ZPL code
                 return zpl;
