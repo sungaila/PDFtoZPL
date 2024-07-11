@@ -187,7 +187,8 @@ namespace PDFtoZPL.WebConverter.Pages
                                 GraphicFieldOnly: Model.GraphicFieldOnly,
                                 SetLabelLength: Model.SetLabelLength,
                                 Threshold: Model.Threshold,
-                                DitheringKind: Model.Dithering)
+                                DitheringKind: Model.Dithering,
+                                PrintQuantity: Model.UsePrintQuantity ? (uint)Math.Max(Model.PrintQuantity, 1) : 0)
                         );
 
                         Model.OutputPreviewImage = new MemoryStream();
