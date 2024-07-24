@@ -9,15 +9,15 @@ namespace PDFtoZPL
 {
     internal static class ConversionUtils
     {
-        private static readonly IReadOnlyDictionary<string, byte> _hexLookupTable;
+        private static readonly Dictionary<string, byte> _hexLookupTable;
 
         static ConversionUtils()
         {
-            _hexLookupTable = new Dictionary<string, byte>();
+            _hexLookupTable = [];
 
             for (int i = 0; i <= 255; i++)
             {
-                ((Dictionary<string, byte>)_hexLookupTable).Add(i.ToString("X2"), (byte)i);
+                _hexLookupTable.Add(i.ToString("X2"), (byte)i);
             }
         }
 
@@ -193,7 +193,7 @@ namespace PDFtoZPL
         /// The mapping table used for compression.
         /// Each character count (the key) is represented by a certain char (the value).
         /// </summary>
-        private static readonly IReadOnlyDictionary<int, string> CompressionCountMapping = new Dictionary<int, string>()
+        private static readonly Dictionary<int, string> CompressionCountMapping = new()
         {
             { 1, "G" },
             { 2, "H" },

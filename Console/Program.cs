@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
-using static PDFtoZPL.Conversion;
 
 namespace PDFtoZPL.Console
 {
@@ -36,7 +35,7 @@ namespace PDFtoZPL.Console
                 {
                     ".pdf" =>
 #if NET6_0_OR_GREATER
-					OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()
+                    OperatingSystem.IsWindows() || OperatingSystem.IsLinux() || OperatingSystem.IsMacOS()
 #else
                     true
 #endif

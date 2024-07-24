@@ -16,6 +16,7 @@
     <Nullable>enable</Nullable>
     <Features>strict</Features>
     <WarningsAsErrors>nullable</WarningsAsErrors>
+    <NoWarn>CS0618</NoWarn>
   </PropertyGroup>
 
   <!-- References -->

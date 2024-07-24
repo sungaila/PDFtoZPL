@@ -78,8 +78,11 @@ jobs:
     name: Deploy
     needs: publish
     runs-on: ubuntu-latest
+    
+    concurrency:
+      group: "pages-staging"
+      cancel-in-progress: true
 
-true
     # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
     permissions:
       pages: write      # to deploy to Pages
