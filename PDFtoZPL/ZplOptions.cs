@@ -23,7 +23,7 @@
         public ZplOptions() : this(BitmapEncodingKind.HexadecimalCompressed, false, false, 128, DitheringKind.None, 0) { }
     }
 }
-#if NETSTANDARD || MONOANDROID || NETFRAMEWORK
+#if NETSTANDARD || NETFRAMEWORK
 namespace System.Runtime.CompilerServices
 {
     internal static class IsExternalInit { }

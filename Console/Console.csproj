@@ -6,7 +6,7 @@
     <AssemblyName>PDFtoZPL.Console</AssemblyName>
     <RootNamespace>PDFtoZPL.Console</RootNamespace>
     <StartupObject>PDFtoZPL.Console.Program</StartupObject>
-    <Version>5.1.0</Version>
+    <Version>5.2.0</Version>
     <Configurations>Debug;Release;ReleaseSigned</Configurations>
   </PropertyGroup>
 
@@ -16,6 +16,7 @@
     <Nullable>enable</Nullable>
     <Features>strict</Features>
     <WarningsAsErrors>nullable</WarningsAsErrors>
+    <NoWarn>CS0618</NoWarn>
   </PropertyGroup>
 
   <!-- References -->
