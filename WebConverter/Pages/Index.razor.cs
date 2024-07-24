@@ -146,16 +146,16 @@ namespace PDFtoZPL.WebConverter.Pages
                         {
                             if (!Model.UseBounds)
                             {
-                                var pageSize = PDFtoImage.Conversion.GetPageSize(Model.Input, true, Model.Page, !string.IsNullOrEmpty(Model.Password) ? Model.Password : null);
+                                var pageSize = PDFtoImage.Conversion.GetPageSize(Model.Input, Model.Page, true, !string.IsNullOrEmpty(Model.Password) ? Model.Password : null);
                                 Model.BoundsWidth = pageSize.Width;
                                 Model.BoundsHeight = pageSize.Height;
                             }
 
                             inputToConvert = PDFtoImage.Conversion.ToImage(
                                 Model.Input,
+                                Model.Page,
                                 leaveOpen: true,
                                 password: !string.IsNullOrEmpty(Model.Password) ? Model.Password : null,
-                                page: Model.Page,
                                 options: new(
                                     Dpi: Model.Dpi,
                                     Width: Model.Width,
