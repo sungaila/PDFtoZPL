@@ -37,11 +37,13 @@ namespace Tests
 			Assert.ThrowsException<ArgumentNullException>(() => ConvertPdfPage((byte[])null!));
 		}
 
+#if NET6_0_OR_GREATER
 		[TestMethod]
 		public void PageNumberException()
 		{
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => ConvertPdfPage(string.Empty, page: -1));
+			Assert.ThrowsException<ArgumentOutOfRangeException>(() => ConvertPdfPage(string.Empty, -1));
 		}
+#endif
 
 		[TestMethod]
 		public void PdfAllStreamNullException()
