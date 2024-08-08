@@ -149,6 +149,20 @@ namespace PDFtoZPL.WebConverter.Models
         [Range(1, 99999999)]
         public int PrintQuantity { get; set; } = 1;
 
+        [Required]
+        public bool UseLabelTop { get; set; } = false;
+
+        [Required]
+        [Range(-120, 120)]
+        public int LabelTop { get; set; } = 0;
+
+        [Required]
+        public bool UseLabelShift { get; set; } = false;
+
+        [Required]
+        [Range(-9999, 9999)]
+        public int LabelShift { get; set; } = 0;
+
         public static string GetDitheringLocalized(DitheringKind dithering) => dithering switch
         {
             DitheringKind.None => "None",

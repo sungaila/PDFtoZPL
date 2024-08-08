@@ -34,5 +34,15 @@
         /// Adds the ^PQ command to set the total quantity of labels to print. Accepted values are 1 to 99,999,999. Ignored if set to 0.
         /// </summary>
         uint PrintQuantity { get; init; }
+
+        /// <summary>
+        /// Adds the ^LT command to move the entire label up or down from its current position (in relation to the top edge of the label). Valid values are between <c>120</c> (move label down) and <c>-120</c> (move label up) dot rows. Values outside of this range are ignored and some printers might accept even fewer.
+        /// </summary>
+        sbyte LabelTop { get; init; }
+
+        /// <summary>
+        /// Adds the ^LS command to move the entire label left or right from its current position. Valid values are between <c>9999</c> (move label left) and <c>-9999</c> (move label right). Values outside of this range are ignored.
+        /// </summary>
+        short LabelShift { get; init; }
     }
 }

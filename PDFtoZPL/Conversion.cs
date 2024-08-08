@@ -402,6 +402,14 @@ namespace PDFtoZPL
                 if (zplOptions.PrintQuantity > 0)
                     zpl = zpl.Replace("^XZ", $"^PQ{Math.Min(zplOptions.PrintQuantity, 99999999)}^XZ");
 
+                // set the ^LT to shift the label up or down
+                if (zplOptions.LabelTop != 0 && zplOptions.LabelTop <= 120 && zplOptions.LabelTop >= -120)
+                    zpl = zpl.Replace("^XA", $"^XA^LT{zplOptions.LabelTop}");
+
+                // set the ^LS to shift the label left or right
+                if (zplOptions.LabelShift != 0 && zplOptions.LabelShift <= 9999 && zplOptions.LabelShift >= -9999)
+                    zpl = zpl.Replace("^XA", $"^XA^LS{zplOptions.LabelShift}").Replace("^XZ", "^LS0^XZ");
+
                 // finally return the complete ZPL code
                 return zpl;
             }

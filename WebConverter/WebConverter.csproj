@@ -7,7 +7,7 @@
     <AssemblyName>PDFtoZPL.WebConverter</AssemblyName>
     <RootNamespace>PDFtoZPL.WebConverter</RootNamespace>
     <StartupObject>PDFtoZPL.WebConverter.Program</StartupObject>
-    <VersionPrefix>5.2.0</VersionPrefix>
+    <VersionPrefix>5.3.0</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <RunAOTCompilation>true</RunAOTCompilation>
     <WasmNativeStrip>true</WasmNativeStrip>
