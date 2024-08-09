@@ -124,13 +124,33 @@
                             </div>
                         </div>
 
-                        <div class="form-group row">
+                        <div class="form-group row mb-1">
                             <div class="col-sm-3">
                                 <InputCheckbox @bind-Value="Model.UsePrintQuantity" id="usePrintQuantity" class="form-check-input" style="vertical-align: middle;" disabled="@(!Model.IncludeStartFormat)" />
-                                <label for="usePrintQuantity" class="label-nowrap" style="vertical-align: sub;">Include Print Quantity (^PQ)</label>
+                                <label for="usePrintQuantity" id="printQuantityLabel" class="label-nowrap" style="vertical-align: sub;">Print Quantity (^PQ)</label>
                             </div>
                             <div class="col-sm">
                                 <InputNumber @bind-Value="Model.PrintQuantity" id="printQuantity" class="form-control form-control-sm" style="width: inherit; min-height: 34px;" min="1" max="99999999" step="1" aria-labelledby='printQuantityLabel' disabled="@(!Model.IncludeStartFormat || !Model.UsePrintQuantity)" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-1">
+                            <div class="col-sm-3">
+                                <InputCheckbox @bind-Value="Model.UseLabelTop" id="useLabelTop" class="form-check-input" style="vertical-align: middle;" disabled="@(!Model.IncludeStartFormat)" />
+                                <label for="useLabelTop" id="useLabelTopLabel" class="label-nowrap" style="vertical-align: sub;">Label Top (^LT)</label>
+                            </div>
+                            <div class="col-sm">
+                                <InputNumber @bind-Value="Model.LabelTop" id="labelTop" class="form-control form-control-sm" style="width: inherit; min-height: 34px;" min="-120" max="120" step="1" aria-labelledby='useLabelTopLabel' disabled="@(!Model.IncludeStartFormat || !Model.UseLabelTop)" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-sm-3">
+                                <InputCheckbox @bind-Value="Model.UseLabelShift" id="useLabelShift" class="form-check-input" style="vertical-align: middle;" disabled="@(!Model.IncludeStartFormat)" />
+                                <label for="useLabelShift" id="useLabelShiftLabel" class="label-nowrap" style="vertical-align: sub;">Label Shift (^LS)</label>
+                            </div>
+                            <div class="col-sm">
+                                <InputNumber @bind-Value="Model.LabelShift" id="labelShift" class="form-control form-control-sm" style="width: inherit; min-height: 34px;" min="-9999" max="9999" step="1" aria-labelledby='useLabelShiftLabel' disabled="@(!Model.IncludeStartFormat || !Model.UseLabelShift)" />
                             </div>
                         </div>
                     </div>

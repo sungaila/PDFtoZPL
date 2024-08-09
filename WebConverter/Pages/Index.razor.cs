@@ -188,13 +188,17 @@ namespace PDFtoZPL.WebConverter.Pages
                                 SetLabelLength: Model.SetLabelLength,
                                 Threshold: Model.Threshold,
                                 DitheringKind: Model.Dithering,
-                                PrintQuantity: Model.UsePrintQuantity ? (uint)Math.Max(Model.PrintQuantity, 1) : 0)
+                                PrintQuantity: Model.UsePrintQuantity ? (uint)Math.Max(Model.PrintQuantity, 1) : 0,
+                                LabelTop: (sbyte)(Model.UseLabelTop ? Model.LabelTop : 0),
+                                LabelShift: (short)(Model.UseLabelShift ? Model.LabelShift : 0)
+                            )
                         );
 
                         Model.OutputPreviewImage = new MemoryStream();
 
                         using var monochromeBitmap = inputToConvert.ToMonochrome(Model.Threshold, Model.Dithering);
-                        encodeSuccess = monochromeBitmap.Encode(Model.OutputPreviewImage, SKEncodedImageFormat.Png, 100);
+                        using var shiftedBitmap = monochromeBitmap.ApplyShift((sbyte)(Model.UseLabelTop ? Model.LabelTop : 0), (short)(Model.UseLabelShift ? Model.LabelShift : 0), backgroundColor);
+                        encodeSuccess = shiftedBitmap.Encode(Model.OutputPreviewImage, SKEncodedImageFormat.Png, 100);
                     }
                     finally
                     {
