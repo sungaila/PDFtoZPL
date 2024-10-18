@@ -1,12 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <!-- Assembly -->
   <PropertyGroup>
-    <TargetFrameworks>net462;net481;net6.0;net7.0;net8.0</TargetFrameworks>
+    <TargetFrameworks>net462;net481;net6.0;net8.0;net9.0</TargetFrameworks>
     <OutputType>Exe</OutputType>
     <AssemblyName>PDFtoZPL.Console</AssemblyName>
     <RootNamespace>PDFtoZPL.Console</RootNamespace>
     <StartupObject>PDFtoZPL.Console.Program</StartupObject>
-    <Version>5.3.1</Version>
+    <Version>6.0.0</Version>
     <Configurations>Debug;Release;ReleaseSigned</Configurations>
   </PropertyGroup>
 

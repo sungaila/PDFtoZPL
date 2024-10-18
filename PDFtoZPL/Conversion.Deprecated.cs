@@ -26,6 +26,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("iOS13.6")]
         [SupportedOSPlatform("Android31.0")]
         [Obsolete("This method is deprecated and will be removed in a future release. Use SaveJpeg with a System.Index instead.")]
 #endif
@@ -50,6 +51,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("iOS13.6")]
         [SupportedOSPlatform("Android31.0")]
         [Obsolete("This method is deprecated and will be removed in a future release. Use SaveJpeg with a System.Index instead.")]
 #endif
@@ -78,6 +80,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("iOS13.6")]
         [SupportedOSPlatform("Android31.0")]
         [Obsolete("This method is deprecated and will be removed in a future release. Use SaveJpeg with a System.Index instead.")]
 #endif
