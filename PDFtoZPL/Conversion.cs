@@ -31,6 +31,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("iOS13.6")]
         [SupportedOSPlatform("Android31.0")]
         public static string ConvertPdfPage(string pdfAsBase64String, Index page, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
@@ -52,6 +53,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("iOS13.6")]
         [SupportedOSPlatform("Android31.0")]
         public static string ConvertPdfPage(byte[] pdfAsByteArray, Index page, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
@@ -77,6 +79,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("iOS13.6")]
         [SupportedOSPlatform("Android31.0")]
         public static string ConvertPdfPage(Stream pdfStream, Index page, bool leaveOpen = false, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
@@ -106,6 +109,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("iOS13.6")]
         [SupportedOSPlatform("Android31.0")]
 #endif
         public static IEnumerable<string> ConvertPdf(string pdfAsBase64String, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
@@ -131,6 +135,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("iOS13.6")]
         [SupportedOSPlatform("Android31.0")]
 #endif
         public static IEnumerable<string> ConvertPdf(byte[] pdfAsByteArray, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
@@ -160,6 +165,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("iOS13.6")]
         [SupportedOSPlatform("Android31.0")]
 #endif
         public static IEnumerable<string> ConvertPdf(Stream pdfStream, bool leaveOpen = false, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
@@ -192,6 +198,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("iOS13.6")]
         [SupportedOSPlatform("Android31.0")]
 #endif
         public static async IAsyncEnumerable<string> ConvertPdfAsync(string pdfAsBase64String, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default, [EnumeratorCancellation] CancellationToken cancellationToken = default)
@@ -218,6 +225,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("iOS13.6")]
         [SupportedOSPlatform("Android31.0")]
 #endif
         public static async IAsyncEnumerable<string> ConvertPdfAsync(byte[] pdfAsByteArray, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default, [EnumeratorCancellation] CancellationToken cancellationToken = default)
@@ -248,6 +256,7 @@ namespace PDFtoZPL
         [SupportedOSPlatform("Windows")]
         [SupportedOSPlatform("Linux")]
         [SupportedOSPlatform("macOS")]
+        [SupportedOSPlatform("iOS13.6")]
         [SupportedOSPlatform("Android31.0")]
 #endif
         public static async IAsyncEnumerable<string> ConvertPdfAsync(Stream pdfStream, bool leaveOpen = false, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default, [EnumeratorCancellation] CancellationToken cancellationToken = default)
