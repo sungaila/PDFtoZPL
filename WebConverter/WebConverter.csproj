@@ -8,7 +8,7 @@
     <RootNamespace>PDFtoZPL.WebConverter</RootNamespace>
     <StartupObject>PDFtoZPL.WebConverter.Program</StartupObject>
     <VersionPrefix>6.0.0</VersionPrefix>
-    <VersionSuffix>preview</VersionSuffix>
+    <VersionSuffix>preview.2</VersionSuffix>
     <RunAOTCompilation>true</RunAOTCompilation>
     <WasmNativeStrip>true</WasmNativeStrip>
     <PublishTrimmed>true</PublishTrimmed>
@@ -60,6 +60,5 @@
     <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
     <Content Update="wwwroot\404.html" CopyToOutputDirectory="Always" />
     <EmbeddedResource Include="..\README.md" Link="README.md" />
-    <NativeFileReference Include="$(SkiaSharpStaticLibraryPath)\3.1.12\simd\libSkiaSharp.a" />
   </ItemGroup>
 </Project>
