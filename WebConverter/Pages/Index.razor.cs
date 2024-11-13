@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.Extensions.Logging;
 using Microsoft.JSInterop;
+using PatrickJahr.Blazor.WebShare.Models;
 using PDFtoImage;
 using PDFtoZPL.WebConverter.Models;
 using SkiaSharp;
@@ -11,7 +12,6 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
-using Thinktecture.Blazor.WebShare.Models;
 
 namespace PDFtoZPL.WebConverter.Pages
 {
