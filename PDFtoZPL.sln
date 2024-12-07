@@ -12,8 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Console", "Console\Console.csproj", "{7870E7D5-D32A-421D-9FDF-BBB18D765389}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{8C50448B-27B4-4012-90A9-BFFBCC980D85}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebConverter", "WebConverter\WebConverter.csproj", "{AC631A6E-97A9-4FFE-A05C-FF7616C1FAAE}"
@@ -31,12 +29,6 @@ Global
 		{AEA24120-110F-4988-B5F7-7953FD2BA97B}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AEA24120-110F-4988-B5F7-7953FD2BA97B}.ReleaseSigned|Any CPU.ActiveCfg = ReleaseSigned|Any CPU
 		{AEA24120-110F-4988-B5F7-7953FD2BA97B}.ReleaseSigned|Any CPU.Build.0 = ReleaseSigned|Any CPU
-		{7870E7D5-D32A-421D-9FDF-BBB18D765389}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7870E7D5-D32A-421D-9FDF-BBB18D765389}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7870E7D5-D32A-421D-9FDF-BBB18D765389}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7870E7D5-D32A-421D-9FDF-BBB18D765389}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7870E7D5-D32A-421D-9FDF-BBB18D765389}.ReleaseSigned|Any CPU.ActiveCfg = ReleaseSigned|Any CPU
-		{7870E7D5-D32A-421D-9FDF-BBB18D765389}.ReleaseSigned|Any CPU.Build.0 = ReleaseSigned|Any CPU
 		{8C50448B-27B4-4012-90A9-BFFBCC980D85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8C50448B-27B4-4012-90A9-BFFBCC980D85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8C50448B-27B4-4012-90A9-BFFBCC980D85}.Release|Any CPU.ActiveCfg = Release|Any CPU
