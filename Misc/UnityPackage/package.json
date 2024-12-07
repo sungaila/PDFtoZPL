@@ -1,15 +1,15 @@
 {
     "name": "de.sungaila.pdftozpl",
-    "version": "5.3.1",
+    "version": "6.0.0",
     "displayName": "PDFtoZPL",
     "description": "A .NET library to convert PDF files (and bitmaps) into Zebra Programming Language code.",
-    "unity": "2022.3",
+    "unity": "6000.0",
     "documentationUrl": "https://github.com/sungaila/PDFtoZPL",
-    "changelogUrl": "https://github.com/sungaila/PDFtoZPL/releases/tag/v5.3.1",
+    "changelogUrl": "https://github.com/sungaila/PDFtoZPL/releases/tag/v6.0.0",
     "license": "MIT",
     "licensesUrl": "https://github.com/sungaila/PDFtoZPL/blob/master/LICENSE",
     "dependencies": {
-        "de.sungaila.pdftoimage": "4.1.1"
+        "de.sungaila.pdftoimage": "5.0.0"
     },
     "keywords": [
         "PDF",
