@@ -10,10 +10,23 @@ namespace Tests
     [TestClass]
     public class ApiTests
     {
+        [TestInitialize]
+        public void Initialize()
+        {
+#if NET6_0_OR_GREATER
+            if (!OperatingSystem.IsWindows() && !OperatingSystem.IsLinux() && !OperatingSystem.IsMacOS())
+                Assert.Inconclusive("This test must run on Windows, Linux or macOS.");
+#endif
+        }
+
+#if NET6_0_OR_GREATER
+#pragma warning disable CA1416
+#endif
+
         [TestMethod]
         public void BitmapNullException()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => ConvertBitmap((Stream)null!));
+            Assert.ThrowsExactly<ArgumentNullException>(() => ConvertBitmap((Stream)null!));
         }
 
 #if NET6_0_OR_GREATER
@@ -22,52 +35,52 @@ namespace Tests
         [TestMethod]
         public void PdfStreamNullException()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => ConvertPdfPage((Stream)null!));
+            Assert.ThrowsExactly<ArgumentNullException>(() => ConvertPdfPage((Stream)null!, 0));
         }
 
         [TestMethod]
         public void PdfStringNullException()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => ConvertPdfPage((string)null!));
+            Assert.ThrowsExactly<ArgumentNullException>(() => ConvertPdfPage((string)null!, 0));
         }
 
         [TestMethod]
         public void PdfByteArrayNullException()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => ConvertPdfPage((byte[])null!));
+            Assert.ThrowsExactly<ArgumentNullException>(() => ConvertPdfPage((byte[])null!, 0));
         }
 
 #if NET6_0_OR_GREATER
         [TestMethod]
         public void PageNumberException()
         {
-            Assert.ThrowsException<ArgumentOutOfRangeException>(() => ConvertPdfPage(string.Empty, -1));
+            Assert.ThrowsExactly<ArgumentOutOfRangeException>(() => ConvertPdfPage(string.Empty, -1));
         }
 #endif
 
         [TestMethod]
         public void PdfAllStreamNullException()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => ConvertPdf((Stream)null!).ToList());
+            Assert.ThrowsExactly<ArgumentNullException>(() => ConvertPdf((Stream)null!).ToList());
         }
 
         [TestMethod]
         public void PdfAllStringNullException()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => ConvertPdf((string)null!).ToList());
+            Assert.ThrowsExactly<ArgumentNullException>(() => ConvertPdf((string)null!).ToList());
         }
 
         [TestMethod]
         public void PdfAllByteArrayNullException()
         {
-            Assert.ThrowsException<ArgumentNullException>(() => ConvertPdf((byte[])null!).ToList());
+            Assert.ThrowsExactly<ArgumentNullException>(() => ConvertPdf((byte[])null!).ToList());
         }
 
 #if NET6_0_OR_GREATER
         [TestMethod]
         public async Task PdfAllAsyncStreamNullException()
         {
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () =>
+            await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
             {
                 await foreach (var zplCode in ConvertPdfAsync((Stream)null!))
                 {
@@ -78,7 +91,7 @@ namespace Tests
         [TestMethod]
         public async Task PdfAllAsyncStringNullException()
         {
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () =>
+            await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
             {
                 await foreach (var zplCode in ConvertPdfAsync((string)null!))
                 {
@@ -89,7 +102,7 @@ namespace Tests
         [TestMethod]
         public async Task PdfAllAsyncByteArrayNullException()
         {
-            await Assert.ThrowsExceptionAsync<ArgumentNullException>(async () =>
+            await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
             {
                 await foreach (var zplCode in ConvertPdfAsync((byte[])null!))
                 {
@@ -114,7 +127,7 @@ namespace Tests
             using var fileStream = new FileStream(Path.Combine("Assets", "SocialPreview.pdf"), FileMode.Open, FileAccess.Read);
             Assert.IsTrue(fileStream.CanRead);
 
-            ConvertPdfPage(fileStream, false, page: 0);
+            ConvertPdfPage(fileStream, 0, false);
             Assert.IsFalse(fileStream.CanRead, "The stream should be closed when calling leaveOpen with false.");
         }
 
@@ -124,7 +137,7 @@ namespace Tests
             using var fileStream = new FileStream(Path.Combine("Assets", "SocialPreview.pdf"), FileMode.Open, FileAccess.Read);
             Assert.IsTrue(fileStream.CanRead);
 
-            ConvertPdfPage(fileStream, true, page: 0);
+            ConvertPdfPage(fileStream, 0, true);
             Assert.IsTrue(fileStream.CanRead, "The stream should be open when calling leaveOpen with true.");
         }
 

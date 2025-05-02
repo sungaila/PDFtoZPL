@@ -67,6 +67,10 @@ jobs:
         run: dotnet workload install maui-android
       - name: Setup .NET workload maui-ios
         run: dotnet workload install maui-ios
+      - name: Setup .NET workload maui-maccatalyst
+        run: dotnet workload install maui-maccatalyst
+      - name: Setup .NET workload maui-windows
+        run: dotnet workload install maui-windows
       - name: Setup .NET workload wasm-tools
         run: dotnet workload install wasm-tools
       - name: Restore
@@ -112,7 +116,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2019, windows-2022, ubuntu-20.04, ubuntu-22.04, ubuntu-24.04, macos-13, macos-14, macos-15]
+        os: [windows-2019, windows-2022, windows-2025, ubuntu-22.04, ubuntu-24.04, macos-13, macos-14, macos-15]
     runs-on: ${{ matrix.os }}
     if: success() && (github.event_name != 'workflow_dispatch' && true || inputs.run_tests) == true
     steps:
@@ -194,7 +198,7 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: windows-latest
-    if: (github.repository == 'sungaila/PDFtoZPL' && github.ref == 'refs/heads/master') && ((github.event_name != 'workflow_dispatch' || inputs.run_sonarcloud) == true)
+    if: (github.event_name != 'workflow_dispatch' || inputs.run_sonarcloud) == true
     steps:
       - name: Checkout
         uses: actions/checkout@main
@@ -212,6 +216,8 @@ jobs:
         run: dotnet workload install maui-android
       - name: Setup .NET workload maui-ios
         run: dotnet workload install maui-ios
+      - name: Setup .NET workload maui-maccatalyst
+        run: dotnet workload install maui-maccatalyst
       - name: Setup dotnet-coverage
         run: dotnet tool install --global dotnet-coverage
       - name: Setup JDK 17
@@ -240,6 +246,7 @@ jobs:
           New-Item -Path .\.sonar\scanner -ItemType Directory
           dotnet tool update dotnet-sonarscanner --tool-path .\.sonar\scanner
       - name: Analyze
+        if: ${{ env.SONAR_TOKEN != '' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

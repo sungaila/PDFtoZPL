@@ -16,9 +16,16 @@ namespace PDFtoZPL
 #if NET8_0_OR_GREATER
 #pragma warning disable CA1510 // Use ArgumentNullException throw helper
 #endif
+#if NET6_0_OR_GREATER
+    [SupportedOSPlatform("Windows")]
+    [SupportedOSPlatform("Linux")]
+    [SupportedOSPlatform("macOS")]
+    [SupportedOSPlatform("iOS13.6")]
+    [SupportedOSPlatform("MacCatalyst13.5")]
+    [SupportedOSPlatform("Android31.0")]
+#endif
     public static partial class Conversion
     {
-#if NET6_0_OR_GREATER
         /// <summary>
         /// Converts a single page of a given PDF into ZPL code.
         /// </summary>
@@ -28,11 +35,6 @@ namespace PDFtoZPL
         /// <param name="pdfOptions">Additional options for PDF rendering.</param>
         /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <returns>The converted PDF page as ZPL code.</returns>
-        [SupportedOSPlatform("Windows")]
-        [SupportedOSPlatform("Linux")]
-        [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("iOS13.6")]
-        [SupportedOSPlatform("Android31.0")]
         public static string ConvertPdfPage(string pdfAsBase64String, Index page, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfAsBase64String == null)
@@ -50,11 +52,6 @@ namespace PDFtoZPL
         /// <param name="pdfOptions">Additional options for PDF rendering.</param>
         /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <returns>The converted PDF page as ZPL code.</returns>
-        [SupportedOSPlatform("Windows")]
-        [SupportedOSPlatform("Linux")]
-        [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("iOS13.6")]
-        [SupportedOSPlatform("Android31.0")]
         public static string ConvertPdfPage(byte[] pdfAsByteArray, Index page, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfAsByteArray == null)
@@ -76,11 +73,6 @@ namespace PDFtoZPL
         /// <param name="pdfOptions">Additional options for PDF rendering.</param>
         /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <returns>The converted PDF page as ZPL code.</returns>
-        [SupportedOSPlatform("Windows")]
-        [SupportedOSPlatform("Linux")]
-        [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("iOS13.6")]
-        [SupportedOSPlatform("Android31.0")]
         public static string ConvertPdfPage(Stream pdfStream, Index page, bool leaveOpen = false, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfStream == null)
@@ -95,7 +87,6 @@ namespace PDFtoZPL
             // Bitmap -> ZPL code
             return ConvertBitmap(pdfBitmap, zplOptions);
         }
-#endif
 
         /// <summary>
         /// Converts all pages of a given PDF into ZPL code.
@@ -105,13 +96,6 @@ namespace PDFtoZPL
         /// <param name="pdfOptions">Additional options for PDF rendering.</param>
         /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
-#if NET6_0_OR_GREATER
-        [SupportedOSPlatform("Windows")]
-        [SupportedOSPlatform("Linux")]
-        [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("iOS13.6")]
-        [SupportedOSPlatform("Android31.0")]
-#endif
         public static IEnumerable<string> ConvertPdf(string pdfAsBase64String, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfAsBase64String == null)
@@ -131,13 +115,6 @@ namespace PDFtoZPL
         /// <param name="pdfOptions">Additional options for PDF rendering.</param>
         /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
-#if NET6_0_OR_GREATER
-        [SupportedOSPlatform("Windows")]
-        [SupportedOSPlatform("Linux")]
-        [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("iOS13.6")]
-        [SupportedOSPlatform("Android31.0")]
-#endif
         public static IEnumerable<string> ConvertPdf(byte[] pdfAsByteArray, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfAsByteArray == null)
@@ -161,13 +138,6 @@ namespace PDFtoZPL
         /// <param name="pdfOptions">Additional options for PDF rendering.</param>
         /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
-#if NET6_0_OR_GREATER
-        [SupportedOSPlatform("Windows")]
-        [SupportedOSPlatform("Linux")]
-        [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("iOS13.6")]
-        [SupportedOSPlatform("Android31.0")]
-#endif
         public static IEnumerable<string> ConvertPdf(Stream pdfStream, bool leaveOpen = false, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default)
         {
             if (pdfStream == null)
@@ -194,13 +164,6 @@ namespace PDFtoZPL
         /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
-#if NET6_0_OR_GREATER
-        [SupportedOSPlatform("Windows")]
-        [SupportedOSPlatform("Linux")]
-        [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("iOS13.6")]
-        [SupportedOSPlatform("Android31.0")]
-#endif
         public static async IAsyncEnumerable<string> ConvertPdfAsync(string pdfAsBase64String, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (pdfAsBase64String == null)
@@ -221,13 +184,6 @@ namespace PDFtoZPL
         /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
-#if NET6_0_OR_GREATER
-        [SupportedOSPlatform("Windows")]
-        [SupportedOSPlatform("Linux")]
-        [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("iOS13.6")]
-        [SupportedOSPlatform("Android31.0")]
-#endif
         public static async IAsyncEnumerable<string> ConvertPdfAsync(byte[] pdfAsByteArray, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (pdfAsByteArray == null)
@@ -252,13 +208,6 @@ namespace PDFtoZPL
         /// <param name="zplOptions">Additional options for the ZPL output.</param>
         /// /// <param name="cancellationToken">The cancellation token to cancel the conversion.</param>
         /// <returns>The converted PDF pages as ZPL code.</returns>
-#if NET6_0_OR_GREATER
-        [SupportedOSPlatform("Windows")]
-        [SupportedOSPlatform("Linux")]
-        [SupportedOSPlatform("macOS")]
-        [SupportedOSPlatform("iOS13.6")]
-        [SupportedOSPlatform("Android31.0")]
-#endif
         public static async IAsyncEnumerable<string> ConvertPdfAsync(Stream pdfStream, bool leaveOpen = false, string? password = null, PdfOptions pdfOptions = default, ZplOptions zplOptions = default, [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
             if (pdfStream == null)

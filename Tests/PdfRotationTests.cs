@@ -41,7 +41,7 @@ namespace Tests
             using var fileStream = new FileStream(Path.Combine("Assets", fileName), FileMode.Open, FileAccess.Read);
 
             var zplResult
-                = rotation != null ? ConvertPdfPage(fileStream, pdfOptions: new(Dpi: 203, Rotation: rotation.Value), zplOptions: new(EncodingKind: BitmapEncodingKind.Base64Compressed)) : ConvertPdfPage(fileStream, pdfOptions: new(Dpi: 203), zplOptions: new(EncodingKind: BitmapEncodingKind.Base64Compressed));
+                = rotation != null ? ConvertPdfPage(fileStream, 0, pdfOptions: new(Dpi: 203, Rotation: rotation.Value), zplOptions: new(EncodingKind: BitmapEncodingKind.Base64Compressed)) : ConvertPdfPage(fileStream, 0, pdfOptions: new(Dpi: 203), zplOptions: new(EncodingKind: BitmapEncodingKind.Base64Compressed));
 
             Assert.AreEqual(expectedResult, zplResult.Replace("\n", string.Empty));
         }
