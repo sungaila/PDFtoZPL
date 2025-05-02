@@ -66,7 +66,7 @@ namespace Tests
             using var fileStream = new FileStream(Path.Combine("Assets", fileName), FileMode.Open, FileAccess.Read);
 
             var zplResult
-                = backgroundColor != null ? ConvertPdfPage(fileStream, pdfOptions: new(Dpi: 203, BackgroundColor: backgroundColor.Value), zplOptions: new(EncodingKind: BitmapEncodingKind.Base64Compressed)) : ConvertPdfPage(fileStream, pdfOptions: new(Dpi: 203), zplOptions: new(EncodingKind: BitmapEncodingKind.Base64Compressed));
+                = backgroundColor != null ? ConvertPdfPage(fileStream, 0, pdfOptions: new(Dpi: 203, BackgroundColor: backgroundColor.Value), zplOptions: new(EncodingKind: BitmapEncodingKind.Base64Compressed)) : ConvertPdfPage(fileStream, 0, pdfOptions: new(Dpi: 203), zplOptions: new(EncodingKind: BitmapEncodingKind.Base64Compressed));
 
             Assert.AreEqual(expectedResult, zplResult.Replace("\n", string.Empty));
         }

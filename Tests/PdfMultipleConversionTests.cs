@@ -114,7 +114,7 @@ namespace Tests
             using var inputStream = new FileStream(Path.Combine("Assets", "Wikimedia_Commons_web.pdf"), FileMode.Open, FileAccess.Read);
             var token = new CancellationTokenSource();
 
-            await Assert.ThrowsExceptionAsync<TaskCanceledException>(async () =>
+            await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
             {
                 token.Cancel();
 
@@ -130,7 +130,7 @@ namespace Tests
             using var inputStream = new FileStream(Path.Combine("Assets", "Wikimedia_Commons_web.pdf"), FileMode.Open, FileAccess.Read);
             var token = new CancellationTokenSource();
 
-            await Assert.ThrowsExceptionAsync<OperationCanceledException>(async () =>
+            await Assert.ThrowsExactlyAsync<OperationCanceledException>(async () =>
             {
                 await foreach (var image in ConvertPdfAsync(inputStream, pdfOptions: new(Dpi: 1200), cancellationToken: token.Token))
                 {

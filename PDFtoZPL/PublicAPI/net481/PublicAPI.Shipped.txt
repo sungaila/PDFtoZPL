@@ -9,25 +9,6 @@ PDFtoZPL.DitheringKind
 PDFtoZPL.DitheringKind.Atkinson = 2 -> PDFtoZPL.DitheringKind
 PDFtoZPL.DitheringKind.FloydSteinberg = 1 -> PDFtoZPL.DitheringKind
 PDFtoZPL.DitheringKind.None = 0 -> PDFtoZPL.DitheringKind
-PDFtoZPL.ZplOptions
-PDFtoZPL.ZplOptions.ZplOptions() -> void
-PDFtoZPL.ZplOptions.ZplOptions(PDFtoZPL.BitmapEncodingKind EncodingKind = PDFtoZPL.BitmapEncodingKind.HexadecimalCompressed, bool GraphicFieldOnly = false, bool SetLabelLength = false, byte Threshold = 128, PDFtoZPL.DitheringKind DitheringKind = PDFtoZPL.DitheringKind.None, uint PrintQuantity = 0, sbyte LabelTop = 0, short LabelShift = 0) -> void
-PDFtoZPL.ZplOptions.DitheringKind.get -> PDFtoZPL.DitheringKind
-PDFtoZPL.ZplOptions.DitheringKind.init -> void
-PDFtoZPL.ZplOptions.EncodingKind.get -> PDFtoZPL.BitmapEncodingKind
-PDFtoZPL.ZplOptions.EncodingKind.init -> void
-PDFtoZPL.ZplOptions.GraphicFieldOnly.get -> bool
-PDFtoZPL.ZplOptions.GraphicFieldOnly.init -> void
-PDFtoZPL.ZplOptions.PrintQuantity.get -> uint
-PDFtoZPL.ZplOptions.PrintQuantity.init -> void
-PDFtoZPL.ZplOptions.SetLabelLength.get -> bool
-PDFtoZPL.ZplOptions.SetLabelLength.init -> void
-PDFtoZPL.ZplOptions.Threshold.get -> byte
-PDFtoZPL.ZplOptions.Threshold.init -> void
-PDFtoZPL.ZplOptions.LabelShift.get -> short
-PDFtoZPL.ZplOptions.LabelShift.init -> void
-PDFtoZPL.ZplOptions.LabelTop.get -> sbyte
-PDFtoZPL.ZplOptions.LabelTop.init -> void
 PDFtoZPL.IZplOptions
 PDFtoZPL.IZplOptions.DitheringKind.get -> PDFtoZPL.DitheringKind
 PDFtoZPL.IZplOptions.DitheringKind.init -> void
@@ -35,16 +16,16 @@ PDFtoZPL.IZplOptions.EncodingKind.get -> PDFtoZPL.BitmapEncodingKind
 PDFtoZPL.IZplOptions.EncodingKind.init -> void
 PDFtoZPL.IZplOptions.GraphicFieldOnly.get -> bool
 PDFtoZPL.IZplOptions.GraphicFieldOnly.init -> void
+PDFtoZPL.IZplOptions.LabelShift.get -> short
+PDFtoZPL.IZplOptions.LabelShift.init -> void
+PDFtoZPL.IZplOptions.LabelTop.get -> sbyte
+PDFtoZPL.IZplOptions.LabelTop.init -> void
 PDFtoZPL.IZplOptions.PrintQuantity.get -> uint
 PDFtoZPL.IZplOptions.PrintQuantity.init -> void
 PDFtoZPL.IZplOptions.SetLabelLength.get -> bool
 PDFtoZPL.IZplOptions.SetLabelLength.init -> void
 PDFtoZPL.IZplOptions.Threshold.get -> byte
 PDFtoZPL.IZplOptions.Threshold.init -> void
-PDFtoZPL.IZplOptions.LabelShift.get -> short
-PDFtoZPL.IZplOptions.LabelShift.init -> void
-PDFtoZPL.IZplOptions.LabelTop.get -> sbyte
-PDFtoZPL.IZplOptions.LabelTop.init -> void
 PDFtoZPL.PdfOptions
 PDFtoZPL.PdfOptions.AntiAliasing.get -> PDFtoImage.PdfAntiAliasing
 PDFtoZPL.PdfOptions.AntiAliasing.init -> void
@@ -54,11 +35,16 @@ PDFtoZPL.PdfOptions.Bounds.get -> System.Drawing.RectangleF?
 PDFtoZPL.PdfOptions.Bounds.init -> void
 PDFtoZPL.PdfOptions.Dpi.get -> int
 PDFtoZPL.PdfOptions.Dpi.init -> void
+PDFtoZPL.PdfOptions.DpiRelativeToBounds.get -> bool
+PDFtoZPL.PdfOptions.DpiRelativeToBounds.init -> void
 PDFtoZPL.PdfOptions.Height.get -> int?
 PDFtoZPL.PdfOptions.Height.init -> void
 PDFtoZPL.PdfOptions.PdfOptions() -> void
+PDFtoZPL.PdfOptions.PdfOptions(int Dpi = 203, int? Width = null, int? Height = null, bool WithAnnotations = false, bool WithFormFill = false, bool WithAspectRatio = false, PDFtoImage.PdfRotation Rotation = PDFtoImage.PdfRotation.Rotate0, PDFtoImage.PdfAntiAliasing AntiAliasing = PDFtoImage.PdfAntiAliasing.All, SkiaSharp.SKColor? BackgroundColor = null, System.Drawing.RectangleF? Bounds = null, bool UseTiling = false, bool DpiRelativeToBounds = false) -> void
 PDFtoZPL.PdfOptions.Rotation.get -> PDFtoImage.PdfRotation
 PDFtoZPL.PdfOptions.Rotation.init -> void
+PDFtoZPL.PdfOptions.UseTiling.get -> bool
+PDFtoZPL.PdfOptions.UseTiling.init -> void
 PDFtoZPL.PdfOptions.Width.get -> int?
 PDFtoZPL.PdfOptions.Width.init -> void
 PDFtoZPL.PdfOptions.WithAnnotations.get -> bool
@@ -67,12 +53,25 @@ PDFtoZPL.PdfOptions.WithAspectRatio.get -> bool
 PDFtoZPL.PdfOptions.WithAspectRatio.init -> void
 PDFtoZPL.PdfOptions.WithFormFill.get -> bool
 PDFtoZPL.PdfOptions.WithFormFill.init -> void
-PDFtoZPL.PdfOptions.UseTiling.get -> bool
-PDFtoZPL.PdfOptions.UseTiling.init -> void
-PDFtoZPL.PdfOptions.DpiRelativeToBounds.get -> bool
-PDFtoZPL.PdfOptions.DpiRelativeToBounds.init -> void
-PDFtoZPL.PdfOptions.PdfOptions(int Dpi = 203, int? Width = null, int? Height = null, bool WithAnnotations = false, bool WithFormFill = false, bool WithAspectRatio = false, PDFtoImage.PdfRotation Rotation = PDFtoImage.PdfRotation.Rotate0, PDFtoImage.PdfAntiAliasing AntiAliasing = PDFtoImage.PdfAntiAliasing.All, SkiaSharp.SKColor? BackgroundColor = null, System.Drawing.RectangleF? Bounds = null, bool UseTiling = false, bool DpiRelativeToBounds = false) -> void
-static PDFtoZPL.PdfOptions.implicit operator PDFtoImage.RenderOptions(PDFtoZPL.PdfOptions pdfOptions) -> PDFtoImage.RenderOptions
+PDFtoZPL.ZplOptions
+PDFtoZPL.ZplOptions.DitheringKind.get -> PDFtoZPL.DitheringKind
+PDFtoZPL.ZplOptions.DitheringKind.init -> void
+PDFtoZPL.ZplOptions.EncodingKind.get -> PDFtoZPL.BitmapEncodingKind
+PDFtoZPL.ZplOptions.EncodingKind.init -> void
+PDFtoZPL.ZplOptions.GraphicFieldOnly.get -> bool
+PDFtoZPL.ZplOptions.GraphicFieldOnly.init -> void
+PDFtoZPL.ZplOptions.LabelShift.get -> short
+PDFtoZPL.ZplOptions.LabelShift.init -> void
+PDFtoZPL.ZplOptions.LabelTop.get -> sbyte
+PDFtoZPL.ZplOptions.LabelTop.init -> void
+PDFtoZPL.ZplOptions.PrintQuantity.get -> uint
+PDFtoZPL.ZplOptions.PrintQuantity.init -> void
+PDFtoZPL.ZplOptions.SetLabelLength.get -> bool
+PDFtoZPL.ZplOptions.SetLabelLength.init -> void
+PDFtoZPL.ZplOptions.Threshold.get -> byte
+PDFtoZPL.ZplOptions.Threshold.init -> void
+PDFtoZPL.ZplOptions.ZplOptions() -> void
+PDFtoZPL.ZplOptions.ZplOptions(PDFtoZPL.BitmapEncodingKind EncodingKind = PDFtoZPL.BitmapEncodingKind.HexadecimalCompressed, bool GraphicFieldOnly = false, bool SetLabelLength = false, byte Threshold = 128, PDFtoZPL.DitheringKind DitheringKind = PDFtoZPL.DitheringKind.None, uint PrintQuantity = 0, sbyte LabelTop = 0, short LabelShift = 0) -> void
 static PDFtoZPL.Conversion.ConvertBitmap(byte[]! bitmapAsByteArray, PDFtoZPL.ZplOptions zplOptions = default(PDFtoZPL.ZplOptions)) -> string!
 static PDFtoZPL.Conversion.ConvertBitmap(SkiaSharp.SKBitmap! bitmap, PDFtoZPL.ZplOptions zplOptions = default(PDFtoZPL.ZplOptions)) -> string!
 static PDFtoZPL.Conversion.ConvertBitmap(string! bitmapPath, PDFtoZPL.ZplOptions zplOptions = default(PDFtoZPL.ZplOptions)) -> string!
@@ -80,6 +79,7 @@ static PDFtoZPL.Conversion.ConvertBitmap(System.IO.Stream! bitmapAsStream, bool 
 static PDFtoZPL.Conversion.ConvertPdf(byte[]! pdfAsByteArray, string? password = null, PDFtoZPL.PdfOptions pdfOptions = default(PDFtoZPL.PdfOptions), PDFtoZPL.ZplOptions zplOptions = default(PDFtoZPL.ZplOptions)) -> System.Collections.Generic.IEnumerable<string!>!
 static PDFtoZPL.Conversion.ConvertPdf(string! pdfAsBase64String, string? password = null, PDFtoZPL.PdfOptions pdfOptions = default(PDFtoZPL.PdfOptions), PDFtoZPL.ZplOptions zplOptions = default(PDFtoZPL.ZplOptions)) -> System.Collections.Generic.IEnumerable<string!>!
 static PDFtoZPL.Conversion.ConvertPdf(System.IO.Stream! pdfStream, bool leaveOpen = false, string? password = null, PDFtoZPL.PdfOptions pdfOptions = default(PDFtoZPL.PdfOptions), PDFtoZPL.ZplOptions zplOptions = default(PDFtoZPL.ZplOptions)) -> System.Collections.Generic.IEnumerable<string!>!
-static PDFtoZPL.Conversion.ConvertPdfPage(byte[]! pdfAsByteArray, string? password = null, int page = 0, PDFtoZPL.PdfOptions pdfOptions = default(PDFtoZPL.PdfOptions), PDFtoZPL.ZplOptions zplOptions = default(PDFtoZPL.ZplOptions)) -> string!
-static PDFtoZPL.Conversion.ConvertPdfPage(string! pdfAsBase64String, string? password = null, int page = 0, PDFtoZPL.PdfOptions pdfOptions = default(PDFtoZPL.PdfOptions), PDFtoZPL.ZplOptions zplOptions = default(PDFtoZPL.ZplOptions)) -> string!
-static PDFtoZPL.Conversion.ConvertPdfPage(System.IO.Stream! pdfStream, bool leaveOpen = false, string? password = null, int page = 0, PDFtoZPL.PdfOptions pdfOptions = default(PDFtoZPL.PdfOptions), PDFtoZPL.ZplOptions zplOptions = default(PDFtoZPL.ZplOptions)) -> string!
+static PDFtoZPL.Conversion.ConvertPdfPage(byte[]! pdfAsByteArray, System.Index page, string? password = null, PDFtoZPL.PdfOptions pdfOptions = default(PDFtoZPL.PdfOptions), PDFtoZPL.ZplOptions zplOptions = default(PDFtoZPL.ZplOptions)) -> string!
+static PDFtoZPL.Conversion.ConvertPdfPage(string! pdfAsBase64String, System.Index page, string? password = null, PDFtoZPL.PdfOptions pdfOptions = default(PDFtoZPL.PdfOptions), PDFtoZPL.ZplOptions zplOptions = default(PDFtoZPL.ZplOptions)) -> string!
+static PDFtoZPL.Conversion.ConvertPdfPage(System.IO.Stream! pdfStream, System.Index page, bool leaveOpen = false, string? password = null, PDFtoZPL.PdfOptions pdfOptions = default(PDFtoZPL.PdfOptions), PDFtoZPL.ZplOptions zplOptions = default(PDFtoZPL.ZplOptions)) -> string!
+static PDFtoZPL.PdfOptions.implicit operator PDFtoImage.RenderOptions(PDFtoZPL.PdfOptions pdfOptions) -> PDFtoImage.RenderOptions
