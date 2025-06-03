@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <!-- Assembly -->
   <PropertyGroup>
-    <TargetFrameworks>net462;net471;net481;net6.0;net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net471;net481;net8.0;net9.0</TargetFrameworks>
     <AssemblyName>PDFtoZPL.Tests</AssemblyName>
     <RootNamespace>PDFtoZPL.Tests</RootNamespace>
     <IsPackable>false</IsPackable>
@@ -71,8 +71,8 @@
 
   <!-- NuGet Icon -->
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.13.0" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.8.3" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.8.3" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.9.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.9.1" />
   </ItemGroup>
 </Project>
