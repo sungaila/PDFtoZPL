@@ -342,5 +342,11 @@
             Constructs <see cref="T:PDFtoZPL.ZplOptions"/> with default values.
             </summary>
         </member>
+        <member name="T:System.Runtime.CompilerServices.IsExternalInit">
+            <summary>
+            Reserved to be used by the compiler for tracking metadata.
+            This class should not be used by developers in source code.
+            </summary>
+        </member>
     </members>
 </doc>
