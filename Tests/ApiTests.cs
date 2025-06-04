@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static PDFtoZPL.Conversion;
 
-namespace Tests
+namespace PDFtoZPL.Tests
 {
     [TestClass]
     public class ApiTests

@@ -14,7 +14,9 @@ namespace PDFtoZPL
     /// Provides methods to convert PDFs and <see cref="SKBitmap"/>s into ZPL code.
     /// </summary>
 #if NET8_0_OR_GREATER
-#pragma warning disable CA1510 // Use ArgumentNullException throw helper
+#pragma warning disable IDE0079
+#pragma warning disable CA1510
+#pragma warning restore IDE0079
 #endif
 #if NET6_0_OR_GREATER
     [SupportedOSPlatform("Windows")]

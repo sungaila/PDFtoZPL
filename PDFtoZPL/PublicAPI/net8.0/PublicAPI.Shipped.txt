@@ -53,6 +53,13 @@ PDFtoZPL.PdfOptions.WithAspectRatio.get -> bool
 PDFtoZPL.PdfOptions.WithAspectRatio.init -> void
 PDFtoZPL.PdfOptions.WithFormFill.get -> bool
 PDFtoZPL.PdfOptions.WithFormFill.init -> void
+override PDFtoZPL.PdfOptions.GetHashCode() -> int
+PDFtoZPL.PdfOptions.Deconstruct(out int Dpi, out int? Width, out int? Height, out bool WithAnnotations, out bool WithFormFill, out bool WithAspectRatio, out PDFtoImage.PdfRotation Rotation, out PDFtoImage.PdfAntiAliasing AntiAliasing, out SkiaSharp.SKColor? BackgroundColor, out System.Drawing.RectangleF? Bounds, out bool UseTiling, out bool DpiRelativeToBounds) -> void
+PDFtoZPL.PdfOptions.Equals(PDFtoZPL.PdfOptions other) -> bool
+static PDFtoZPL.PdfOptions.operator !=(PDFtoZPL.PdfOptions left, PDFtoZPL.PdfOptions right) -> bool
+static PDFtoZPL.PdfOptions.operator ==(PDFtoZPL.PdfOptions left, PDFtoZPL.PdfOptions right) -> bool
+~override PDFtoZPL.PdfOptions.Equals(object obj) -> bool
+~override PDFtoZPL.PdfOptions.ToString() -> string
 PDFtoZPL.ZplOptions
 PDFtoZPL.ZplOptions.DitheringKind.get -> PDFtoZPL.DitheringKind
 PDFtoZPL.ZplOptions.DitheringKind.init -> void
@@ -72,6 +79,13 @@ PDFtoZPL.ZplOptions.Threshold.get -> byte
 PDFtoZPL.ZplOptions.Threshold.init -> void
 PDFtoZPL.ZplOptions.ZplOptions() -> void
 PDFtoZPL.ZplOptions.ZplOptions(PDFtoZPL.BitmapEncodingKind EncodingKind = PDFtoZPL.BitmapEncodingKind.HexadecimalCompressed, bool GraphicFieldOnly = false, bool SetLabelLength = false, byte Threshold = 128, PDFtoZPL.DitheringKind DitheringKind = PDFtoZPL.DitheringKind.None, uint PrintQuantity = 0, sbyte LabelTop = 0, short LabelShift = 0) -> void
+override PDFtoZPL.ZplOptions.GetHashCode() -> int
+PDFtoZPL.ZplOptions.Deconstruct(out PDFtoZPL.BitmapEncodingKind EncodingKind, out bool GraphicFieldOnly, out bool SetLabelLength, out byte Threshold, out PDFtoZPL.DitheringKind DitheringKind, out uint PrintQuantity, out sbyte LabelTop, out short LabelShift) -> void
+PDFtoZPL.ZplOptions.Equals(PDFtoZPL.ZplOptions other) -> bool
+static PDFtoZPL.ZplOptions.operator !=(PDFtoZPL.ZplOptions left, PDFtoZPL.ZplOptions right) -> bool
+static PDFtoZPL.ZplOptions.operator ==(PDFtoZPL.ZplOptions left, PDFtoZPL.ZplOptions right) -> bool
+~override PDFtoZPL.ZplOptions.Equals(object obj) -> bool
+~override PDFtoZPL.ZplOptions.ToString() -> string
 static PDFtoZPL.Conversion.ConvertBitmap(byte[]! bitmapAsByteArray, PDFtoZPL.ZplOptions zplOptions = default(PDFtoZPL.ZplOptions)) -> string!
 static PDFtoZPL.Conversion.ConvertBitmap(SkiaSharp.SKBitmap! bitmap, PDFtoZPL.ZplOptions zplOptions = default(PDFtoZPL.ZplOptions)) -> string!
 static PDFtoZPL.Conversion.ConvertBitmap(string! bitmapPath, PDFtoZPL.ZplOptions zplOptions = default(PDFtoZPL.ZplOptions)) -> string!

@@ -27,9 +27,3 @@
         public ZplOptions() : this(BitmapEncodingKind.HexadecimalCompressed, false, false, 128, DitheringKind.None, 0, 0, 0) { }
     }
 }
-#if NETSTANDARD || NETFRAMEWORK
-namespace System.Runtime.CompilerServices
-{
-    internal static class IsExternalInit { }
-}
-#endif

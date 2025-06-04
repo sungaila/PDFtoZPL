@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using static PDFtoZPL.Conversion;
 
-namespace Tests
+namespace PDFtoZPL.Tests
 {
     [TestClass]
     public class BitmapConversionTests

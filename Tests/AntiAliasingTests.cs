@@ -7,6 +7,9 @@ using static PDFtoZPL.Conversion;
 
 namespace Tests
 {
+#pragma warning disable IDE0079
+#pragma warning disable MSTEST0042
+#pragma warning restore IDE0079
     [TestClass]
     public partial class AntiAliasingTests
     {
@@ -20,7 +23,9 @@ namespace Tests
         }
 
 #if NET6_0_OR_GREATER
+#pragma warning disable IDE0079
 #pragma warning disable CA1416
+#pragma warning restore IDE0079
 #endif
 
         [TestMethod]
