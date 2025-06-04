@@ -18,7 +18,11 @@ namespace Tests
 #endif
         }
 
+#if NET6_0_OR_GREATER
+#pragma warning disable IDE0079
 #pragma warning disable CA1416
+#pragma warning restore IDE0079
+#endif
 
         [TestMethod]
         [DataRow("SocialPreview.pdf", null)]

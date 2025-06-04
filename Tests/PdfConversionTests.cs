@@ -4,7 +4,7 @@ using System.IO;
 using static PDFtoZPL.Conversion;
 [assembly: Parallelize(Scope = ExecutionScope.MethodLevel)]
 
-namespace Tests
+namespace PDFtoZPL.Tests
 {
     [TestClass]
     public class PdfConversionTests

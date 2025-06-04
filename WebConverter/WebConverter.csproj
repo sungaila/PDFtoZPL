@@ -6,7 +6,7 @@
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
     <AssemblyName>PDFtoZPL.WebConverter</AssemblyName>
     <RootNamespace>PDFtoZPL.WebConverter</RootNamespace>
-    <StartupObject>PDFtoZPL.WebConverter.Program</StartupObject>
+    <StartupObject>PDFtoZPL.WebConverter.Client.Program</StartupObject>
     <VersionPrefix>6.1.1</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <RunAOTCompilation>true</RunAOTCompilation>

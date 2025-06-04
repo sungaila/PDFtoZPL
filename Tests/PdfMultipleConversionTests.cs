@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static PDFtoZPL.Conversion;
 
-namespace Tests
+namespace PDFtoZPL.Tests
 {
     [TestClass]
     public class PdfMultipleConversionTests
@@ -20,7 +20,9 @@ namespace Tests
         }
 
 #if NET6_0_OR_GREATER
+#pragma warning disable IDE0079
 #pragma warning disable CA1416
+#pragma warning restore IDE0079
 #endif
 
         private static readonly string[] _expectedZplResults =

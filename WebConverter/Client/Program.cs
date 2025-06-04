@@ -9,7 +9,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace PDFtoZPL.WebConverter
+namespace PDFtoZPL.WebConverter.Client
 {
     public class Program
     {
