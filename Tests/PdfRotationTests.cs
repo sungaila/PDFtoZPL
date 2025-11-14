@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PDFtoImage;
 using PDFtoZPL;
+using PDFtoZPL.Tests;
 using System;
 using System.IO;
 using static PDFtoZPL.Conversion;
@@ -8,7 +9,7 @@ using static PDFtoZPL.Conversion;
 namespace Tests
 {
     [TestClass]
-    public partial class PdfRotationTests
+    public partial class PdfRotationTests : TestBase
     {
         [TestInitialize]
         public void Initialize()

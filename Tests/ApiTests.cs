@@ -8,7 +8,7 @@ using static PDFtoZPL.Conversion;
 namespace PDFtoZPL.Tests
 {
     [TestClass]
-    public class ApiTests
+    public class ApiTests : TestBase
     {
         [TestInitialize]
         public void Initialize()
@@ -82,7 +82,7 @@ namespace PDFtoZPL.Tests
         {
             await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
             {
-                await foreach (var zplCode in ConvertPdfAsync((Stream)null!))
+                await foreach (var zplCode in ConvertPdfAsync((Stream)null!, cancellationToken: TestContext!.CancellationToken))
                 {
                 }
             });
@@ -93,7 +93,7 @@ namespace PDFtoZPL.Tests
         {
             await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
             {
-                await foreach (var zplCode in ConvertPdfAsync((string)null!))
+                await foreach (var zplCode in ConvertPdfAsync((string)null!, cancellationToken: TestContext!.CancellationToken))
                 {
                 }
             });
@@ -104,7 +104,7 @@ namespace PDFtoZPL.Tests
         {
             await Assert.ThrowsExactlyAsync<ArgumentNullException>(async () =>
             {
-                await foreach (var zplCode in ConvertPdfAsync((byte[])null!))
+                await foreach (var zplCode in ConvertPdfAsync((byte[])null!, cancellationToken: TestContext!.CancellationToken))
                 {
                 }
             });
@@ -187,7 +187,7 @@ namespace PDFtoZPL.Tests
             using var fileStream = new FileStream(Path.Combine("Assets", "SocialPreview.pdf"), FileMode.Open, FileAccess.Read);
             Assert.IsTrue(fileStream.CanRead);
 
-            var result = ConvertPdfAsync(fileStream);
+            var result = ConvertPdfAsync(fileStream, cancellationToken: TestContext!.CancellationToken);
             Assert.IsTrue(fileStream.CanRead, "The stream should be open as long as the iterator is not used yet.");
 
             await foreach (var _ in result) ;
@@ -200,7 +200,7 @@ namespace PDFtoZPL.Tests
             using var fileStream = new FileStream(Path.Combine("Assets", "SocialPreview.pdf"), FileMode.Open, FileAccess.Read);
             Assert.IsTrue(fileStream.CanRead);
 
-            var result = ConvertPdfAsync(fileStream, false);
+            var result = ConvertPdfAsync(fileStream, false, cancellationToken: TestContext!.CancellationToken);
             Assert.IsTrue(fileStream.CanRead, "The stream should be open as long as the iterator is not used yet.");
 
             await foreach (var _ in result) ;
@@ -213,7 +213,7 @@ namespace PDFtoZPL.Tests
             using var fileStream = new FileStream(Path.Combine("Assets", "SocialPreview.pdf"), FileMode.Open, FileAccess.Read);
             Assert.IsTrue(fileStream.CanRead);
 
-            var result = ConvertPdfAsync(fileStream, true);
+            var result = ConvertPdfAsync(fileStream, true, cancellationToken: TestContext!.CancellationToken);
             Assert.IsTrue(fileStream.CanRead, "The stream should be open as long as the iterator is not used yet.");
 
             await foreach (var _ in result) ;

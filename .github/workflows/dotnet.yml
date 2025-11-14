@@ -45,6 +45,9 @@ jobs:
   build:
     name: Build
     runs-on: windows-latest
+    env:
+      DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: "true"
+      TERM: xterm-256color
     if: (github.event_name != 'workflow_dispatch' && true || inputs.run_build) == true
     permissions:
       id-token: write
@@ -61,6 +64,7 @@ jobs:
           dotnet-version: |
             8.x
             9.x
+            10.x
           dotnet-quality: 'ga'
       - name: Setup .NET workload maui-android
         run: dotnet workload install maui-android
@@ -110,13 +114,18 @@ jobs:
           retention-days: 1
           compression-level: 9
   test:
+    permissions:
+      contents: read
     name: Test (${{ matrix.os }})
     needs: build
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-2022, windows-2025, ubuntu-22.04, ubuntu-24.04, macos-13, macos-14, macos-15]
+        os: [windows-11-arm, windows-2022, windows-2025, ubuntu-22.04, ubuntu-24.04, ubuntu-24.04-arm, macos-14, macos-15, macos-15-intel, macos-26]
     runs-on: ${{ matrix.os }}
+    env:
+      DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: "true"
+      TERM: xterm-256color
     if: success() && (github.event_name != 'workflow_dispatch' && true || inputs.run_tests) == true
     steps:
       - name: Setup .NET
@@ -125,6 +134,7 @@ jobs:
           dotnet-version: |
             8.x
             9.x
+            10.x
           dotnet-quality: 'ga'
       - name: Download test assemblies
         if: (success() || failure())
@@ -143,6 +153,9 @@ jobs:
       - name: .NET 9
         if: success() || failure()
         run: dotnet test net9.0/*.Tests.dll --logger trx --verbosity detailed
+      - name: .NET 10
+        if: success() || failure()
+        run: dotnet test net10.0/*.Tests.dll --logger trx --verbosity detailed
       - name: Upload test results
         if: success() || failure()
         uses: actions/upload-artifact@main
@@ -170,7 +183,7 @@ jobs:
           merge-multiple: true
           path: artifacts
       - name: Publish test results
-        uses: EnricoMi/publish-unit-test-result-action@master
+        uses: EnricoMi/publish-unit-test-result-action@3a74b2957438d0b6e2e61d67b05318aa25c9e6c6
         with:
           files: artifacts/**/*.trx
           check_name: Test results
@@ -179,7 +192,7 @@ jobs:
           json_file: test-results.json
       - name: Upload test results to GitHub Gist
         if: github.repository == 'sungaila/PDFtoZPL' && github.ref == 'refs/heads/master' && success()
-        uses: exuanbo/actions-deploy-gist@main
+        uses: exuanbo/actions-deploy-gist@47697fceaeea2006a90594ee24eb9cd0a1121ef8
         with:
           token: ${{ secrets.GIST_TOKEN }}
           gist_id: 47230c16cb63a1be5b5604830579714d
@@ -190,6 +203,12 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: windows-latest
+    permissions:
+      contents: read
+      pull-requests: read
+    env:
+      DOTNET_SYSTEM_CONSOLE_ALLOW_ANSI_COLOR_REDIRECTION: "true"
+      TERM: xterm-256color
     if: (github.event_name != 'workflow_dispatch' || inputs.run_sonarcloud) == true
     steps:
       - name: Checkout
@@ -202,6 +221,7 @@ jobs:
           dotnet-version: |
             8.x
             9.x
+            10.x
           dotnet-quality: 'ga'
       - name: Setup .NET workload maui-android
         run: dotnet workload install maui-android
@@ -217,21 +237,7 @@ jobs:
           java-version: 17
           java-package: jdk
           distribution: 'zulu'
-      - name: Cache SonarCloud packages
-        uses: actions/cache@main
-        with:
-          path: ~\sonar\cache
-          key: ${{ runner.os }}-sonar
-          restore-keys: ${{ runner.os }}-sonar
-      - name: Cache SonarCloud scanner
-        id: cache-sonar-scanner
-        uses: actions/cache@main
-        with:
-          path: .\.sonar\scanner
-          key: ${{ runner.os }}-sonar-scanner
-          restore-keys: ${{ runner.os }}-sonar-scanner
       - name: Install SonarCloud scanner
-        if: steps.cache-sonar-scanner.outputs.cache-hit != 'true'
         shell: powershell
         run: |
           New-Item -Path .\.sonar\scanner -ItemType Directory
@@ -243,7 +249,11 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"sungaila_PDFtoZPL" /o:"sungaila" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
-          dotnet build PDFtoZPL.SonarCloud.slnf -c ${{ github.event_name != 'workflow_dispatch' && 'Debug' || inputs.build_configuration }}
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"sungaila_PDFtoZPL" /o:"sungaila" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.cs.vscoveragexml.reportsPaths=coverage.xml
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+          dotnet build PDFtoZPL.SonarCloud.slnf -c Debug
           dotnet-coverage collect "dotnet test PDFtoZPL.SonarCloud.slnf --verbosity detailed" -f xml -o "coverage.xml"
-          .\.sonar\scanner\dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+
+          .\.sonar\scanner\dotnet-sonarscanner end
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
