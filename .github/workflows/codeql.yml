@@ -96,6 +96,11 @@ jobs:
     - if: matrix.build-mode == 'manual'
       shell: bash
       run: |
+        dotnet workload install maui-android
+        dotnet workload install maui-ios
+        dotnet workload install maui-maccatalyst
+        dotnet workload install maui-windows
+        dotnet workload install wasm-tools
         dotnet restore "PDFtoZPL/PDFtoZPL.csproj"
         dotnet build "PDFtoZPL/PDFtoZPL.csproj" --configuration Release
 
