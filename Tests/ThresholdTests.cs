@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PDFtoZPL;
+using PDFtoZPL.Tests;
 using System;
 using System.IO;
 using static PDFtoZPL.Conversion;
@@ -7,7 +8,7 @@ using static PDFtoZPL.Conversion;
 namespace Tests
 {
     [TestClass]
-    public partial class ThresholdTests
+    public partial class ThresholdTests : TestBase
     {
         [TestInitialize]
         public void Initialize()

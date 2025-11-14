@@ -8,7 +8,7 @@ using static PDFtoZPL.Conversion;
 namespace PDFtoZPL.Tests
 {
     [TestClass]
-    public class PdfMultipleConversionTests
+    public class PdfMultipleConversionTests : TestBase
     {
         [TestInitialize]
         public void Initialize()
@@ -101,7 +101,7 @@ namespace PDFtoZPL.Tests
 
             int page = 0;
 
-            await foreach (var zplCode in ConvertPdfAsync(inputStream, pdfOptions: new(Dpi: 40, WithAnnotations: withAnnotations)))
+            await foreach (var zplCode in ConvertPdfAsync(inputStream, pdfOptions: new(Dpi: 40, WithAnnotations: withAnnotations), cancellationToken: TestContext!.CancellationToken))
             {
                 Assert.AreEqual(withAnnotations ? _expectedZplResultsWithAnnotations[page] : _expectedZplResults[page], zplCode);
                 page++;
@@ -116,10 +116,10 @@ namespace PDFtoZPL.Tests
             using var inputStream = new FileStream(Path.Combine("Assets", "Wikimedia_Commons_web.pdf"), FileMode.Open, FileAccess.Read);
             var token = new CancellationTokenSource();
 
+            token.Cancel();
+
             await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
             {
-                token.Cancel();
-
                 await foreach (var image in ConvertPdfAsync(inputStream, pdfOptions: new(Dpi: 1200), cancellationToken: token.Token))
                 {
                 }

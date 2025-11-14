@@ -6,7 +6,7 @@ using static PDFtoZPL.Conversion;
 namespace PDFtoZPL.Tests
 {
     [TestClass]
-    public class BitmapConversionTests
+    public class BitmapConversionTests : TestBase
     {
         [TestInitialize]
         public void Initialize()

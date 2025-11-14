@@ -2,12 +2,11 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.IO;
 using static PDFtoZPL.Conversion;
-[assembly: Parallelize(Scope = ExecutionScope.MethodLevel)]
 
 namespace PDFtoZPL.Tests
 {
     [TestClass]
-    public class PdfConversionTests
+    public class PdfConversionTests : TestBase
     {
         [TestInitialize]
         public void Initialize()

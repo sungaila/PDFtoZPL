@@ -39,8 +39,10 @@ PDFtoZPL.PdfOptions.DpiRelativeToBounds.get -> bool
 PDFtoZPL.PdfOptions.DpiRelativeToBounds.init -> void
 PDFtoZPL.PdfOptions.Height.get -> int?
 PDFtoZPL.PdfOptions.Height.init -> void
+PDFtoZPL.PdfOptions.Grayscale.get -> bool
+PDFtoZPL.PdfOptions.Grayscale.init -> void
 PDFtoZPL.PdfOptions.PdfOptions() -> void
-PDFtoZPL.PdfOptions.PdfOptions(int Dpi = 203, int? Width = null, int? Height = null, bool WithAnnotations = false, bool WithFormFill = false, bool WithAspectRatio = false, PDFtoImage.PdfRotation Rotation = PDFtoImage.PdfRotation.Rotate0, PDFtoImage.PdfAntiAliasing AntiAliasing = PDFtoImage.PdfAntiAliasing.All, SkiaSharp.SKColor? BackgroundColor = null, System.Drawing.RectangleF? Bounds = null, bool UseTiling = false, bool DpiRelativeToBounds = false) -> void
+PDFtoZPL.PdfOptions.PdfOptions(int Dpi = 203, int? Width = null, int? Height = null, bool WithAnnotations = false, bool WithFormFill = false, bool WithAspectRatio = false, PDFtoImage.PdfRotation Rotation = PDFtoImage.PdfRotation.Rotate0, PDFtoImage.PdfAntiAliasing AntiAliasing = PDFtoImage.PdfAntiAliasing.All, SkiaSharp.SKColor? BackgroundColor = null, System.Drawing.RectangleF? Bounds = null, bool UseTiling = false, bool DpiRelativeToBounds = false, bool Grayscale = false) -> void
 PDFtoZPL.PdfOptions.Rotation.get -> PDFtoImage.PdfRotation
 PDFtoZPL.PdfOptions.Rotation.init -> void
 PDFtoZPL.PdfOptions.UseTiling.get -> bool
@@ -54,7 +56,7 @@ PDFtoZPL.PdfOptions.WithAspectRatio.init -> void
 PDFtoZPL.PdfOptions.WithFormFill.get -> bool
 PDFtoZPL.PdfOptions.WithFormFill.init -> void
 override PDFtoZPL.PdfOptions.GetHashCode() -> int
-PDFtoZPL.PdfOptions.Deconstruct(out int Dpi, out int? Width, out int? Height, out bool WithAnnotations, out bool WithFormFill, out bool WithAspectRatio, out PDFtoImage.PdfRotation Rotation, out PDFtoImage.PdfAntiAliasing AntiAliasing, out SkiaSharp.SKColor? BackgroundColor, out System.Drawing.RectangleF? Bounds, out bool UseTiling, out bool DpiRelativeToBounds) -> void
+PDFtoZPL.PdfOptions.Deconstruct(out int Dpi, out int? Width, out int? Height, out bool WithAnnotations, out bool WithFormFill, out bool WithAspectRatio, out PDFtoImage.PdfRotation Rotation, out PDFtoImage.PdfAntiAliasing AntiAliasing, out SkiaSharp.SKColor? BackgroundColor, out System.Drawing.RectangleF? Bounds, out bool UseTiling, out bool DpiRelativeToBounds, out bool Grayscale) -> void
 PDFtoZPL.PdfOptions.Equals(PDFtoZPL.PdfOptions other) -> bool
 static PDFtoZPL.PdfOptions.operator !=(PDFtoZPL.PdfOptions left, PDFtoZPL.PdfOptions right) -> bool
 static PDFtoZPL.PdfOptions.operator ==(PDFtoZPL.PdfOptions left, PDFtoZPL.PdfOptions right) -> bool

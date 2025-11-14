@@ -1,6 +1,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PDFtoImage;
 using PDFtoZPL;
+using PDFtoZPL.Tests;
 using System;
 using System.IO;
 using static PDFtoZPL.Conversion;
@@ -11,7 +12,7 @@ namespace Tests
 #pragma warning disable MSTEST0042
 #pragma warning restore IDE0079
     [TestClass]
-    public partial class AntiAliasingTests
+    public partial class AntiAliasingTests : TestBase
     {
         [TestInitialize]
         public void Initialize()
