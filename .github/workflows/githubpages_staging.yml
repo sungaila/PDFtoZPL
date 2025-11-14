@@ -35,19 +35,20 @@ jobs:
         run: dotnet workload install wasm-tools
       - name: Update relative paths
         working-directory: WebConverter/wwwroot
+        shell: pwsh
         run: |
           # index.html
-          sed -i "s|<base href=\"/\" />|<base href=\"/${{github.event.repository.name}}/\" />|g" index.html
+          sed -i 's|<base href="/" />|<base href="/PDFtoZPL/" />|g' index.html
 
           # manifest.webmanifest
-          sed -i "s|\"scope\": \"/\"|\"scope\": \"/${{github.event.repository.name}}/\"|g" manifest.webmanifest
-          sed -i "s|\"start_url\": \"/\"|\"start_url\": \"/${{github.event.repository.name}}/\"|g" manifest.webmanifest
-          sed -i "s|\"action\": \"/\"|\"action\": \"/${{github.event.repository.name}}/\"|g" manifest.webmanifest
-          sed -i "s|\"action\": \"/receive-webshare\"|\"action\": \"/${{github.event.repository.name}}/receive-webshare\"|g" manifest.webmanifest
+          sed -i 's|"scope": "/"|"scope": "/PDFtoZPL/"|g' manifest.webmanifest
+          sed -i 's|"start_url": "/"|"start_url": "/PDFtoZPL/"|g' manifest.webmanifest
+          sed -i 's|"action": "/"|"action": "/PDFtoZPL/"|g' manifest.webmanifest
+          sed -i 's|"action": "/receive-webshare"|"action": "/PDFtoZPL/receive-webshare"|g' manifest.webmanifest
 
           # service-worker.published.js
-          sed -i "s|const base = \"/\";|const base = \"/${{github.event.repository.name}}/\";|g" service-worker.published.js
-          sed -i "s|Response.redirect('/', 303);|Response.redirect('/${{github.event.repository.name}}/', 303);|g" service-worker.published.js
+          sed -i 's|const base = "/"|const base = "/PDFtoZPL/"|g' service-worker.published.js
+          sed -i "s|Response.redirect('/', 303);|Response.redirect('/PDFtoZPL/', 303);|g" service-worker.published.js
       - name: Restore
         run: dotnet restore WebConverter/WebConverter.csproj
       - name: Publish
