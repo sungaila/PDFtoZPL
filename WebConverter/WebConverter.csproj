@@ -1,65 +1,68 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
-  <!-- Assembly -->
-  <PropertyGroup>
-    <TargetFramework>net10.0</TargetFramework>
-    <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
-    <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
-    <AssemblyName>PDFtoZPL.WebConverter</AssemblyName>
-    <RootNamespace>PDFtoZPL.WebConverter</RootNamespace>
-    <StartupObject>PDFtoZPL.WebConverter.Client.Program</StartupObject>
-    <VersionPrefix>6.2.0</VersionPrefix>
-    <VersionSuffix></VersionSuffix>
-    <RunAOTCompilation>true</RunAOTCompilation>
-    <WasmNativeStrip>true</WasmNativeStrip>
-    <PublishTrimmed>true</PublishTrimmed>
-    <TrimMode>partial</TrimMode>
+	<!-- Assembly -->
+	<PropertyGroup>
+		<TargetFramework>net10.0</TargetFramework>
+		<RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
+		<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
+		<AssemblyName>PDFtoZPL.WebConverter</AssemblyName>
+		<RootNamespace>PDFtoZPL.WebConverter</RootNamespace>
+		<StartupObject>PDFtoZPL.WebConverter.Client.Program</StartupObject>
+		<VersionPrefix>6.2.0</VersionPrefix>
+		<VersionSuffix></VersionSuffix>
+		<RunAOTCompilation>true</RunAOTCompilation>
+		<WasmNativeStrip>true</WasmNativeStrip>
+		<WasmStripILAfterAOT>true</WasmStripILAfterAOT>
+		<InvariantGlobalization>true</InvariantGlobalization>
+		<InvariantTimezone>true</InvariantTimezone>
+		<PublishTrimmed>true</PublishTrimmed>
+		<TrimMode>partial</TrimMode>
 		<OverrideHtmlAssetPlaceholders>true</OverrideHtmlAssetPlaceholders>
-  </PropertyGroup>
+	</PropertyGroup>
 
-  <!-- C# compiler -->
-  <PropertyGroup>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <Features>strict</Features>
-    <WarningsAsErrors>nullable</WarningsAsErrors>
-    <NoWarn>CA1416;CS8002</NoWarn>
-  </PropertyGroup>
+	<!-- C# compiler -->
+	<PropertyGroup>
+		<LangVersion>latest</LangVersion>
+		<Nullable>enable</Nullable>
+		<Features>strict</Features>
+		<WarningsAsErrors>nullable</WarningsAsErrors>
+		<NoWarn>CA1416;CS8002</NoWarn>
+	</PropertyGroup>
 
-  <!-- Debug builds -->
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <VersionSuffix>debug</VersionSuffix>
-  </PropertyGroup>
+	<!-- Debug builds -->
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<VersionSuffix>debug</VersionSuffix>
+	</PropertyGroup>
 
-  <!-- Needed for InternalsVisibleTo in PDFtoZPL -->
-  <PropertyGroup>
-    <AssemblyOriginatorKeyFile>PDFtoZPL.WebConverter.snk</AssemblyOriginatorKeyFile>
-    <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
+	<!-- Needed for InternalsVisibleTo in PDFtoZPL -->
+	<PropertyGroup>
+		<AssemblyOriginatorKeyFile>PDFtoZPL.WebConverter.snk</AssemblyOriginatorKeyFile>
+		<SignAssembly>true</SignAssembly>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-    <EmccCompileOptimizationFlag>-O0 -g3 -s ASSERTIONS=2 -s SAFE_HEAP=0 -s STACK_OVERFLOW_CHECK=1</EmccCompileOptimizationFlag>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<EmccCompileOptimizationFlag>-O0 -g3 -s ASSERTIONS=2 -s SAFE_HEAP=0 -s STACK_OVERFLOW_CHECK=1</EmccCompileOptimizationFlag>
+	</PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)'!='Debug'">
-    <EmccCompileOptimizationFlag>-Oz -g0 -s ASSERTIONS=0 -s SAFE_HEAP=0 -s STACK_OVERFLOW_CHECK=0</EmccCompileOptimizationFlag>
-  </PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'!='Debug'">
+		<EmccCompileOptimizationFlag>-Oz -g0 -s ASSERTIONS=0 -s SAFE_HEAP=0 -s STACK_OVERFLOW_CHECK=0</EmccCompileOptimizationFlag>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="ByteSize" Version="2.1.2" />
-    <PackageReference Include="Markdig.Signed" Version="0.43.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0" PrivateAssets="all" />
-    <PackageReference Include="PatrickJahr.Blazor.FileHandling" Version="1.0.0" />
-    <PackageReference Include="PatrickJahr.Blazor.WebShare" Version="1.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="ByteSize" Version="2.1.2" />
+		<PackageReference Include="Markdig.Signed" Version="0.43.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />
+		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.0" PrivateAssets="all" />
+		<PackageReference Include="PatrickJahr.Blazor.FileHandling" Version="1.0.0" />
+		<PackageReference Include="PatrickJahr.Blazor.WebShare" Version="1.0.0" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\PDFtoZPL\PDFtoZPL.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\PDFtoZPL\PDFtoZPL.csproj" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
-    <Content Update="wwwroot\404.html" CopyToOutputDirectory="Always" />
-    <EmbeddedResource Include="..\README.md" Link="README.md" />
-  </ItemGroup>
+	<ItemGroup>
+		<ServiceWorker Include="wwwroot\service-worker.js" PublishedContent="wwwroot\service-worker.published.js" />
+		<Content Update="wwwroot\404.html" CopyToOutputDirectory="Always" />
+		<EmbeddedResource Include="..\README.md" Link="README.md" />
+	</ItemGroup>
 </Project>
