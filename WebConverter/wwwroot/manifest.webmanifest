@@ -2,7 +2,7 @@
   "id": "Sungaila.PDFtoZPL",
   "name": "PDFtoZPL",
   "short_name": "PDFtoZPL",
-  "start_url": "/",
+  "start_url": "./",
   "background_color": "#FFFFFF",
   "theme_color": "#263238",
   "description": "Converts PDF files and images into Zebra Programming Language commands.",
