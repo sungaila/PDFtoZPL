@@ -21,6 +21,11 @@
         bool SetLabelLength { get; init; }
 
         /// <summary>
+        /// If <see langword="true"/> then the returned ZPL sets the print width to the width of the image, using the ^PW command. Otherwise it returns ^XA^GF^FS^XZ.
+        /// </summary>
+        bool SetPrintWidth { get; init; }
+
+        /// <summary>
         /// The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.
         /// </summary>
         byte Threshold { get; init; }

@@ -6,6 +6,7 @@
     /// <param name="EncodingKind">The encoding used for embedding the bitmap.</param>
     /// <param name="GraphicFieldOnly">If <see langword="true"/> then only the ^GF part of the ZPL code is returned. Otherwise it returns ^XA^GF^FS^XZ.</param>
     /// <param name="SetLabelLength">If <see langword="true"/> then the returned ZPL sets the label length to the height of the image, using the ^LL command. Otherwise it returns ^XA^GF^FS^XZ.</param>
+    /// <param name="SetPrintWidth">If <see langword="true"/> then the returned ZPL sets the print width to the width of the image, using the ^PW command. Otherwise it returns ^XA^GF^FS^XZ.</param>
     /// <param name="Threshold">The threshold below which a pixel is considered black. Lower values mean darker, higher mean lighter.</param>
     /// <param name="DitheringKind">The dithering algorithm used when downsampling to a 1-bit monochrome image.</param>
     /// <param name="PrintQuantity">Adds the ^PQ command to set the total quantity of labels to print. Accepted values are 1 to 99,999,999. Ignored if set to 0.</param>
@@ -15,6 +16,7 @@
         BitmapEncodingKind EncodingKind = BitmapEncodingKind.HexadecimalCompressed,
         bool GraphicFieldOnly = false,
         bool SetLabelLength = false,
+        bool SetPrintWidth = false,
         byte Threshold = 128,
         DitheringKind DitheringKind = DitheringKind.None,
         uint PrintQuantity = 0,
@@ -24,6 +26,6 @@
         /// <summary>
         /// Constructs <see cref="ZplOptions"/> with default values.
         /// </summary>
-        public ZplOptions() : this(BitmapEncodingKind.HexadecimalCompressed, false, false, 128, DitheringKind.None, 0, 0, 0) { }
+        public ZplOptions() : this(BitmapEncodingKind.HexadecimalCompressed, false, false, false, 128, DitheringKind.None, 0, 0, 0) { }
     }
 }
