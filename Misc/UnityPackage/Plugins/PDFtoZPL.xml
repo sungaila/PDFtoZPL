@@ -206,6 +206,11 @@
             Adds the ^LS command to move the entire label left or right from its current position. Valid values are between <c>9999</c> (move label left) and <c>-9999</c> (move label right). Values outside of this range are ignored.
             </summary>
         </member>
+        <member name="P:PDFtoZPL.IZplOptions.SetPrintWidth">
+            <summary>
+            If <see langword="true"/> then the returned ZPL sets the print width to the width of the image, using the ^PW command. Otherwise it returns ^XA^GF^FS^XZ.
+            </summary>
+        </member>
         <member name="T:PDFtoZPL.PdfOptions">
             <summary>
             Contains all relevant information to render a PDF page into an image.
@@ -304,8 +309,9 @@
             <param name="PrintQuantity">Adds the ^PQ command to set the total quantity of labels to print. Accepted values are 1 to 99,999,999. Ignored if set to 0.</param>
             <param name="LabelTop">Adds the ^LT command to move the entire label up or down from its current position (in relation to the top edge of the label). Valid values are between <c>120</c> (move label down) and <c>-120</c> (move label up) dot rows. Values outside of this range are ignored and some printers might accept even fewer.</param>
             <param name="LabelShift">Adds the ^LS command to move the entire label left or right from its current position. Valid values are between <c>9999</c> (move label left) and <c>-9999</c> (move label right). Values outside of this range are ignored.</param>
+            <param name="SetPrintWidth">If <see langword="true"/> then the returned ZPL sets the print width to the width of the image, using the ^PW command. Otherwise it returns ^XA^GF^FS^XZ.</param>
         </member>
-        <member name="M:PDFtoZPL.ZplOptions.#ctor(PDFtoZPL.BitmapEncodingKind,System.Boolean,System.Boolean,System.Byte,PDFtoZPL.DitheringKind,System.UInt32,System.SByte,System.Int16)">
+        <member name="M:PDFtoZPL.ZplOptions.#ctor(PDFtoZPL.BitmapEncodingKind,System.Boolean,System.Boolean,System.Byte,PDFtoZPL.DitheringKind,System.UInt32,System.SByte,System.Int16,System.Boolean)">
             <summary>
             Contains all relevant information to render a PDF page into an image.
             </summary>
@@ -317,6 +323,7 @@
             <param name="PrintQuantity">Adds the ^PQ command to set the total quantity of labels to print. Accepted values are 1 to 99,999,999. Ignored if set to 0.</param>
             <param name="LabelTop">Adds the ^LT command to move the entire label up or down from its current position (in relation to the top edge of the label). Valid values are between <c>120</c> (move label down) and <c>-120</c> (move label up) dot rows. Values outside of this range are ignored and some printers might accept even fewer.</param>
             <param name="LabelShift">Adds the ^LS command to move the entire label left or right from its current position. Valid values are between <c>9999</c> (move label left) and <c>-9999</c> (move label right). Values outside of this range are ignored.</param>
+            <param name="SetPrintWidth">If <see langword="true"/> then the returned ZPL sets the print width to the width of the image, using the ^PW command. Otherwise it returns ^XA^GF^FS^XZ.</param>
         </member>
         <member name="P:PDFtoZPL.ZplOptions.EncodingKind">
             <summary>The encoding used for embedding the bitmap.</summary>
@@ -341,6 +348,9 @@
         </member>
         <member name="P:PDFtoZPL.ZplOptions.LabelShift">
             <summary>Adds the ^LS command to move the entire label left or right from its current position. Valid values are between <c>9999</c> (move label left) and <c>-9999</c> (move label right). Values outside of this range are ignored.</summary>
+        </member>
+        <member name="P:PDFtoZPL.ZplOptions.SetPrintWidth">
+            <summary>If <see langword="true"/> then the returned ZPL sets the print width to the width of the image, using the ^PW command. Otherwise it returns ^XA^GF^FS^XZ.</summary>
         </member>
         <member name="M:PDFtoZPL.ZplOptions.#ctor">
             <summary>
