@@ -125,6 +125,13 @@
                         </div>
 
                         <div class="form-group row mb-1">
+                            <div>
+                                <InputCheckbox @bind-Value="Model.SetPrintWidth" id="setPrintWidth" class="form-check-input" disabled="@(!Model.IncludeStartFormat)" />
+                                <label for="setPrintWidth">Include Print Width (^PW)</label>
+                            </div>
+                        </div>
+
+                        <div class="form-group row mb-1">
                             <div class="col-sm-3">
                                 <InputCheckbox @bind-Value="Model.UsePrintQuantity" id="usePrintQuantity" class="form-check-input" style="vertical-align: middle;" disabled="@(!Model.IncludeStartFormat)" />
                                 <label for="usePrintQuantity" id="printQuantityLabel" class="label-nowrap" style="vertical-align: sub;">Print Quantity (^PQ)</label>

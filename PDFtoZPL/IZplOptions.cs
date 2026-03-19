@@ -44,5 +44,10 @@
         /// Adds the ^LS command to move the entire label left or right from its current position. Valid values are between <c>9999</c> (move label left) and <c>-9999</c> (move label right). Values outside of this range are ignored.
         /// </summary>
         short LabelShift { get; init; }
+
+        /// <summary>
+        /// If <see langword="true"/> then the returned ZPL sets the print width to the width of the image, using the ^PW command. Otherwise it returns ^XA^GF^FS^XZ.
+        /// </summary>
+        bool SetPrintWidth { get; init; }
     }
 }
