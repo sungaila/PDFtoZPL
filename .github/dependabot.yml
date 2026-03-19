@@ -1,6 +1,10 @@
 version: 2
 updates:
+  - package-ecosystem: "dotnet-sdk"
+    directory: "/src/PDFtoImage"
+    schedule:
+      interval: "daily"
   - package-ecosystem: "nuget"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "daily"
