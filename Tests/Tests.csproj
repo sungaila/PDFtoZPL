@@ -50,6 +50,9 @@
     <Compile Update="BackgroundColorTests.ExpectedResults.cs">
       <DependentUpon>BackgroundColorTests.cs</DependentUpon>
     </Compile>
+		<Compile Update="PrintWidthTests.ExpectedResults.cs">
+			<DependentUpon>PrintWidthTests.cs</DependentUpon>
+		</Compile>
   </ItemGroup>
 
   <ItemGroup>

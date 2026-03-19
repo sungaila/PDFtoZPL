@@ -24,6 +24,8 @@ PDFtoZPL.IZplOptions.PrintQuantity.get -> uint
 PDFtoZPL.IZplOptions.PrintQuantity.init -> void
 PDFtoZPL.IZplOptions.SetLabelLength.get -> bool
 PDFtoZPL.IZplOptions.SetLabelLength.init -> void
+PDFtoZPL.IZplOptions.SetPrintWidth.get -> bool
+PDFtoZPL.IZplOptions.SetPrintWidth.init -> void
 PDFtoZPL.IZplOptions.Threshold.get -> byte
 PDFtoZPL.IZplOptions.Threshold.init -> void
 PDFtoZPL.PdfOptions
@@ -77,12 +79,14 @@ PDFtoZPL.ZplOptions.PrintQuantity.get -> uint
 PDFtoZPL.ZplOptions.PrintQuantity.init -> void
 PDFtoZPL.ZplOptions.SetLabelLength.get -> bool
 PDFtoZPL.ZplOptions.SetLabelLength.init -> void
+PDFtoZPL.ZplOptions.SetPrintWidth.get -> bool
+PDFtoZPL.ZplOptions.SetPrintWidth.init -> void
 PDFtoZPL.ZplOptions.Threshold.get -> byte
 PDFtoZPL.ZplOptions.Threshold.init -> void
 PDFtoZPL.ZplOptions.ZplOptions() -> void
-PDFtoZPL.ZplOptions.ZplOptions(PDFtoZPL.BitmapEncodingKind EncodingKind = PDFtoZPL.BitmapEncodingKind.HexadecimalCompressed, bool GraphicFieldOnly = false, bool SetLabelLength = false, byte Threshold = 128, PDFtoZPL.DitheringKind DitheringKind = PDFtoZPL.DitheringKind.None, uint PrintQuantity = 0, sbyte LabelTop = 0, short LabelShift = 0) -> void
+PDFtoZPL.ZplOptions.ZplOptions(PDFtoZPL.BitmapEncodingKind EncodingKind = PDFtoZPL.BitmapEncodingKind.HexadecimalCompressed, bool GraphicFieldOnly = false, bool SetLabelLength = false, byte Threshold = 128, PDFtoZPL.DitheringKind DitheringKind = PDFtoZPL.DitheringKind.None, uint PrintQuantity = 0, sbyte LabelTop = 0, short LabelShift = 0, bool SetPrintWidth = false) -> void
 override PDFtoZPL.ZplOptions.GetHashCode() -> int
-PDFtoZPL.ZplOptions.Deconstruct(out PDFtoZPL.BitmapEncodingKind EncodingKind, out bool GraphicFieldOnly, out bool SetLabelLength, out byte Threshold, out PDFtoZPL.DitheringKind DitheringKind, out uint PrintQuantity, out sbyte LabelTop, out short LabelShift) -> void
+PDFtoZPL.ZplOptions.Deconstruct(out PDFtoZPL.BitmapEncodingKind EncodingKind, out bool GraphicFieldOnly, out bool SetLabelLength, out byte Threshold, out PDFtoZPL.DitheringKind DitheringKind, out uint PrintQuantity, out sbyte LabelTop, out short LabelShift, out bool SetPrintWidth) -> void
 PDFtoZPL.ZplOptions.Equals(PDFtoZPL.ZplOptions other) -> bool
 static PDFtoZPL.ZplOptions.operator !=(PDFtoZPL.ZplOptions left, PDFtoZPL.ZplOptions right) -> bool
 static PDFtoZPL.ZplOptions.operator ==(PDFtoZPL.ZplOptions left, PDFtoZPL.ZplOptions right) -> bool

@@ -191,7 +191,8 @@ namespace PDFtoZPL.WebConverter.Pages
                                 DitheringKind: Model.Dithering,
                                 PrintQuantity: Model.UsePrintQuantity ? (uint)Math.Max(Model.PrintQuantity, 1) : 0,
                                 LabelTop: (sbyte)(Model.UseLabelTop ? Model.LabelTop : 0),
-                                LabelShift: (short)(Model.UseLabelShift ? Model.LabelShift : 0)
+                                LabelShift: (short)(Model.UseLabelShift ? Model.LabelShift : 0),
+                                SetPrintWidth: Model.SetPrintWidth
                             )
                         );
 

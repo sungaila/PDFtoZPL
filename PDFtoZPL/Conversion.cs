@@ -358,7 +358,7 @@ namespace PDFtoZPL
                 if (zplOptions.SetLabelLength)
                     zpl = zpl.Replace("^XA", $"^XA^LL{inputBitmap.Height}");
 
-                // set ^PW, the label print width
+                // set ^PW to the label print width (same use case as ^LL above)
                 if (zplOptions.SetPrintWidth)
                     zpl = zpl.Replace("^XA", $"^XA^PW{inputBitmap.Width}");
 

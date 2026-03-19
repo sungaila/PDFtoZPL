@@ -73,6 +73,9 @@ namespace PDFtoZPL.WebConverter.Models
         public bool SetLabelLength { get; set; } = true;
 
         [Required]
+        public bool SetPrintWidth { get; set; } = true;
+
+        [Required]
         public bool WithFormFill { get; set; } = true;
 
         [Required]
