@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 	<!-- Assembly -->
 	<PropertyGroup>
-		<TargetFramework>net10.0</TargetFramework>
+		<TargetFramework>net10.0-browser</TargetFramework>
 		<RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
 		<ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
 		<AssemblyName>PDFtoZPL.WebConverter</AssemblyName>
 		<RootNamespace>PDFtoZPL.WebConverter</RootNamespace>
 		<StartupObject>PDFtoZPL.WebConverter.Client.Program</StartupObject>
-		<VersionPrefix>6.2.1</VersionPrefix>
+		<VersionPrefix>6.2.2</VersionPrefix>
 		<VersionSuffix></VersionSuffix>
 		<RunAOTCompilation>true</RunAOTCompilation>
 		<WasmNativeStrip>true</WasmNativeStrip>
@@ -49,7 +49,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="ByteSize" Version="2.1.2" />
-		<PackageReference Include="Markdig.Signed" Version="1.1.1" />
+		<PackageReference Include="Markdig.Signed" Version="1.1.2" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.5" />
 		<PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="10.0.5" PrivateAssets="all" />
 		<PackageReference Include="PatrickJahr.Blazor.FileHandling" Version="1.0.0" />
@@ -65,4 +65,12 @@
 		<Content Update="wwwroot\404.html" CopyToOutputDirectory="Always" />
 		<EmbeddedResource Include="..\README.md" Link="README.md" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<NativeFileReference Include="$(SkiaSharpStaticLibraryPath)\3.1.12\st,simd\libSkiaSharp.a" />
+	</ItemGroup>
+
+	<PropertyGroup>
+		<WasmEnableExceptionHandling>false</WasmEnableExceptionHandling>
+	</PropertyGroup>
 </Project>
