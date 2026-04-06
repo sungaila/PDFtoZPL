@@ -1,3 +1,0 @@
-﻿#nullable enable
-PDFtoZPL.Resource
-PDFtoZPL.Resource.Resource() -> void

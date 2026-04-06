@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <!-- Assembly -->
   <PropertyGroup>
-		<TargetFrameworks>net471;net481;netstandard2.1;net8.0;net9.0;net9.0-android;net9.0-ios;net9.0-maccatalyst;net10.0;net10.0-android;net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks>net471;net481;netstandard2.1;net8.0;net9.0;net10.0;net10.0-android;net10.0-ios;net10.0-maccatalyst</TargetFrameworks>
     <AssemblyName>PDFtoZPL</AssemblyName>
     <RootNamespace>PDFtoZPL</RootNamespace>
     <EmbedAllSources>true</EmbedAllSources>
@@ -12,7 +12,7 @@
 
   <!-- NuGet -->
   <PropertyGroup>
-    <VersionPrefix>6.2.1</VersionPrefix>
+    <VersionPrefix>6.2.2</VersionPrefix>
     <VersionSuffix></VersionSuffix>
     <Authors>David Sungaila</Authors>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
@@ -21,7 +21,8 @@
     <PackageProjectUrl>https://github.com/sungaila/PDFtoZPL</PackageProjectUrl>
     <PackageIconUrl>https://raw.githubusercontent.com/sungaila/PDFtoZPL/master/Icon_128.png</PackageIconUrl>
     <Description>A .NET library to convert PDF files (and bitmaps) into Zebra Programming Language code.</Description>
-    <PackageReleaseNotes>- Add optional parameter SetPrintWidth.</PackageReleaseNotes>
+    <PackageReleaseNotes>- Fixed a crash in linux-x64 builds.
+- Fixed a crash when .NET Framework builds attempt to open a PDF file with a password containing non-ASCII characters.</PackageReleaseNotes>
     <PackageTags>PDF ZPL Zebra Bitmap Convert Conversion C# PDFium MAUI wasm WebAssembly</PackageTags>
     <RepositoryUrl>https://github.com/sungaila/PDFtoZPL.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
@@ -78,7 +79,7 @@
 
   <!-- SourceLink build steps and NuGet packages -->
   <ItemGroup>
-    <PackageReference Include="PDFtoImage" Version="5.2.0" PrivateAssets="analyzers" />
+    <PackageReference Include="PDFtoImage" Version="5.2.1" PrivateAssets="analyzers" />
     <PackageReference Include="Microsoft.CodeAnalysis.PublicApiAnalyzers" Version="4.14.0" PrivateAssets="all" />
     <PackageReference Include="SharpZipLib" Version="1.4.2" PrivateAssets="analyzers" />
   </ItemGroup>
