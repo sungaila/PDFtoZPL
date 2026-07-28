@@ -60,11 +60,11 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: |
             8.x
@@ -82,7 +82,7 @@ jobs:
       - name: Restore
         run: dotnet restore PDFtoZPL.Build.slnf
       - name: Component detection
-        uses: advanced-security/component-detection-dependency-submission-action@d433c2f467e149a8009c8fbce92cc708ed15ef7b
+        uses: advanced-security/component-detection-dependency-submission-action@v0.1.4
         with:
           detectorsCategories: "NuGet"
   dependency-review:
@@ -94,9 +94,9 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Review
-        uses: actions/dependency-review-action@v4
+        uses: actions/dependency-review-action@v5.0.0
   lint:
     name: Lint
     runs-on: windows-latest
@@ -105,11 +105,11 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: |
             8.x
@@ -138,11 +138,11 @@ jobs:
       attestations: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: |
             8.x
@@ -160,13 +160,13 @@ jobs:
       - name: Pack
         run: dotnet pack PDFtoZPL/PDFtoZPL.csproj -c Release -p:VersionSuffix=ci
       - name: Generate artifact attestation
-        uses: actions/attest-build-provenance@v3
+        uses: actions/attest-build-provenance@v4
         with:
           subject-path: |
             PDFtoZPL/bin/Release/*.nupkg
             PDFtoZPL/bin/Release/*.snupkg
       - name: Publish NuGet packages
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: NuGet packages
           path: |
@@ -176,14 +176,14 @@ jobs:
       - name: Generate SBOM (CycloneDX JSON)
         run: dotnet-CycloneDX PDFtoZPL/PDFtoZPL.csproj -o artifacts -F Json -fn sbom.json
       - name: Attest SBOM for NuGet packages
-        uses: actions/attest-sbom@v3
+        uses: actions/attest-sbom@v4
         with:
           subject-path: |
             PDFtoZPL/bin/Release/*.nupkg
             PDFtoZPL/bin/Release/*.snupkg
           sbom-path: artifacts/sbom.json
       - name: Upload SBOM artifact
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: SBOM (CycloneDX)
           path: artifacts/sbom.json
@@ -196,11 +196,11 @@ jobs:
       contents: read
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: |
             8.x
@@ -222,7 +222,7 @@ jobs:
       - name: Pack
         run: dotnet pack PDFtoZPL/PDFtoZPL.csproj -c ${{ github.event_name != 'workflow_dispatch' && 'Debug' || inputs.build_configuration }} -p:VersionSuffix=ci --no-restore
       - name: Publish libraries
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: Library assemblies
           path: |
@@ -231,7 +231,7 @@ jobs:
             !**/*.snupkg
           if-no-files-found: error
       - name: Publish NuGet packages
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: NuGet packages (for testing)
           path: |
@@ -239,7 +239,7 @@ jobs:
             PDFtoZPL/bin/${{ github.event_name != 'workflow_dispatch' && 'Debug' || inputs.build_configuration }}/*.snupkg
           if-no-files-found: error
       - name: Publish tests
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         if: success() && (github.event_name != 'workflow_dispatch' && true || inputs.run_tests) == true
         with:
           name: Test assemblies
@@ -263,7 +263,7 @@ jobs:
     if: success() && (github.event_name != 'workflow_dispatch' && true || inputs.run_tests) == true
     steps:
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: |
             8.x
@@ -272,7 +272,7 @@ jobs:
           dotnet-quality: 'ga'
       - name: Download test assemblies
         if: (success() || failure())
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: Test assemblies
       - name: .NET Framework 4.7.1
@@ -292,7 +292,7 @@ jobs:
         run: dotnet test net10.0/*.Tests.dll --logger trx --verbosity detailed
       - name: Upload test results
         if: success() || failure()
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: Test results (${{ matrix.os }})
           path: ./**/*.trx
@@ -311,13 +311,13 @@ jobs:
     if: (success() || failure()) && (github.event_name != 'workflow_dispatch' && true || inputs.publish_testresults) == true
     steps:
       - name: Download Artifacts
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: Test results (*)
           merge-multiple: true
           path: artifacts
       - name: Publish test results
-        uses: EnricoMi/publish-unit-test-result-action@c950f6fb443cb5af20a377fd0dfaa78838901040
+        uses: EnricoMi/publish-unit-test-result-action@c9bbcabcaf28c5ce2a9f8b6ee91c62873071b2ce
         with:
           files: artifacts/**/*.trx
           check_name: Test results
@@ -326,7 +326,7 @@ jobs:
           json_file: test-results.json
       - name: Upload test results to GitHub Gist
         if: github.repository == 'sungaila/PDFtoZPL' && github.ref == 'refs/heads/master' && success()
-        uses: exuanbo/actions-deploy-gist@47697fceaeea2006a90594ee24eb9cd0a1121ef8
+        uses: exuanbo/actions-deploy-gist@9f0a373feca99e5a664bad6f76b019808c46b710
         with:
           token: ${{ secrets.GIST_TOKEN }}
           gist_id: 47230c16cb63a1be5b5604830579714d
@@ -343,11 +343,11 @@ jobs:
     if: (github.event_name != 'workflow_dispatch' || inputs.run_sonarcloud) == true
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Setup .NET
-        uses: actions/setup-dotnet@v5
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: |
             8.x
@@ -367,7 +367,7 @@ jobs:
       - name: Setup JDK 17
         uses: actions/setup-java@v5
         with:
-          java-version: 17
+          java-version: 21
           java-package: jdk
           distribution: 'zulu'
       - name: Install SonarCloud scanner
