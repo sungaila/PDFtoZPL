@@ -19,7 +19,7 @@ namespace PDFtoZPL
 
             using var canvas = new SKCanvas(output);
             canvas.Clear(backgroundColor);
-            canvas.DrawBitmap(input, new SKPoint(-labelShift, labelTop));
+            canvas.DrawBitmap(input, new SKPoint(-labelShift, labelTop), SKSamplingOptions.Default);
             canvas.Flush();
 
             return output;
