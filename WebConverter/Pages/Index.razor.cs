@@ -30,8 +30,10 @@ namespace PDFtoZPL.WebConverter.Pages
 
         protected override async Task OnAfterRenderAsync(bool firstRender)
         {
+            if (!firstRender)
+                return;
+
             await SetupDotNetHelper();
-            await base.OnAfterRenderAsync(firstRender);
         }
 
         protected override async Task OnInitializedAsync()
@@ -332,6 +334,8 @@ namespace PDFtoZPL.WebConverter.Pages
             {
                 if (disposing)
                 {
+                    Program.FilesHandled -= OnFilesHandled;
+                    Model.Dispose();
                     _objRef?.Dispose();
                     _objRef = null;
                 }
