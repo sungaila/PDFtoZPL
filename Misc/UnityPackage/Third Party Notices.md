@@ -17,3 +17,9 @@ Component Name: PDFium
 License Type: "Apache-2.0"
 
 [PDFium License](https://pdfium.googlesource.com/pdfium/+/refs/heads/main/LICENSE)
+
+Component Name: SharpZipLib
+
+License Type: "MIT"
+
+[SharpZipLib License](https://github.com/icsharpcode/SharpZipLib/blob/master/LICENSE.txt)
